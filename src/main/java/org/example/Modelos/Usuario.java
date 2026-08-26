@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Modelos;
 
 import org.example.ENUMS.TipoRol;
 
