@@ -37,7 +37,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM Usuario order by nombre";
+            String sql = "SELECT * FROM Usuarios order by nombre";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             ResultSet filas = sentencia.executeQuery();
@@ -65,7 +65,7 @@ public class UsuarioDAO {
     }
 
     public static boolean actualizar(Usuario usuario) {
-        String sql = "UPDATE Usuario SET nombre = ?, correo = ?, anioGeneracion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
+        String sql = "UPDATE Usuarios SET nombre = ?, correo = ?, anioGeneracion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -88,7 +88,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM Usuario WHERE id = ? ";
+            String sql = "DELETE FROM Usuarios WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 

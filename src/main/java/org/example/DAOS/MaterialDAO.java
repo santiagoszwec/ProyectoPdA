@@ -19,7 +19,7 @@ public class MaterialDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "Insert into Material (archivoURL, tipo, fecha, docente) values (?,?,?,?)";
+            String sql = "Insert into Materiales (archivoURL, tipo, fecha, docente) values (?,?,?,?)";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             sentencia.setObject(1, material.getArchivoUrl());
@@ -39,7 +39,7 @@ public class MaterialDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-                String sql = "SELECT * FROM Material order by fecha";
+                String sql = "SELECT * FROM Materiales order by fecha";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             ResultSet filas = sentencia.executeQuery();
@@ -66,7 +66,7 @@ public class MaterialDAO {
     }
 
     public static boolean actualizar(Material material) {
-        String sql = "UPDATE Material SET archivoUrl = ?, tipo = ?, fecha = ?, docente = ? WHERE id= ?";
+        String sql = "UPDATE Materiales SET archivoUrl = ?, tipo = ?, fecha = ?, docente = ? WHERE id= ?";
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -88,7 +88,7 @@ public class MaterialDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM Material WHERE id = ? ";
+            String sql = "DELETE FROM Materiales WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
