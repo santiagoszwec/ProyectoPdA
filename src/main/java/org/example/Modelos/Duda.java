@@ -12,7 +12,6 @@ public class Duda extends Publicacion {
         super(id, mensaje, imagenUrl, fechaPublicacion, categoria);
     }
 
-
     public EstadoDuda getEstado() {
         return estado;
     }
