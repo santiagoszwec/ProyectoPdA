@@ -1,4 +1,4 @@
-package org.example;
+package org.example.Modelos;
 
 import org.example.ENUMS.TipoRol;
 
@@ -9,9 +9,9 @@ public class Usuario {
     private String correo;
     private int anioDeGeneracion;
     private TipoRol rol;
-    private int contrasenia;
+    private String contrasenia;
 
-    public Usuario(int id, String nombre, String correo, int anioDeGeneracion, TipoRol rol, int contrasenia) {
+    public Usuario(int id, String nombre, String correo, int anioDeGeneracion, TipoRol rol, String contrasenia) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
@@ -60,11 +60,11 @@ public class Usuario {
         this.rol = rol;
     }
 
-    public int getContrasenia() {
+    public String getContrasenia() {
         return contrasenia;
     }
 
-    public void setContrasenia(int contrasenia) {
+    public void setContrasenia(String contrasenia) {
         this.contrasenia = contrasenia;
     }
 

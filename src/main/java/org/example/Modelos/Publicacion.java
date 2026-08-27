@@ -1,21 +1,26 @@
-package org.example;
+package org.example.Modelos;
+import org.example.ENUMS.TipoCategoria;
+
 import java.time.LocalDate;
 
-public class Comentario {
+
+public class Publicacion {
 
     private int id;
     private String mensaje;
     private String imagenUrl;
     private LocalDate fechaPublicacion;
+    private TipoCategoria categoria;
 
-    private Comentario comentarioPadre;
+    public Publicacion() {
+    }
 
-    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, Comentario comentarioPadre) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
-        this.comentarioPadre = comentarioPadre;
+        this.categoria = categoria;
     }
 
     public int getId() {
@@ -50,22 +55,22 @@ public class Comentario {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public Comentario getComentarioPadre() {
-        return comentarioPadre;
+    public TipoCategoria getCategoria() {
+        return categoria;
     }
 
-    public void setComentarioPadre(Comentario comentarioPadre) {
-        this.comentarioPadre = comentarioPadre;
+    public void setCategoria(TipoCategoria categoria) {
+        this.categoria = categoria;
     }
 
     @Override
     public String toString() {
-        return "Comentario{" +
+        return "Publicacion{" +
                 "id=" + id +
                 ", mensaje='" + mensaje + '\'' +
                 ", imagenUrl='" + imagenUrl + '\'' +
                 ", fechaPublicacion=" + fechaPublicacion +
-                ", comentarioPadre=" + comentarioPadre +
+                ", categoria=" + categoria +
                 '}';
     }
 }
