@@ -1,6 +1,7 @@
 package org.example.DAOS;
 
 import org.example.ConexionDB;
+import org.example.ENUMS.TipoRol;
 import org.example.Modelos.Usuario;
 
 import java.sql.Connection;
@@ -32,24 +33,28 @@ public class UsuarioDAO {
         }
     }
 
-    public static List<Categoria> listarTodos() {
+    public static List<Usuario> listarTodos() {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM Categorias order by id";
+            String sql = "SELECT * FROM Usuario order by nombre";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             ResultSet filas = sentencia.executeQuery();
 
-            List<Categoria> retorno = new ArrayList<>();
+            List<Usuario> retorno = new ArrayList<>();
 
             while (filas.next()) {
                 int id = filas.getInt("id");
                 String nombre = filas.getString("nombre");
+                String correo = filas.getString("correo");
+                int anioGeneracion = filas.getInt("anioGeneracion");
+                TipoRol rol = (TipoRol) filas.getObject("rol");
+                String contrasenia = filas.getString("contrasenia");
 
-                Categoria categoria = new Categoria(id, nombre);
+               Usuario usuario = new Usuario(id, nombre, correo, anioGeneracion, rol, contrasenia);
 
-                retorno.add(categoria);
+                retorno.add(usuario);
             }
 
             return retorno;
@@ -59,14 +64,17 @@ public class UsuarioDAO {
         }
     }
 
-    public static boolean actualizar(Categoria categoria) {
-        String sql = "UPDATE Categorias SET nombre = ? WHERE id= ?";
+    public static boolean actualizar(Usuario usuario) {
+        String sql = "UPDATE Usuario SET nombre = ?, correo = ?, anioGeneracion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
-            sentencia.setString(1, categoria.getNombre());
-            sentencia.setInt(2, categoria.getId());
+            sentencia.setString(1, usuario.getNombre());
+            sentencia.setString(2, usuario.getCorreo());
+            sentencia.setInt(3, usuario.getAnioDeGeneracion());
+            sentencia.setObject(4, usuario.getRol());
+            sentencia.setString(5, usuario.getContrasenia());
 
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -80,7 +88,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM Categorias WHERE id = ? ";
+            String sql = "DELETE FROM Usuario WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
