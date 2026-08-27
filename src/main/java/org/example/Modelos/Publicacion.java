@@ -12,6 +12,9 @@ public class Publicacion {
     private LocalDate fechaPublicacion;
     private TipoCategoria categoria;
 
+    public Publicacion() {
+    }
+
     public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
         this.id = id;
         this.mensaje = mensaje;
