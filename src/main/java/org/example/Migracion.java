@@ -17,7 +17,7 @@ public class Migracion {
                 "  correo VARCHAR(100) NOT NULL," +
                 "  anio_de_generacion INT NOT NULL," +
                 "  rol VARCHAR(20) NOT NULL," +
-                "  contrasenia INT NOT NULL" +
+                "  contrasenia VARCHAR(255) NOT NULL" +
                 ")",
 
                 "CREATE TABLE IF NOT EXISTS curso (" +
