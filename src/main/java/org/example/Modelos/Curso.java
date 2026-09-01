@@ -7,13 +7,28 @@ public class Curso {
     private int semestre;
     private int anio;
     private int creditos;
+    private String descripcion;
 
-    public Curso(int id, String nombre, int semestre, int anio, int creditos) {
+    public Curso(int id, String nombre, int semestre, int anio, int creditos, String descripcion) {
         this.id = id;
         this.nombre = nombre;
         this.semestre = semestre;
         this.anio = anio;
         this.creditos = creditos;
+        this.descripcion = descripcion;
+    }
+    public Curso(
+            String nombre,
+            int semestre,
+            int anio,
+            int creditos,
+            String descripcion
+    ) {
+        this.nombre = nombre;
+        this.semestre = semestre;
+        this.anio = anio;
+        this.creditos = creditos;
+        this.descripcion = descripcion;
     }
 
     public int getId() {
@@ -54,6 +69,14 @@ public class Curso {
 
     public void setCreditos(int creditos) {
         this.creditos = creditos;
+    }
+
+    public String getDescripcion() {
+        return descripcion;
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     @Override

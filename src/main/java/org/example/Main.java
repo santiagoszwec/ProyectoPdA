@@ -1,6 +1,9 @@
 package org.example;
 
 import org.example.DAOS.UsuarioDAO;
+import org.example.ENUMS.TipoRol;
+import org.example.Menus.MenuAdmin;
+import org.example.Menus.MenuEstudiante;
 import org.example.Modelos.Usuario;
 
 import java.util.Scanner;
@@ -28,9 +31,13 @@ public class Main {
 
         System.out.print("Bienvenido!");
 
+        if (usuario.getRol() == TipoRol.Admin) {
+            MenuAdmin.mostrar(sc);
+        } else if (usuario.getRol() == TipoRol.Estudiante) {
+            //MenuEstudiante.mostrar(sc);
+        }
 
     }
-
 
 
 }
