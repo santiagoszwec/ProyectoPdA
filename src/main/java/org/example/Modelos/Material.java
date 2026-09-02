@@ -1,73 +1,59 @@
 package org.example.Modelos;
 import org.example.ENUMS.TipoArchivo;
+import org.example.ENUMS.TipoCategoria;
 import org.example.ENUMS.TipoMaterial;
 
 import java.time.LocalDate;
 
-public class Material {
+public class Material extends Publicacion {
 
-    private int id;
-    private TipoArchivo archivoUrl;
-    private TipoMaterial tipo;
-    private LocalDate fecha;
-    private String docente;
+    private String archivoUrl;
+    private TipoMaterial tipoMaterial;
+    private TipoArchivo tipoArchivo;
 
-    public Material(int id, TipoArchivo archivoUrl, TipoMaterial tipo, LocalDate fecha, String docente) {
-        this.id = id;
+    public Material(String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
         this.archivoUrl = archivoUrl;
-        this.tipo = tipo;
-        this.fecha = fecha;
-        this.docente = docente;
+        this.tipoMaterial = tipoMaterial;
+        this.tipoArchivo = tipoArchivo;
     }
 
-    public int getId() {
-        return id;
+    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, categoria);
+        this.archivoUrl = archivoUrl;
+        this.tipoMaterial = tipoMaterial;
+        this.tipoArchivo = tipoArchivo;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public TipoArchivo getArchivoUrl() {
+    public String getArchivoUrl() {
         return archivoUrl;
     }
 
-    public void setArchivoUrl(TipoArchivo archivoUrl) {
+    public void setArchivoUrl(String archivoUrl) {
         this.archivoUrl = archivoUrl;
     }
 
-    public TipoMaterial getTipo() {
-        return tipo;
+    public TipoMaterial getTipoMaterial() {
+        return tipoMaterial;
     }
 
-    public void setTipo(TipoMaterial tipo) {
-        this.tipo = tipo;
+    public void setTipoMaterial(TipoMaterial tipoMaterial) {
+        this.tipoMaterial = tipoMaterial;
     }
 
-    public LocalDate getFecha() {
-        return fecha;
+    public TipoArchivo getTipoArchivo() {
+        return tipoArchivo;
     }
 
-    public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
-    }
-
-    public String getDocente() {
-        return docente;
-    }
-
-    public void setDocente(String docente) {
-        this.docente = docente;
+    public void setTipoArchivo(TipoArchivo tipoArchivo) {
+        this.tipoArchivo = tipoArchivo;
     }
 
     @Override
     public String toString() {
         return "Material{" +
-                "id=" + id +
-                ", archivoUrl=" + archivoUrl +
-                ", tipo=" + tipo +
-                ", fecha=" + fecha +
-                ", docente='" + docente + '\'' +
+                "archivoUrl='" + archivoUrl + '\'' +
+                ", tipoMaterial=" + tipoMaterial +
+                ", tipoArchivo=" + tipoArchivo +
                 '}';
     }
 }
