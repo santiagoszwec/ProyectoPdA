@@ -16,7 +16,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "Insert into usuarios (nombre, correo, anioGeneracion, rol, contrasenia) values (?,?,?,?,?)";
+            String sql = "Insert into usuarios (nombre, correo, anio_de_generacion, rol, contrasenia) values (?,?,?,?,?)";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             sentencia.setString(1, usuario.getNombre());
@@ -37,7 +37,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM Usuarios order by nombre";
+            String sql = "SELECT * FROM usuario ORDER BY nombre";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             ResultSet filas = sentencia.executeQuery();
@@ -48,24 +48,21 @@ public class UsuarioDAO {
                 int id = filas.getInt("id");
                 String nombre = filas.getString("nombre");
                 String correo = filas.getString("correo");
-                int anioGeneracion = filas.getInt("anioGeneracion");
-                TipoRol rol = (TipoRol) filas.getObject("rol");
+                int anioGeneracion = filas.getInt("anio_de_generacion");
+                TipoRol rol = TipoRol.valueOf(filas.getString("rol"));
                 String contrasenia = filas.getString("contrasenia");
 
-               Usuario usuario = new Usuario(id, nombre, correo, anioGeneracion, rol, contrasenia);
-
+                Usuario usuario = new Usuario(id, nombre, correo, anioGeneracion, rol, contrasenia);
                 retorno.add(usuario);
             }
-
             return retorno;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     public static boolean actualizar(Usuario usuario) {
-        String sql = "UPDATE Usuarios SET nombre = ?, correo = ?, anioGeneracion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
+        String sql = "UPDATE Usuario SET nombre = ?, correo = ?, anio_de_generacion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -88,7 +85,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM Usuarios WHERE id = ? ";
+            String sql = "DELETE FROM Usuario WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 

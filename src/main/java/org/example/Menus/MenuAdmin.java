@@ -31,7 +31,7 @@ public class MenuAdmin {
 
                 case 2:
                     System.out.println("Gestión de usuarios");
-                    // MenuUsuarios.mostrar(sc);
+                    MenuUsuarios.mostrar(sc);
                     break;
 
                 case 3:
