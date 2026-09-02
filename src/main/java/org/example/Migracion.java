@@ -42,19 +42,20 @@ public class Migracion {
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  mensaje TEXT NOT NULL," +
                             "  imagen_url VARCHAR(255)," +
-                            "  fecha_publicacion DATE NOT NULL," +
-                            "  categoria VARCHAR(30) NOT NULL" +
+                            "  fecha_publicacion DATE NOT NULL" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS mensaje (" +
                             "  id INT PRIMARY KEY," +
-                            "  FOREIGN KEY (id) REFERENCES publicacion(id)" +
+                            "  categoria VARCHAR(50) NOT NULL," +
+                            "  FOREIGN KEY (id) REFERENCES publicacion(id) ON DELETE CASCADE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS duda (" +
                             "  id INT PRIMARY KEY," +
                             "  estado VARCHAR(20) NOT NULL," +
-                            "  FOREIGN KEY (id) REFERENCES publicacion(id)" +
+                            "  categoria VARCHAR(50) NOT NULL," +
+                            "  FOREIGN KEY (id) REFERENCES publicacion(id) ON DELETE CASCADE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS comentario (" +
@@ -67,11 +68,11 @@ public class Migracion {
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS material (" +
-                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "  id INT PRIMARY KEY," +
                             "  archivo_url VARCHAR(255) NOT NULL," +
-                            "  tipo VARCHAR(20) NOT NULL," +
-                            "  fecha DATE NOT NULL," +
-                            "  docente VARCHAR(100) NOT NULL" +
+                            "  tipo_material VARCHAR(50) NOT NULL," +
+                            "  tipo_archivo VARCHAR(50) NOT NULL," +
+                            "  FOREIGN KEY (id) REFERENCES publicacion(id) ON DELETE CASCADE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS notificacion (" +
