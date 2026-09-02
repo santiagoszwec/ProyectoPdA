@@ -5,6 +5,7 @@ import org.example.DAOS.TemaDAO;
 import org.example.Modelos.Curso;
 import org.example.Modelos.Tema;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuCursos {
@@ -31,7 +32,7 @@ public class MenuCursos {
                     break;
 
                 case 2:
-                    System.out.println("Listar cursos");
+                    listarCursos();
                     break;
 
                 case 3:
@@ -39,15 +40,12 @@ public class MenuCursos {
                     break;
 
                 case 4:
-                    System.out.println("Eliminar curso");
+                    eliminarCurso(sc);
                     break;
 
                 case 5:
                     System.out.println("Volviendo al menú administrador...");
                     break;
-
-                default:
-                    System.out.println("Opción inválida.");
             }
 
         } while (opcion != 0);
@@ -110,5 +108,58 @@ public class MenuCursos {
             respuesta = sc.nextLine();
 
         } while (respuesta.equalsIgnoreCase("S"));
+    }
+    private static void listarCursos() {
+
+        System.out.println("\n===== LISTA DE CURSOS =====");
+
+        List<Curso> cursos = CursoDAO.listarTodos();
+
+        if (cursos.isEmpty()) {
+            System.out.println("No hay cursos registrados.");
+            return;
+        }
+
+        for (Curso curso : cursos) {
+            System.out.println(
+                    "ID: " + curso.getId() +
+                            " | Nombre: " + curso.getNombre() +
+                            " | Semestre: " + curso.getSemestre() +
+                            " | Año: " + curso.getAnio() +
+                            " | Créditos: " + curso.getCreditos()
+            );
+        }
+    }
+    private static void eliminarCurso(Scanner sc) {
+
+        System.out.println("\n===== ELIMINAR CURSO =====");
+
+        List<Curso> cursos = CursoDAO.listarTodos();
+
+        if (cursos.isEmpty()) {
+            System.out.println("No hay cursos registrados.");
+            return;
+        }
+
+        System.out.println("\nCursos disponibles:");
+
+        for (Curso curso : cursos) {
+            System.out.println(
+                    "ID: " + curso.getId() +
+                            " | Nombre: " + curso.getNombre() +
+                            " | Semestre: " + curso.getSemestre() +
+                            " | Año: " + curso.getAnio());
+        }
+
+        System.out.print("Ingrese el ID del curso a eliminar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        boolean eliminado = CursoDAO.eliminar(id);
+
+        if (eliminado) {
+            System.out.println("Curso eliminado correctamente.");
+        } else {
+            System.out.println("No se encontró ningún curso con ese ID.");
+        }
     }
 }

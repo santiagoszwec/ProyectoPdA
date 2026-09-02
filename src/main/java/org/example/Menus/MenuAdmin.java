@@ -52,9 +52,6 @@ public class MenuAdmin {
                 case 6:
                     System.out.println("Sesión cerrada.");
                     break;
-
-                default:
-                    System.out.println("Opción inválida.");
             }
 
         } while (opcion != 0);
