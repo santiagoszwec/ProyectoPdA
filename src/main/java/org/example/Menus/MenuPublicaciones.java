@@ -46,4 +46,30 @@ public class MenuPublicaciones {
 
         } while (opcion != 0);
     }
+
+
+
+    public static void crearPublicacion(Scanner sc){
+
+        System.out.println("\n===== CREAR PUBLICACION =====");
+
+        //el sistema valida que el mensaje no este vacio
+        System.out.println("Ingrese mensaje: ");
+        String mensaje = sc.nextLine();
+
+        //sistema pregunta si quiere ingresar una imagen, es opcional
+        System.out.println("Ingrese URL de la imagen: ");
+        String imagenURL = sc.nextLine();
+
+        System.out.println("La publicacion corresponde a un material? S/N ");
+        String respuesta = sc.nextLine();
+
+        if (respuesta.equalsIgnoreCase("S")) {
+            System.out.println("Ingrese URL del archivo: ");
+            String materialURL = sc.nextLine();
+            //tipo material ENUM
+            //tipo Archivo ENUM
+
+        }
+    }
 }
