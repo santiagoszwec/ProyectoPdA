@@ -251,18 +251,18 @@ public class MenuCursos {
             }
         } while (true);
 
-        String creditosInput;
+        String creditos;
         do {
             System.out.print("Ingrese nuevos creditos, enter para mantener: ");
-            creditosInput = sc.nextLine();
+            creditos = sc.nextLine();
 
-            if (creditosInput.isBlank()) {
+            if (creditos.isBlank()) {
                 break;
             }
 
-            int creditosNum = Integer.parseInt(creditosInput);
-            if (creditosNum >= 1 && creditosNum <= 20) {
-                cursoTemp.setCreditos(creditosNum);
+            int creditosNuevos = Integer.parseInt(creditos);
+            if (creditosNuevos >= 1 && creditosNuevos <= 20) {
+                cursoTemp.setCreditos(creditosNuevos);
                 break;
             } else {
                 System.out.println("Cantidad de créditos inválidos");
