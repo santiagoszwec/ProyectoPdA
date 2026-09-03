@@ -1,6 +1,8 @@
 package org.example.Menus;
 
+import org.example.DAOS.CursoDAO;
 import org.example.DAOS.UsuarioDAO;
+import org.example.Modelos.Curso;
 import org.example.Modelos.Usuario;
 
 import java.util.List;
@@ -36,7 +38,7 @@ public class MenuUsuarios {
                     break;
 
                 case 4:
-
+                    eliminarUsuario(sc);
                     break;
 
                 case 0:
@@ -148,5 +150,57 @@ public class MenuUsuarios {
                         " | Año: " + usuario.getAnioDeGeneracion() +
                         " | Rol: " + usuario.getRol()
         );
+    }
+    private static void eliminarUsuario(Scanner sc) {
+
+        System.out.println("\n===== ELIMINAR USUARIO =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }
+
+        System.out.println("\nUsuarios disponibles:");
+
+        for (Usuario usuario : usuarios) {
+            System.out.println(usuario);
+        }
+
+        System.out.print("\nIngrese el ID del usuario a eliminar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Usuario usuarioSeleccionado = null;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario con ese ID.");
+            return;
+        }
+
+        System.out.println("\nUsaurio seleccionado: " + usuarioSeleccionado.getNombre());
+
+        System.out.print("¿Está seguro de que desea eliminar este usuario? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean eliminado = UsuarioDAO.desactivar(id);
+
+        if (eliminado) {
+            System.out.println("Usuario eliminado correctamente.");
+        } else {
+            System.out.println("No se pudo eliminar el usuario.");
+        }
     }
 }

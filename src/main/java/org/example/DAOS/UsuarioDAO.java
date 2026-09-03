@@ -62,6 +62,38 @@ public class UsuarioDAO {
         }
     }
 
+    public static List<Usuario> listarActivos() {
+        try {
+            Connection conexion = ConexionDB.obtenerConexion();
+
+            String sql = "SELECT * FROM usuario WHERE activo = TRUE ORDER BY nombre";
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            List<Usuario> retorno = new ArrayList<>();
+
+            while (filas.next()) {
+                Usuario usuario = new Usuario(
+                        filas.getInt("id"),
+                        filas.getString("nombre"),
+                        filas.getString("correo"),
+                        filas.getInt("anio_de_generacion"),
+                        TipoRol.valueOf(filas.getString("rol")),
+                        filas.getString("contrasenia"),
+                        filas.getBoolean("activo")
+                );
+
+                retorno.add(usuario);
+            }
+
+            return retorno;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static boolean actualizar(Usuario usuario) {
         String sql = "UPDATE usuario SET nombre = ?, correo = ?, anio_de_generacion = ?, rol = ?, contrasenia = ? WHERE id = ?";
         try {
