@@ -19,13 +19,12 @@ public class PublicacionDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "Insert into publicaciones (mensaje, imagenURL, fechaPublicacion, categoria) values (?,?,?,?)";
+            String sql = "Insert into publicaciones (mensaje, imagenURL, fechaPublicacion) values (?,?,?)";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             sentencia.setString(1, publicacion.getMensaje());
             sentencia.setString(2, publicacion.getImagenUrl());
             sentencia.setObject(3, publicacion.getFechaPublicacion());
-            sentencia.setObject(4, publicacion.getCategoria());
 
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -37,24 +36,26 @@ public class PublicacionDAO {
     }
 
     public static List<Publicacion> listarTodos() {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM publicaciones order by fechaPublicacion";
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        String sql = "SELECT * FROM publicacion ORDER BY fecha_publicacion";
 
-            ResultSet filas = sentencia.executeQuery();
+        try (
+                Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql);
+                ResultSet filas = sentencia.executeQuery()) {
 
             List<Publicacion> retorno = new ArrayList<>();
 
             while (filas.next()) {
+
                 int id = filas.getInt("id");
                 String mensaje = filas.getString("mensaje");
-                String imagenURL = filas.getString("imagenURL");
-                LocalDate fechaPublicacion = (LocalDate) filas.getObject("fecha");
-                TipoCategoria categoria = (TipoCategoria) filas.getObject("categoria");
+                String imagenUrl = filas.getString("imagen_url");
 
-                Publicacion publicacion = new Publicacion(id, mensaje, imagenURL, fechaPublicacion, categoria);
+                LocalDate fechaPublicacion =
+                        filas.getObject("fecha_publicacion", LocalDate.class);
+
+                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion);
 
                 retorno.add(publicacion);
             }
@@ -67,7 +68,7 @@ public class PublicacionDAO {
     }
 
     public static boolean actualizar(Publicacion publicacion) {
-        String sql = "UPDATE publicaciones SET mensaje = ?, imagenURL = ?, fecha = ?, categoria = ? WHERE id= ?";
+        String sql = "UPDATE publicacion SET mensaje = ?, imagenURL = ?, fecha = ? WHERE id= ?";
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -75,8 +76,6 @@ public class PublicacionDAO {
             sentencia.setString(1, publicacion.getMensaje());
             sentencia.setString(2, publicacion.getImagenUrl());
             sentencia.setObject(3, publicacion.getFechaPublicacion());
-            sentencia.setObject(4, publicacion.getCategoria());
-
             int filasAfectadas = sentencia.executeUpdate();
 
             return filasAfectadas == 1;
@@ -89,7 +88,7 @@ public class PublicacionDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM publicaciones WHERE id = ? ";
+            String sql = "DELETE FROM publicacion WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 

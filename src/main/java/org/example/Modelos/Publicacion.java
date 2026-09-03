@@ -10,17 +10,15 @@ public class Publicacion {
     private String mensaje;
     private String imagenUrl;
     private LocalDate fechaPublicacion;
-    private TipoCategoria categoria;
 
     public Publicacion() {
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
-        this.categoria = categoria;
     }
 
     public int getId() {
@@ -55,13 +53,7 @@ public class Publicacion {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public TipoCategoria getCategoria() {
-        return categoria;
-    }
 
-    public void setCategoria(TipoCategoria categoria) {
-        this.categoria = categoria;
-    }
 
     @Override
     public String toString() {
@@ -70,7 +62,6 @@ public class Publicacion {
                 ", mensaje='" + mensaje + '\'' +
                 ", imagenUrl='" + imagenUrl + '\'' +
                 ", fechaPublicacion=" + fechaPublicacion +
-                ", categoria=" + categoria +
                 '}';
     }
 }
