@@ -98,7 +98,7 @@ public class UsuarioDAO {
             throw new RuntimeException(e);
         }
     }
-
+    //pruebasss
     public static Usuario iniciarSesion(String correo, String contrasenia){
         try{
             Connection conexion = ConexionDB.obtenerConexion();
