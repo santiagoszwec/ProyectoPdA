@@ -18,7 +18,7 @@ public class MenuAdmin {
             System.out.println("3. Gestión de materiales");
             System.out.println("4. Gestión de publicaciones");
             System.out.println("5. Gestión de reportes");
-            System.out.println("0. Cerrar sesión");
+            System.out.println("6. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             opcion = Integer.parseInt(sc.nextLine());
@@ -41,7 +41,7 @@ public class MenuAdmin {
 
                 case 4:
                     System.out.println("Gestión de publicaciones");
-                    // MenuPublicaciones.mostrar(sc);
+                    MenuPublicaciones.mostrar(sc);
                     break;
 
                 case 5:
