@@ -15,11 +15,12 @@ public class Publicacion {
     public Publicacion() {
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
+        this.dadaDeBaja = dadaDeBaja;
     }
 
     public int getId() {
@@ -54,6 +55,13 @@ public class Publicacion {
         this.fechaPublicacion = fechaPublicacion;
     }
 
+    public boolean isDadaDeBaja() {
+        return dadaDeBaja;
+    }
+
+    public void setDadaDeBaja(boolean dadaDeBaja) {
+        this.dadaDeBaja = dadaDeBaja;
+    }
 
     @Override
     public String toString() {

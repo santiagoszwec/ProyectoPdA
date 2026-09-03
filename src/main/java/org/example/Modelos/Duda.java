@@ -9,13 +9,15 @@ public class Duda extends Publicacion {
     private EstadoDuda estado;
     private TipoCategoria categoria;
 
-    public Duda(EstadoDuda estado) {
+    public Duda(EstadoDuda estado, TipoCategoria categoria) {
         this.estado = estado;
+        this.categoria = categoria;
     }
 
-    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria, EstadoDuda estado) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, categoria);
+    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, EstadoDuda estado, TipoCategoria categoria) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
         this.estado = estado;
+        this.categoria = categoria;
     }
 
     public EstadoDuda getEstado() {
@@ -26,12 +28,10 @@ public class Duda extends Publicacion {
         this.estado = estado;
     }
 
-    @Override
     public TipoCategoria getCategoria() {
         return categoria;
     }
 
-    @Override
     public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;
     }

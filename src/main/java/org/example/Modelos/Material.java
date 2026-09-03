@@ -17,8 +17,11 @@ public class Material extends Publicacion {
         this.tipoArchivo = tipoArchivo;
     }
 
-    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, categoria);
+    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion,
+            boolean dadaDeBaja,
+            String archivoUrl,
+            TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
+        super (id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
         this.archivoUrl = archivoUrl;
         this.tipoMaterial = tipoMaterial;
         this.tipoArchivo = tipoArchivo;

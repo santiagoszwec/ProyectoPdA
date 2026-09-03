@@ -12,17 +12,14 @@ public class Mensaje extends Publicacion {
         this.categoria = categoria;
     }
 
-    public Mensaje(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria, TipoCategoria categoria1) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, categoria);
-        this.categoria = categoria1;
+    public Mensaje(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, TipoCategoria categoria) {super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
+        this.categoria = categoria;
     }
 
-    @Override
     public TipoCategoria getCategoria() {
         return categoria;
     }
 
-    @Override
     public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;
     }
