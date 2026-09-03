@@ -59,7 +59,11 @@ public class Migracion {
                             "  mensaje TEXT NOT NULL," +
                             "  imagen_url VARCHAR(255)," +
                             "  fecha_publicacion DATE NOT NULL," +
+                            "  usuario_id INT NOT NULL," +
+                            "  publicacion_id INT NOT NULL," +
                             "  comentario_padre_id INT," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id) ON DELETE CASCADE," +
                             "  FOREIGN KEY (comentario_padre_id) REFERENCES comentario(id)" +
                             ")",
 
