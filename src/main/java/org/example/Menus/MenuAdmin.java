@@ -2,12 +2,13 @@ package org.example.Menus;
 
 import org.example.DAOS.CursoDAO;
 import org.example.Modelos.Curso;
+import org.example.Modelos.Usuario;
 
 import java.util.Scanner;
 
 public class MenuAdmin {
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -18,7 +19,8 @@ public class MenuAdmin {
             System.out.println("3. Gestión de materiales");
             System.out.println("4. Gestión de publicaciones");
             System.out.println("5. Gestión de reportes");
-            System.out.println("6. Cerrar sesión");
+            System.out.println("6. Gestión de dudas y comentarios");
+            System.out.println("7. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             opcion = Integer.parseInt(sc.nextLine());
@@ -50,10 +52,14 @@ public class MenuAdmin {
                     break;
 
                 case 6:
+                    MenuDudas.mostrar(sc, usuarioActual);
+                    break;
+
+                case 7:
                     System.out.println("Sesión cerrada.");
                     break;
             }
 
-        } while (opcion != 0);
+        } while (opcion != 7);
     }
 }

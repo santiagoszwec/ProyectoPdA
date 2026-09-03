@@ -32,9 +32,9 @@ public class Main {
         System.out.print("Bienvenido!");
 
         if (usuario.getRol() == TipoRol.Admin) {
-            MenuAdmin.mostrar(sc);
+            MenuAdmin.mostrar(sc, usuario);
         } else if (usuario.getRol() == TipoRol.Estudiante) {
-            //MenuEstudiante.mostrar(sc);
+            MenuEstudiante.mostrar(sc, usuario);
         }
 
     }
