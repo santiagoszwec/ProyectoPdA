@@ -11,16 +11,22 @@ public class Publicacion {
     private String imagenUrl;
     private LocalDate fechaPublicacion;
     private TipoCategoria categoria;
+    private boolean dadaDeBaja;
 
     public Publicacion() {
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria, boolean dadaDeBaja) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
         this.categoria = categoria;
+        this.dadaDeBaja = dadaDeBaja;
+    }
+
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
+        this(id, mensaje, imagenUrl, fechaPublicacion, categoria, false);
     }
 
     public int getId() {
@@ -61,6 +67,14 @@ public class Publicacion {
 
     public void setCategoria(TipoCategoria categoria) {
         this.categoria = categoria;
+    }
+
+    public boolean isDadaDeBaja() {
+        return dadaDeBaja;
+    }
+
+    public void setDadaDeBaja(boolean dadaDeBaja) {
+        this.dadaDeBaja = dadaDeBaja;
     }
 
     @Override
