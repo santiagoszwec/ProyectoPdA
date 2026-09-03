@@ -41,23 +41,18 @@ public class CursoDAO {
             throw new RuntimeException(e);
         }
     }
-    public static boolean eliminar(int id) {
+    public static boolean desactivar(int id) {
 
-        try (Connection conexion = ConexionDB.obtenerConexion()) {
-            String sqlTemas = "DELETE FROM tema WHERE curso_id = ?";
+        String sql = "UPDATE curso SET activo = FALSE WHERE id = ?";
 
-            PreparedStatement eliminarTemas = conexion.prepareStatement(sqlTemas);
+        try (
+                Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)
+        ) {
 
-            eliminarTemas.setInt(1, id);
-            eliminarTemas.executeUpdate();
+            sentencia.setInt(1, id);
 
-            String sqlCurso = "DELETE FROM curso WHERE id = ?";
-
-            PreparedStatement eliminarCurso = conexion.prepareStatement(sqlCurso);
-
-            eliminarCurso.setInt(1, id);
-
-            return eliminarCurso.executeUpdate() == 1;
+            return sentencia.executeUpdate() == 1;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -65,7 +60,7 @@ public class CursoDAO {
     }
     public static List<Curso> listarTodos() {
 
-        String sql = "SELECT * FROM curso ORDER BY id";
+        String sql = "SELECT * FROM curso WHERE activo = TRUE ORDER BY nombre";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
                 PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -81,7 +76,8 @@ public class CursoDAO {
                         resultado.getInt("semestre"),
                         resultado.getInt("anio"),
                         resultado.getInt("creditos"),
-                        resultado.getString("descripcion")
+                        resultado.getString("descripcion"),
+                        resultado.getBoolean("activo")
                 );
                 cursos.add(curso);
             }

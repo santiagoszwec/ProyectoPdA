@@ -8,15 +8,28 @@ public class Curso {
     private int anio;
     private int creditos;
     private String descripcion;
+    private boolean activo;
 
-    public Curso(int id, String nombre, int semestre, int anio, int creditos, String descripcion) {
+    // Constructor utilizado al obtener un curso desde la base de datos
+    public Curso(
+            int id,
+            String nombre,
+            int semestre,
+            int anio,
+            int creditos,
+            String descripcion,
+            boolean activo
+    ) {
         this.id = id;
         this.nombre = nombre;
         this.semestre = semestre;
         this.anio = anio;
         this.creditos = creditos;
         this.descripcion = descripcion;
+        this.activo = activo;
     }
+
+    // Constructor utilizado para crear un curso nuevo
     public Curso(
             String nombre,
             int semestre,
@@ -29,6 +42,7 @@ public class Curso {
         this.anio = anio;
         this.creditos = creditos;
         this.descripcion = descripcion;
+        this.activo = true;
     }
 
     public int getId() {
@@ -79,6 +93,14 @@ public class Curso {
         this.descripcion = descripcion;
     }
 
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     @Override
     public String toString() {
         return "Curso{" +
@@ -87,6 +109,8 @@ public class Curso {
                 ", semestre=" + semestre +
                 ", anio=" + anio +
                 ", creditos=" + creditos +
+                ", descripcion='" + descripcion + '\'' +
+                ", activo=" + activo +
                 '}';
     }
 }

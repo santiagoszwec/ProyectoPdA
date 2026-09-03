@@ -28,7 +28,8 @@ public class Migracion {
                             "  semestre INT NOT NULL," +
                             "  anio INT NOT NULL," +
                             "  creditos INT NOT NULL," +
-                            "  descripcion TEXT NOT NULL" +
+                            "  descripcion TEXT NOT NULL," +
+                            "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS tema (" +
@@ -100,7 +101,8 @@ public class Migracion {
                             "  resolucion TEXT," +
                             "  fecha_reporte DATE NOT NULL," +
                             "  fecha_resolucion DATE" +
-                            ")"
+                            ")",
+
             };
 
 

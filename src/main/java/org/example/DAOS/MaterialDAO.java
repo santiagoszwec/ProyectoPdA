@@ -49,8 +49,7 @@ public class MaterialDAO {
 
                 int id = filas.getInt("id");
 
-                String archivoUrl =
-                        filas.getString("archivo_url");
+                String archivoUrl = filas.getString("archivo_url");
 
                 TipoMaterial tipoMaterial =
                         TipoMaterial.valueOf(filas.getString("tipo_material"));

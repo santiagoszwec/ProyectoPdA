@@ -151,15 +151,39 @@ public class MenuCursos {
                             " | Año: " + curso.getAnio());
         }
 
-        System.out.print("Ingrese el ID del curso a eliminar: ");
+        System.out.print("\nIngrese el ID del curso a eliminar: ");
         int id = Integer.parseInt(sc.nextLine());
 
-        boolean eliminado = CursoDAO.eliminar(id);
+        Curso cursoSeleccionado = null;
+
+        for (Curso curso : cursos) {
+            if (curso.getId() == id) {
+                cursoSeleccionado = curso;
+                break;
+            }
+        }
+
+        if (cursoSeleccionado == null) {
+            System.out.println("No se encontró ningún curso con ese ID.");
+            return;
+        }
+
+        System.out.println("\nCurso seleccionado: " + cursoSeleccionado.getNombre());
+
+        System.out.print("¿Está seguro de que desea eliminar este curso? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean eliminado = CursoDAO.desactivar(id);
 
         if (eliminado) {
             System.out.println("Curso eliminado correctamente.");
         } else {
-            System.out.println("No se encontró ningún curso con ese ID.");
+            System.out.println("No se pudo eliminar el curso.");
         }
     }
 }
