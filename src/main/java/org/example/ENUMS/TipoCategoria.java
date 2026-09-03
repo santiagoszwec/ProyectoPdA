@@ -5,6 +5,5 @@ public enum TipoCategoria {
     Ejercicio,
     Examen,
     Reunion,
-    Aclaracion
 
 }

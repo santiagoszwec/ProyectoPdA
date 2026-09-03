@@ -10,17 +10,17 @@ public class Publicacion {
     private String mensaje;
     private String imagenUrl;
     private LocalDate fechaPublicacion;
-    private TipoCategoria categoria;
+    private boolean dadaDeBaja;
 
     public Publicacion() {
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
-        this.categoria = categoria;
+        this.dadaDeBaja = dadaDeBaja;
     }
 
     public int getId() {
@@ -55,12 +55,12 @@ public class Publicacion {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public TipoCategoria getCategoria() {
-        return categoria;
+    public boolean isDadaDeBaja() {
+        return dadaDeBaja;
     }
 
-    public void setCategoria(TipoCategoria categoria) {
-        this.categoria = categoria;
+    public void setDadaDeBaja(boolean dadaDeBaja) {
+        this.dadaDeBaja = dadaDeBaja;
     }
 
     @Override
@@ -70,7 +70,6 @@ public class Publicacion {
                 ", mensaje='" + mensaje + '\'' +
                 ", imagenUrl='" + imagenUrl + '\'' +
                 ", fechaPublicacion=" + fechaPublicacion +
-                ", categoria=" + categoria +
                 '}';
     }
 }

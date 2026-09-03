@@ -16,7 +16,7 @@ public class UsuarioDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "Insert into usuarios (nombre, correo, anio_de_generacion, rol, contrasenia) values (?,?,?,?,?)";
+            String sql = "INSERT INTO usuario (nombre, correo, anio_de_generacion, rol, contrasenia) VALUES (?,?,?,?,?)";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             sentencia.setString(1, usuario.getNombre());
@@ -62,7 +62,7 @@ public class UsuarioDAO {
     }
 
     public static boolean actualizar(Usuario usuario) {
-        String sql = "UPDATE Usuario SET nombre = ?, correo = ?, anio_de_generacion = ?, rol = ?, contrasenia = ? WHERE id= ?"; //FALTA TERMINAR
+        String sql = "UPDATE usuario SET nombre = ?, correo = ?, anio_de_generacion = ?, rol = ?, contrasenia = ? WHERE id = ?";
         try {
             Connection conexion = ConexionDB.obtenerConexion();
             PreparedStatement sentencia = conexion.prepareStatement(sql);
@@ -72,6 +72,7 @@ public class UsuarioDAO {
             sentencia.setInt(3, usuario.getAnioDeGeneracion());
             sentencia.setObject(4, usuario.getRol());
             sentencia.setString(5, usuario.getContrasenia());
+            sentencia.setInt(6, usuario.getId());
 
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -81,11 +82,11 @@ public class UsuarioDAO {
         }
     }
 
-    public boolean eliminar(int id) {
+    public static boolean eliminar(int id) {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM Usuario WHERE id = ? ";
+            String sql = "DELETE FROM usuario WHERE id = ? ";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
@@ -102,7 +103,7 @@ public class UsuarioDAO {
         try{
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM Usuario WHERE correo = ? AND contrasenia = ?";
+            String sql = "SELECT * FROM usuario WHERE correo = ? AND contrasenia = ?";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
@@ -129,6 +130,23 @@ public class UsuarioDAO {
         }
     }
 
+    public static boolean cambiarRol(int userId, TipoRol nuevoRol) {
+        try {
+            Connection conexion = ConexionDB.obtenerConexion();
 
+
+            String sql = "UPDATE usuario SET rol = ? WHERE id = ?";
+
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+
+            sentencia.setObject(1, nuevoRol);
+
+            sentencia.setInt(2, userId);
+
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

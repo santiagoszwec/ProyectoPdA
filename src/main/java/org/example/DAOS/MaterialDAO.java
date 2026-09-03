@@ -5,27 +5,27 @@ import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoMaterial;
 import org.example.Modelos.Material;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MaterialDAO {
+
     public static boolean crear(Material material) {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "Insert into Materiales (archivoURL, tipo, fecha, docente) values (?,?,?,?)";
+        String sql = "INSERT INTO material (id, archivo_url, tipo_material, tipo_archivo) VALUES (?, ?, ?, ?)";
 
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-            sentencia.setObject(1, material.getArchivoUrl());
-            sentencia.setObject(2, material.getTipo());
-            sentencia.setObject(3, material.getFecha());
-            sentencia.setString(4, material.getDocente());
+        try (Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, material.getId());
+            sentencia.setString(2, material.getArchivoUrl());
+            sentencia.setString(3, material.getTipoMaterial().toString());
+            sentencia.setString(4, material.getTipoArchivo().toString());
+
             int filasAfectadas = sentencia.executeUpdate();
 
             return filasAfectadas == 1;
@@ -36,24 +36,28 @@ public class MaterialDAO {
     }
 
     public static List<Material> listarTodos() {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
 
-                String sql = "SELECT * FROM Materiales order by fecha";
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        String sql = "SELECT * FROM material";
 
-            ResultSet filas = sentencia.executeQuery();
+        try (Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql);
+                ResultSet filas = sentencia.executeQuery()) {
 
             List<Material> retorno = new ArrayList<>();
 
             while (filas.next()) {
-                int id = filas.getInt("id");
-                TipoArchivo archivoUrl = (TipoArchivo) filas.getObject("archivoURL");
-                TipoMaterial tipo = (TipoMaterial) filas.getObject("tipo");
-                LocalDate fecha = (LocalDate) filas.getObject("fecha");
-                String docente = filas.getString("docente");
 
-                Material material = new Material(id, archivoUrl, tipo, fecha, docente);
+                int id = filas.getInt("id");
+
+                String archivoUrl = filas.getString("archivo_url");
+
+                TipoMaterial tipoMaterial =
+                        TipoMaterial.valueOf(filas.getString("tipo_material"));
+
+                TipoArchivo tipoArchivo =
+                        TipoArchivo.valueOf(filas.getString("tipo_archivo"));
+
+                Material material = new Material(archivoUrl, tipoMaterial, tipoArchivo);
 
                 retorno.add(material);
             }
@@ -66,31 +70,32 @@ public class MaterialDAO {
     }
 
     public static boolean actualizar(Material material) {
-        String sql = "UPDATE Materiales SET archivoUrl = ?, tipo = ?, fecha = ?, docente = ? WHERE id= ?";
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
 
-            sentencia.setObject(1, material.getArchivoUrl());
-            sentencia.setObject(2, material.getTipo());
-            sentencia.setObject(3, material.getFecha());
-            sentencia.setObject(4, material.getDocente());
+        String sql = "UPDATE material SET archivo_url = ?, tipo_material = ?, tipo_archivo = ? WHERE id = ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, material.getArchivoUrl());
+            sentencia.setString(2, material.getTipoMaterial().toString());
+            sentencia.setString(3, material.getTipoArchivo().toString());
+            sentencia.setInt(4, material.getId());
 
             int filasAfectadas = sentencia.executeUpdate();
 
             return filasAfectadas == 1;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public boolean eliminar(int id) {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
+    public static boolean eliminar(int id) {
 
-            String sql = "DELETE FROM Materiales WHERE id = ? ";
+        String sql = "DELETE FROM material WHERE id = ?";
 
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        try (Connection conexion = ConexionDB.obtenerConexion();
+                PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
             sentencia.setInt(1, id);
 
