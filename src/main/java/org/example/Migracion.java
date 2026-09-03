@@ -43,7 +43,8 @@ public class Migracion {
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  mensaje TEXT NOT NULL," +
                             "  imagen_url VARCHAR(255)," +
-                            "  fecha_publicacion DATE NOT NULL" +
+                            "  fecha_publicacion DATE NOT NULL," +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS mensaje (" +

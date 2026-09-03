@@ -10,11 +10,12 @@ public class Publicacion {
     private String mensaje;
     private String imagenUrl;
     private LocalDate fechaPublicacion;
+    private boolean dadaDeBaja;
 
     public Publicacion() {
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, TipoCategoria categoria) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
@@ -52,7 +53,6 @@ public class Publicacion {
     public void setFechaPublicacion(LocalDate fechaPublicacion) {
         this.fechaPublicacion = fechaPublicacion;
     }
-
 
 
     @Override
