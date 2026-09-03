@@ -91,4 +91,23 @@ public class CursoDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public static boolean actualizar(Curso curso){
+        String sql = "UPDATE curso SET nombre= ?, semestre = ?, anio = ?, creditos = ?, descripcion = ? WHERE id = ?";
+
+        try{
+            Connection conexion = ConexionDB.obtenerConexion();
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+            sentencia.setString(1, curso.getNombre());
+            sentencia.setInt(2, curso.getSemestre());
+            sentencia.setInt(3, curso.getAnio());
+            sentencia.setInt(4, curso.getCreditos());
+            sentencia.setString(5, curso.getDescripcion());
+            sentencia.setInt(6, curso.getId());
+
+            return sentencia.executeUpdate() == 1;
+        }catch(Exception e){
+            throw new RuntimeException(e);
+        }
+    }
 }

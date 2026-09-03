@@ -49,7 +49,7 @@ public class MenuAdmin {
                     // MenuReportes.mostrar(sc);
                     break;
 
-                case 6:
+                case 0:
                     System.out.println("Sesión cerrada.");
                     break;
             }
