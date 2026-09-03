@@ -298,6 +298,6 @@ public class MenuCursos {
         } else {
             System.out.println("No se encontró ningún curso con ese ID.");
         }
-        //git push origin angie
+
     }
 }
