@@ -51,8 +51,9 @@ public class UsuarioDAO {
                 int anioGeneracion = filas.getInt("anio_de_generacion");
                 TipoRol rol = TipoRol.valueOf(filas.getString("rol"));
                 String contrasenia = filas.getString("contrasenia");
+                boolean activo = filas.getBoolean("activo");
 
-                Usuario usuario = new Usuario(id, nombre, correo, anioGeneracion, rol, contrasenia);
+                Usuario usuario = new Usuario(id, nombre, correo, anioGeneracion, rol, contrasenia, activo);
                 retorno.add(usuario);
             }
             return retorno;
@@ -82,11 +83,11 @@ public class UsuarioDAO {
         }
     }
 
-    public static boolean eliminar(int id) {
+    public static boolean desactivar(int id) {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "DELETE FROM usuario WHERE id = ? ";
+            String sql = "UPDATE usuario SET activo = FALSE WHERE id = ?";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
@@ -103,8 +104,7 @@ public class UsuarioDAO {
         try{
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM usuario WHERE correo = ? AND contrasenia = ?";
-
+            String sql = "SELECT * FROM usuario WHERE correo = ? AND contrasenia = ? AND activo = TRUE";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             sentencia.setString(1, correo);
@@ -112,14 +112,16 @@ public class UsuarioDAO {
 
             ResultSet fila = sentencia.executeQuery();
             if(fila.next()){
+                boolean activo = fila.getBoolean("activo");
+
                 return new Usuario(
                         fila.getInt("id"),
                         fila.getString("nombre"),
                         fila.getString("correo"),
                         fila.getInt("anio_de_generacion"),
                         TipoRol.valueOf(fila.getString("rol")),
-                        fila.getString("contrasenia")
-                );
+                        fila.getString("contrasenia"),
+                        activo);
             }
             else{
                 return null;

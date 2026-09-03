@@ -19,7 +19,8 @@ public class Migracion {
                             "  correo VARCHAR(100) NOT NULL," +
                             "  anio_de_generacion INT NOT NULL," +
                             "  rol VARCHAR(20) NOT NULL," +
-                            "  contrasenia VARCHAR(255) NOT NULL" +
+                            "  contrasenia VARCHAR(255) NOT NULL," +
+                            "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS curso (" +
@@ -30,13 +31,6 @@ public class Migracion {
                             "  creditos INT NOT NULL," +
                             "  descripcion TEXT NOT NULL," +
                             "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
-                            ")",
-
-                    "CREATE TABLE IF NOT EXISTS tema (" +
-                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
-                            "  curso_id INT NOT NULL," +
-                            "  nombre VARCHAR(100) NOT NULL," +
-                            "  FOREIGN KEY (curso_id) REFERENCES curso(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS publicacion (" +
@@ -74,6 +68,7 @@ public class Migracion {
                             "  archivo_url VARCHAR(255) NOT NULL," +
                             "  tipo_material VARCHAR(50) NOT NULL," +
                             "  tipo_archivo VARCHAR(50) NOT NULL," +
+                            "  tema VARCHAR(100) NOT NULL," +
                             "  FOREIGN KEY (id) REFERENCES publicacion(id) ON DELETE CASCADE" +
                             ")",
 

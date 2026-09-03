@@ -1,9 +1,7 @@
 package org.example.Menus;
 
 import org.example.DAOS.CursoDAO;
-import org.example.DAOS.TemaDAO;
 import org.example.Modelos.Curso;
-import org.example.Modelos.Tema;
 
 import java.util.List;
 import java.util.Scanner;
@@ -36,7 +34,6 @@ public class MenuCursos {
                     break;
 
                 case 3:
-                    System.out.println("Modificar curso");
                     break;
 
                 case 4:
@@ -76,38 +73,10 @@ public class MenuCursos {
 
         if (cursoId > 0) {
             System.out.println("\nCurso creado correctamente.");
-            System.out.print("¿Desea agregar temas de estudio? (S/N): ");
-            String respuesta = sc.nextLine();
 
-            if (respuesta.equalsIgnoreCase("S")) {
-                agregarTemas(sc, cursoId);
-            }
         } else {
             System.out.println("\nNo se pudo crear el curso.");
         }
-    }
-    private static void agregarTemas(Scanner sc, int cursoId) {
-
-        String respuesta;
-
-        do {
-            System.out.print("Nombre del tema: ");
-            String nombreTema = sc.nextLine();
-
-            Tema tema = new Tema(cursoId, nombreTema);
-
-            boolean creado = TemaDAO.crear(tema);
-
-            if (creado) {
-                System.out.println("Tema agregado correctamente.");
-            } else {
-                System.out.println("No se pudo agregar el tema.");
-            }
-
-            System.out.print("¿Desea agregar otro tema? (S/N): ");
-            respuesta = sc.nextLine();
-
-        } while (respuesta.equalsIgnoreCase("S"));
     }
     private static void listarCursos() {
 
