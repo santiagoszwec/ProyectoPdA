@@ -48,7 +48,7 @@ public class MenuAdmin {
 
                 case 5:
                     System.out.println("Gestión de reportes");
-                    // MenuReportes.mostrar(sc);
+                    MenuReportes.mostrar(sc);
                     break;
 
                 case 6:

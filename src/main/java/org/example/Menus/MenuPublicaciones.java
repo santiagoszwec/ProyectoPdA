@@ -5,7 +5,6 @@ import org.example.Modelos.Publicacion;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class MenuPublicaciones {
 
     public static void mostrar(Scanner sc) {
@@ -38,7 +37,7 @@ public class MenuPublicaciones {
                     break;
 
                 case 4:
-
+                    darDeBajaPublicacion(sc);
                     break;
 
                 case 0:
@@ -70,7 +69,7 @@ public class MenuPublicaciones {
             switch (opcion) {
 
                 case 1:
-                    mostrarPublicaciones(PublicacionDAO.listarActivas());
+                    menuListarPublicaciones(sc);
                     break;
 
                 case 2:
@@ -207,6 +206,7 @@ public class MenuPublicaciones {
 
                 default:
                     System.out.println("Opción inválida.");
+                    System.out.println("Opción inválida.");
             }
 
         } while (opcion != 0);
@@ -298,10 +298,8 @@ public class MenuPublicaciones {
 
                 case 0:
                     break;
-
-                default:
-                    System.out.println("Opción inválida.");
             }
+
         } while (opcion != 0);
     }
 
@@ -375,5 +373,47 @@ public class MenuPublicaciones {
         mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorArchivo(tipoArchivo));
     }
 }
+private static void darDeBajaPublicacion(Scanner sc) {
 
+    List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
 
+    if (publicaciones.isEmpty()) {
+        System.out.println("No hay publicaciones activas para dar de baja.");
+        return;
+    }
+
+    System.out.println("\n===== PUBLICACIONES ACTIVAS =====");
+
+    for (Publicacion publicacion : publicaciones) {
+        System.out.println("[" + publicacion.getId() + "] " + publicacion.getMensaje());
+    }
+
+    System.out.print("\nIngrese el ID de la publicación a dar de baja: ");
+    int id = Integer.parseInt(sc.nextLine());
+
+    Publicacion publicacion = publicaciones.stream()
+            .filter(p -> p.getId() == id)
+            .findFirst()
+            .orElse(null);
+
+    if (publicacion == null) {
+        System.out.println("No se encontró una publicación con ese ID.");
+        return;
+    }
+
+    System.out.println("Publicación seleccionada: " + publicacion.getMensaje());
+
+    System.out.print("¿Confirma que desea dar de baja esta publicación? (S/N): ");
+    String confirmacion = sc.nextLine();
+
+    if (!confirmacion.equalsIgnoreCase("S")) {
+        System.out.println("Operación cancelada.");
+        return;
+    }
+
+    boolean dadoDeBaja = PublicacionDAO.darDeBaja(id);
+
+    System.out.println(dadoDeBaja
+            ? "Publicación dada de baja correctamente."
+            : "No se pudo dar de baja la publicación.");
+}

@@ -72,8 +72,9 @@ public class ComentarioDAO {
                 int usuarioId = filas.getInt("usuario_id");
                 int publicacionId = filas.getInt("publicacion_id");
                 Integer comentarioPadreId = (Integer) filas.getObject("comentario_padre_id");
+                boolean activa = filas.getBoolean("activa");
 
-                Comentario comentario = new Comentario(id, mensaje, imagenUrl, fechaPublicacion, usuarioId, publicacionId, comentarioPadreId);
+                Comentario comentario = new Comentario(id, mensaje, imagenUrl, fechaPublicacion, usuarioId, publicacionId, comentarioPadreId, activa);
                 retorno.add(comentario);
             }
 

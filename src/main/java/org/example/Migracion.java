@@ -38,7 +38,9 @@ public class Migracion {
                             "  mensaje TEXT NOT NULL," +
                             "  imagen_url VARCHAR(255)," +
                             "  fecha_publicacion DATE NOT NULL," +
-                            "  activa BOOLEAN NOT NULL DEFAULT TRUE" +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
+                            "  usuario_id INT," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS mensaje (" +
@@ -62,6 +64,7 @@ public class Migracion {
                             "  usuario_id INT NOT NULL," +
                             "  publicacion_id INT NOT NULL," +
                             "  comentario_padre_id INT," +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
                             "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
                             "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id) ON DELETE CASCADE," +
                             "  FOREIGN KEY (comentario_padre_id) REFERENCES comentario(id)" +
@@ -80,7 +83,9 @@ public class Migracion {
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  fecha DATE NOT NULL," +
                             "  tipo VARCHAR(20) NOT NULL," +
-                            "  mensaje TEXT NOT NULL" +
+                            "  mensaje TEXT NOT NULL," +
+                            "  usuario_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS progreso (" +
@@ -100,7 +105,9 @@ public class Migracion {
                             "  motivo TEXT NOT NULL," +
                             "  resolucion TEXT," +
                             "  fecha_reporte DATE NOT NULL," +
-                            "  fecha_resolucion DATE" +
+                            "  fecha_resolucion DATE," +
+                            "  publicacion_id INT NOT NULL," +
+                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)" +
                             ")",
 
             };
