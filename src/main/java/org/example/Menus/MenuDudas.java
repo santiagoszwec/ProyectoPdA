@@ -32,7 +32,7 @@ public class MenuDudas {
             switch (opcion) {
 
                 case 1:
-                    crearDuda(sc);
+                    crearDuda(sc, usuarioActual);
                     break;
 
                 case 2:
@@ -58,7 +58,7 @@ public class MenuDudas {
         } while (opcion != 0);
     }
 
-    private static void crearDuda(Scanner sc) {
+    private static void crearDuda(Scanner sc, Usuario usuarioActual) {
         System.out.print("Mensaje de la duda: ");
         String mensaje = sc.nextLine();
 
@@ -75,6 +75,7 @@ public class MenuDudas {
         duda.setMensaje(mensaje);
         duda.setImagenUrl(imagenUrl);
         duda.setFechaPublicacion(LocalDate.now());
+        duda.setUsuarioId(usuarioActual.getId());
 
         boolean creada = DudaDAO.crear(duda);
         System.out.println(creada ? "Duda creada con éxito." : "No se pudo crear la duda.");

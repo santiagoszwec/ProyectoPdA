@@ -19,7 +19,7 @@ public class DudaDAO {
     // Duda hereda de Publicacion por tabla dividida: primero se inserta en
     // "publicacion" (para obtener el id autogenerado) y luego en "duda" con ese mismo id.
     public static boolean crear(Duda duda) {
-        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion) VALUES (?,?,?)";
+        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id) VALUES (?,?,?,?)";
         String sqlDuda = "INSERT INTO duda (id, estado, categoria) VALUES (?,?,?)";
 
         try {
@@ -29,6 +29,7 @@ public class DudaDAO {
             sentenciaPublicacion.setString(1, duda.getMensaje());
             sentenciaPublicacion.setString(2, duda.getImagenUrl());
             sentenciaPublicacion.setObject(3, duda.getFechaPublicacion());
+            sentenciaPublicacion.setInt(4, duda.getUsuarioId());
             sentenciaPublicacion.executeUpdate();
 
             ResultSet generadas = sentenciaPublicacion.getGeneratedKeys();

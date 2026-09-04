@@ -4,6 +4,7 @@ public enum TipoNotificacion {
 
     Respuesta,
     Mensaje,
-    Duda
+    Duda,
+    Baja
 
 }
