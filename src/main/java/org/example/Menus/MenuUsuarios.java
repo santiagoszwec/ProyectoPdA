@@ -53,7 +53,7 @@ public class MenuUsuarios {
 
         System.out.println("\n===== USUARIOS REGISTRADOS =====");
 
-        List<Usuario> usuarios = UsuarioDAO.listarTodos();
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
 
         if (usuarios.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
@@ -84,7 +84,7 @@ public class MenuUsuarios {
 
         int opcion = Integer.parseInt(sc.nextLine());
 
-        List<Usuario> usuarios = UsuarioDAO.listarTodos();
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
 
         if (usuarios.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
@@ -148,8 +148,7 @@ public class MenuUsuarios {
                         " | Nombre: " + usuario.getNombre() +
                         " | Correo: " + usuario.getCorreo() +
                         " | Año: " + usuario.getAnioDeGeneracion() +
-                        " | Rol: " + usuario.getRol()
-        );
+                        " | Rol: " + usuario.getRol());
     }
     private static void eliminarUsuario(Scanner sc) {
 

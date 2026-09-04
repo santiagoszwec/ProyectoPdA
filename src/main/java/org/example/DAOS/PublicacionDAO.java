@@ -1,10 +1,8 @@
 package org.example.DAOS;
 
 import org.example.ConexionDB;
-import org.example.ENUMS.TipoCategoria;
-import org.example.ENUMS.TipoRol;
-import org.example.Modelos.Publicacion;
-import org.example.Modelos.Usuario;
+import org.example.ENUMS.*;
+import org.example.Modelos.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,7 +33,7 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarTodos() {
+    public static List<Publicacion> listarActivas() {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
@@ -53,7 +51,7 @@ public class PublicacionDAO {
                 LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
                 boolean dadaDeBaja = filas.getBoolean("activa");
 
-                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion,!dadaDeBaja);
+                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
 
                 retorno.add(publicacion);
             }
@@ -79,23 +77,6 @@ public class PublicacionDAO {
             int filasAfectadas = sentencia.executeUpdate();
 
             return filasAfectadas == 1;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean eliminar(int id) {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
-
-            String sql = "DELETE FROM publicacion WHERE id = ? ";
-
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-
-            sentencia.setInt(1, id);
-
-            return sentencia.executeUpdate() == 1;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -134,4 +115,225 @@ public class PublicacionDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public static List<Publicacion> listarMensajes() {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, msg.categoria AS categoria_mensaje FROM publicacion p " +
+                "INNER JOIN mensaje msg ON p.id = msg.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet filas = sentencia.executeQuery()) {
+
+            while (filas.next()) {
+                publicaciones.add(convertirMensaje(filas));
+            }
+            return publicaciones;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarMensajesPorCategoria(String categoria) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, msg.categoria AS categoria_mensaje FROM publicacion p " +
+                "INNER JOIN mensaje msg ON p.id = msg.id WHERE p.activa = TRUE " +
+                "AND msg.categoria = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, categoria);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirMensaje(filas));
+            }
+            return publicaciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> listarDudas() {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda " +
+                "FROM publicacion p INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE " +
+                "ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet filas = sentencia.executeQuery()) {
+
+            while (filas.next()) {
+                publicaciones.add(convertirDuda(filas));
+            }
+            return publicaciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarDudasPorCategoria(String categoria) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda " +
+                "FROM publicacion p INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE " +
+                "AND d.categoria = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, categoria);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirDuda(filas));
+            }
+            return publicaciones;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarDudasPorEstado(String estado) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda FROM publicacion p " +
+                "INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE AND d.estado = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, estado);
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirDuda(filas));
+            }
+            return publicaciones;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> listarMateriales() {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*,m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
+                "ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet filas = sentencia.executeQuery()) {
+
+            while (filas.next()) {
+                publicaciones.add(convertirMaterial(filas));
+            }
+
+            return publicaciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarMaterialesPorTipo(String tipoMaterial) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
+                "AND m.tipo_material = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, tipoMaterial);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirMaterial(filas));
+            }
+            return publicaciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarMaterialesPorArchivo(String tipoArchivo) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
+                "AND m.tipo_archivo = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, tipoArchivo);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirMaterial(filas));
+            }
+            return publicaciones;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Material convertirMaterial(ResultSet fila)
+            throws SQLException {
+
+        return new Material(fila.getInt("id"),
+                fila.getString("mensaje"),
+                fila.getString("imagen_url"),
+                fila.getObject("fecha_publicacion", LocalDate.class),
+                fila.getBoolean("activa"),
+                fila.getString("archivo_url"),
+                TipoMaterial.valueOf(fila.getString("tipo_material")),
+                TipoArchivo.valueOf(fila.getString("tipo_archivo")),
+                fila.getString("tema"));
+    }
+    private static Duda convertirDuda(ResultSet fila)
+            throws SQLException {
+
+        return new Duda(fila.getInt("id"),
+                fila.getString("mensaje"),
+                fila.getString("imagen_url"),
+                fila.getObject("fecha_publicacion", LocalDate.class),
+                fila.getBoolean("activa"),
+                EstadoDuda.valueOf(fila.getString("estado_duda")),
+                TipoCategoria.valueOf(fila.getString("categoria_duda")));
+    }
+    private static Mensaje convertirMensaje(ResultSet fila)
+            throws SQLException {
+
+        return new Mensaje(fila.getInt("id"),
+                fila.getString("mensaje"),
+                fila.getString("imagen_url"),
+                fila.getObject("fecha_publicacion", LocalDate.class),
+                fila.getBoolean("activa"),
+                TipoCategoria.valueOf(fila.getString("categoria_mensaje")));
+    }
 }
+
