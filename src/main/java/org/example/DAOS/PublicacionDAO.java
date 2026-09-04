@@ -37,7 +37,7 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarTodos() {
+    public static List<Publicacion> listarActivas() {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
@@ -85,22 +85,6 @@ public class PublicacionDAO {
         }
     }
 
-    public boolean eliminar(int id) {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
-
-            String sql = "DELETE FROM publicacion WHERE id = ? ";
-
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
-
-            sentencia.setInt(1, id);
-
-            return sentencia.executeUpdate() == 1;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public static boolean darDeBaja(int id, String motivo) {
         Connection conexion = null;
