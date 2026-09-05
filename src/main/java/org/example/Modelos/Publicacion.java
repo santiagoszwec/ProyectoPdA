@@ -11,6 +11,7 @@ public class Publicacion {
     private String imagenUrl;
     private LocalDate fechaPublicacion;
     private boolean dadaDeBaja;
+    private int usuarioId;
 
     public Publicacion() {
     }
@@ -21,6 +22,15 @@ public class Publicacion {
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
         this.dadaDeBaja = dadaDeBaja;
+    }
+
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId) {
+        this.id = id;
+        this.mensaje = mensaje;
+        this.imagenUrl = imagenUrl;
+        this.fechaPublicacion = fechaPublicacion;
+        this.dadaDeBaja = dadaDeBaja;
+        this.usuarioId = usuarioId;
     }
 
     public int getId() {
@@ -61,6 +71,14 @@ public class Publicacion {
 
     public void setDadaDeBaja(boolean dadaDeBaja) {
         this.dadaDeBaja = dadaDeBaja;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     @Override

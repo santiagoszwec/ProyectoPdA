@@ -7,15 +7,32 @@ public class Comentario {
     private String mensaje;
     private String imagenUrl;
     private LocalDate fechaPublicacion;
+    private int usuarioId;
+    private int publicacionId;
+    private Integer comentarioPadreId;
+    private boolean activa;
 
-    private Comentario comentarioPadre;
+    // Para crear un comentario nuevo: el id lo genera la base de datos.
+    public Comentario(String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId) {
+        this.mensaje = mensaje;
+        this.imagenUrl = imagenUrl;
+        this.fechaPublicacion = fechaPublicacion;
+        this.usuarioId = usuarioId;
+        this.publicacionId = publicacionId;
+        this.comentarioPadreId = comentarioPadreId;
+        this.activa = true;
+    }
 
-    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, Comentario comentarioPadre) {
+    // Para reconstruir un comentario leído desde la base de datos.
+    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId, boolean activa) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
-        this.comentarioPadre = comentarioPadre;
+        this.usuarioId = usuarioId;
+        this.publicacionId = publicacionId;
+        this.comentarioPadreId = comentarioPadreId;
+        this.activa = activa;
     }
 
     public int getId() {
@@ -50,12 +67,36 @@ public class Comentario {
         this.fechaPublicacion = fechaPublicacion;
     }
 
-    public Comentario getComentarioPadre() {
-        return comentarioPadre;
+    public int getUsuarioId() {
+        return usuarioId;
     }
 
-    public void setComentarioPadre(Comentario comentarioPadre) {
-        this.comentarioPadre = comentarioPadre;
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    public int getPublicacionId() {
+        return publicacionId;
+    }
+
+    public void setPublicacionId(int publicacionId) {
+        this.publicacionId = publicacionId;
+    }
+
+    public Integer getComentarioPadreId() {
+        return comentarioPadreId;
+    }
+
+    public void setComentarioPadreId(Integer comentarioPadreId) {
+        this.comentarioPadreId = comentarioPadreId;
+    }
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
     }
 
     @Override
@@ -65,7 +106,9 @@ public class Comentario {
                 ", mensaje='" + mensaje + '\'' +
                 ", imagenUrl='" + imagenUrl + '\'' +
                 ", fechaPublicacion=" + fechaPublicacion +
-                ", comentarioPadre=" + comentarioPadre +
+                ", usuarioId=" + usuarioId +
+                ", publicacionId=" + publicacionId +
+                ", comentarioPadreId=" + comentarioPadreId +
                 '}';
     }
 }
