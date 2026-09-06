@@ -1,5 +1,6 @@
 package org.example.Menus;
 
+import org.example.Consola;
 import org.example.DAOS.ComentarioDAO;
 import org.example.DAOS.DudaDAO;
 import org.example.ENUMS.EstadoDuda;
@@ -27,7 +28,7 @@ public class MenuDudas {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 

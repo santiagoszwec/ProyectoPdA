@@ -85,6 +85,66 @@ public class PublicacionDAO {
         }
     }
 
+    public static boolean esMaterial(int id) {
+        String sql = "SELECT 1 FROM material WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, id);
+            try (ResultSet filas = sentencia.executeQuery()) {
+                return filas.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean esDuda(int id) {
+        String sql = "SELECT 1 FROM duda WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, id);
+            try (ResultSet filas = sentencia.executeQuery()) {
+                return filas.next();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean actualizarMaterial(int id, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
+        String sql = "UPDATE material SET archivo_url = ?, tipo_material = ?, tipo_archivo = ? WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, archivoUrl);
+            sentencia.setString(2, tipoMaterial.toString());
+            sentencia.setString(3, tipoArchivo.toString());
+            sentencia.setInt(4, id);
+
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean actualizarCategoria(int id, TipoCategoria categoria) {
+        String sql = esDuda(id)
+                ? "UPDATE duda SET categoria = ? WHERE id = ?"
+                : "UPDATE mensaje SET categoria = ? WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, categoria.toString());
+            sentencia.setInt(2, id);
+
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public static boolean darDeBaja(int id, String motivo) {
         Connection conexion = null;

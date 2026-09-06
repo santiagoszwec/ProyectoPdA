@@ -1,5 +1,6 @@
 package org.example.Menus;
 
+import org.example.Consola;
 import org.example.DAOS.CursoDAO;
 import org.example.Modelos.Curso;
 
@@ -21,7 +22,7 @@ public class MenuCursos {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 

@@ -99,6 +99,16 @@ public class Migracion {
                             "  fecha DATE NOT NULL" +
                             ")",
 
+                    "CREATE TABLE IF NOT EXISTS suspension (" +
+                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "  usuario_id INT NOT NULL," +
+                            "  motivo TEXT NOT NULL," +
+                            "  fecha_suspension DATE NOT NULL," +
+                            "  fecha_fin DATE NOT NULL," +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
+                            ")",
+
                     "CREATE TABLE IF NOT EXISTS reporte (" +
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  contenido TEXT NOT NULL," +
