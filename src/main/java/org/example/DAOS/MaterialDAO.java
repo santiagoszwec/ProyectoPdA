@@ -37,8 +37,8 @@ public class MaterialDAO {
             PreparedStatement sentenciaMaterial = conexion.prepareStatement(sqlMaterial);
             sentenciaMaterial.setInt(1, id);
             sentenciaMaterial.setString(2, material.getArchivoUrl());
-            sentenciaMaterial.setObject(3, material.getTipoMaterial());
-            sentenciaMaterial.setObject(4, material.getTipoArchivo());
+            sentenciaMaterial.setString(3, material.getTipoMaterial().name());
+            sentenciaMaterial.setString(4, material.getTipoArchivo().name());
             sentenciaMaterial.setString(5, material.getTema());
 
             return sentenciaMaterial.executeUpdate() == 1;

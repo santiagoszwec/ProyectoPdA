@@ -39,7 +39,7 @@ public class MensajeDAO {
 
             PreparedStatement sentenciaMensaje = conexion.prepareStatement(sqlMensaje);
             sentenciaMensaje.setInt(1, id);
-            sentenciaMensaje.setObject(2, mensaje.getCategoria());
+            sentenciaMensaje.setString(2, mensaje.getCategoria().name());
 
             return sentenciaMensaje.executeUpdate() == 1;
 

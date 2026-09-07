@@ -6,17 +6,12 @@ import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoCategoria;
 import org.example.ENUMS.TipoMaterial;
 import org.example.Modelos.Publicacion;
-import org.example.ENUMS.TipoArchivo;
-import org.example.ENUMS.TipoMaterial;
 import java.util.List;
 import java.util.Scanner;
 import org.example.DAOS.DudaDAO;
 import org.example.DAOS.MensajeDAO;
 import org.example.DAOS.MaterialDAO;
 import org.example.ENUMS.EstadoDuda;
-import org.example.ENUMS.TipoCategoria;
-import org.example.ENUMS.TipoMaterial;
-import org.example.ENUMS.TipoArchivo;
 import org.example.Modelos.Duda;
 import org.example.Modelos.Mensaje;
 import org.example.Modelos.Material;
@@ -25,7 +20,7 @@ import java.time.LocalDate;
 
 public class MenuPublicaciones {
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -43,7 +38,7 @@ public class MenuPublicaciones {
             switch (opcion) {
 
                 case 1:
-
+                    crearPublicacion(sc, usuarioActual);
                     break;
 
                 case 2:
@@ -641,6 +636,20 @@ public class MenuPublicaciones {
                 duda.setFechaPublicacion(LocalDate.now());
                 duda.setUsuarioId(usuarioActual.getId());
 
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + duda.getMensaje() +
+                                " | Imagen: " + duda.getImagenUrl() +
+                                " | Fecha: " + duda.getFechaPublicacion() +
+                                " | Categoría: " + categoria +
+                                " | Estado: " + EstadoDuda.Abierta);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
+
                 creada = DudaDAO.crear(duda);
                 break;
             }
@@ -653,6 +662,21 @@ public class MenuPublicaciones {
                 publicacionMensaje.setImagenUrl(imagenUrl);
                 publicacionMensaje.setFechaPublicacion(LocalDate.now());
                 publicacionMensaje.setUsuarioId(usuarioActual.getId());
+
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + publicacionMensaje.getMensaje() +
+                                " | Imagen: " + publicacionMensaje.getImagenUrl() +
+                                " | Fecha: " + publicacionMensaje.getFechaPublicacion() +
+                                " | Categoría: " + categoria);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
+
+
 
                 creada = MensajeDAO.crear(publicacionMensaje);
                 break;
@@ -690,6 +714,22 @@ public class MenuPublicaciones {
                 material.setImagenUrl(imagenUrl);
                 material.setFechaPublicacion(LocalDate.now());
                 material.setUsuarioId(usuarioActual.getId());
+
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + material.getMensaje() +
+                                " | Imagen: " + material.getImagenUrl() +
+                                " | Fecha: " + material.getFechaPublicacion() +
+                                " | Archivo: " + archivoUrl +
+                                " | Tipo material: " + tipoMaterial +
+                                " | Tipo archivo: " + tipoArchivo +
+                                " | Tema: " + tema);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
 
                 creada = MaterialDAO.crear(material);
                 break;

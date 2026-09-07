@@ -31,7 +31,7 @@ public class MenuCursos {
                     break;
 
                 case 2:
-                    listarCursos();
+                    listarCursos(sc);
                     break;
 
                 case 3:
@@ -106,7 +106,7 @@ public class MenuCursos {
 
         } while (respuesta.equalsIgnoreCase("S"));
     }*/
-    private static void listarCursos() {
+    private static void listarCursos(Scanner sc) {
 
         System.out.println("\n===== LISTA DE CURSOS =====");
 
@@ -123,10 +123,91 @@ public class MenuCursos {
                             " | Nombre: " + curso.getNombre() +
                             " | Semestre: " + curso.getSemestre() +
                             " | Año: " + curso.getAnio() +
-                            " | Créditos: " + curso.getCreditos()
+                            " | Créditos: " + curso.getCreditos() +
+                            " | Descripcion: " + curso.getDescripcion()
             );
         }
+
+        System.out.println("Desea aplicar un filtro? S/N");
+        String respuesta = sc.nextLine();
+
+        if(!respuesta.equalsIgnoreCase("S")){
+            return;
+        }
+        boolean seguirFiltrando;
+        do{
+            int filtro;
+            do {
+                System.out.println("Filtrar por: ");
+                System.out.println("1. Nombre");
+                System.out.println("2. Semestre");
+                System.out.print("Seleccione una opción: ");
+                filtro = Integer.parseInt(sc.nextLine());
+
+                if (filtro < 1 || filtro > 3) {
+                    System.out.println("Opción inválida, intente de nuevo.");
+                }
+            } while (filtro < 1 || filtro> 2);
+
+            boolean cursosEncontrados = false;
+            String nombre;
+            switch(filtro){
+                case 1:{
+                    System.out.print("Ingrese el nombre del curso a buscar: ");
+                    String busqueda = sc.nextLine().toLowerCase();
+                    System.out.println("\nResultados:");
+                    for(int i =0; i<cursos.size(); i++){
+                        if (cursos.get(i).getNombre().toLowerCase().contains(busqueda)) {
+                            System.out.println(
+                                    "ID: " + cursos.get(i).getId() +
+                                            " | Nombre: " + cursos.get(i).getNombre() +
+                                            " | Semestre: " + cursos.get(i).getSemestre() +
+                                            " | Año: " + cursos.get(i).getAnio() +
+                                            " | Créditos: " + cursos.get(i).getCreditos() +
+                                            " | Descripcion: " + cursos.get(i).getDescripcion());
+                            cursosEncontrados = true;
+                        }
+                    }
+                    if (!cursosEncontrados) {
+                        System.out.println("No se encontraron cursos con ese nombre.");
+                    }
+                }
+                break;
+                case 2:
+                {
+                    System.out.print("Ingrese numero del semestre del curso a buscar: ");
+                    int semestre = Integer.parseInt(sc.nextLine());
+                    System.out.println("\nResultados:");
+                    for(int i =0; i<cursos.size(); i++){
+                        if (cursos.get(i).getSemestre() == semestre) {
+                            System.out.println(
+                                    "ID: " + cursos.get(i).getId() +
+                                            " | Nombre: " + cursos.get(i).getNombre() +
+                                            " | Semestre: " + cursos.get(i).getSemestre() +
+                                            " | Año: " + cursos.get(i).getAnio() +
+                                            " | Créditos: " + cursos.get(i).getCreditos() +
+                                            " | Descripcion: " + cursos.get(i).getDescripcion());
+                            cursosEncontrados = true;
+                        }
+                    }
+                    if (!cursosEncontrados) {
+                        System.out.println("No se encontraron cursos del numero del semestre ingresado.");
+                    }
+                }
+                default:
+                    break;
+            }
+
+            System.out.print("¿Desea intentar con otro filtro? S/N: ");
+            seguirFiltrando = sc.nextLine().equalsIgnoreCase("S");
+
+
+        }while(seguirFiltrando);
+
+
+
     }
+
     private static void eliminarCurso(Scanner sc) {
 
         System.out.println("\n===== ELIMINAR CURSO =====");
@@ -271,16 +352,16 @@ public class MenuCursos {
             }
         } while (true);
 
-        String creditosInput;
+        String creditosTemp;
         do {
             System.out.print("Ingrese nuevos creditos, enter para mantener: ");
-            creditosInput = sc.nextLine();
+            creditosTemp= sc.nextLine();
 
-            if (creditosInput.isBlank()) {
+            if (creditosTemp.isBlank()) {
                 break;
             }
 
-            int creditosNum = Integer.parseInt(creditosInput);
+            int creditosNum = Integer.parseInt(creditosTemp);
             if (creditosNum >= 1 && creditosNum <= 20) {
                 cursoTemp.setCreditos(creditosNum);
                 break;
