@@ -605,8 +605,15 @@ public class MenuPublicaciones {
         String respuestaImagen = sc.nextLine();
         String imagenUrl = null;
         if (respuestaImagen.equalsIgnoreCase("S")) {
-            System.out.print("Ingrese URL de la imagen: ");
-            imagenUrl = sc.nextLine();
+            do {
+                System.out.print("Ingrese URL de la imagen: ");
+                imagenUrl = sc.nextLine();
+
+                if (!esUrlValida(imagenUrl)) {
+                    System.out.println("URL invalida, intente de nuevo");
+                }
+            } while (!esUrlValida(imagenUrl));
+
         }
 
         int tipoPublicacion;
@@ -683,8 +690,16 @@ public class MenuPublicaciones {
             }
 
             case 3: {
-                System.out.print("Ingrese URL del archivo: ");
-                String archivoUrl = sc.nextLine();
+                String archivoUrl;
+                do {
+                    System.out.print("Ingrese URL del archivo: ");
+                    archivoUrl = sc.nextLine();
+
+                    if (!esUrlValida(archivoUrl)) {
+                        System.out.println("URL inválida, intente de nuevo.");
+                    }
+                } while (!esUrlValida(archivoUrl));
+
 
                 TipoMaterial tipoMaterial = null;
                 do {
@@ -756,6 +771,13 @@ public class MenuPublicaciones {
 
     }
 
+    private static boolean esUrlValida(String url) {
+        if(url != null && !url.isBlank() && (url.startsWith("http://") || url.startsWith("https://"))){
+            return true;
+        }
+        return false;
+
+    }
 
 
 

@@ -348,7 +348,7 @@ public class MenuCursos {
                 cursoTemp.setAnio(anioNuevo);
                 break;
             } else {
-                System.out.println("Año invalido, no puede ser superior al actual");
+                System.out.println("Año invalido. Intente de nuevo");
             }
         } while (true);
 
