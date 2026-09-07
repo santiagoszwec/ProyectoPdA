@@ -1,6 +1,11 @@
 package org.example.Menus;
 
+import org.example.Consola;
+import org.example.DAOS.CursoDAO;
+import org.example.DAOS.SuspensionDAO;
 import org.example.DAOS.UsuarioDAO;
+import org.example.ENUMS.TipoRol;
+import org.example.Modelos.Curso;
 import org.example.Modelos.Usuario;
 
 import java.util.List;
@@ -18,10 +23,12 @@ public class MenuUsuarios {
             System.out.println("2. Listar usuarios");
             System.out.println("3. Modificar usuario");
             System.out.println("4. Eliminar usuario");
+            System.out.println("5. Suspender usuario");
+            System.out.println("6. Reactivar usuario");
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
                 case 1:
@@ -32,11 +39,19 @@ public class MenuUsuarios {
                     break;
 
                 case 3:
-
+                    modificarRol(sc);
                     break;
 
                 case 4:
+                    eliminarUsuario(sc);
+                    break;
 
+                case 5:
+                    suspenderUsuario(sc);
+                    break;
+
+                case 6:
+                    reactivarUsuario(sc);
                     break;
 
                 case 0:
@@ -51,7 +66,7 @@ public class MenuUsuarios {
 
         System.out.println("\n===== USUARIOS REGISTRADOS =====");
 
-        List<Usuario> usuarios = UsuarioDAO.listarTodos();
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
 
         if (usuarios.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
@@ -80,9 +95,9 @@ public class MenuUsuarios {
         System.out.println("0. Volver");
         System.out.print("Seleccione una opción: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
 
-        List<Usuario> usuarios = UsuarioDAO.listarTodos();
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
 
         if (usuarios.isEmpty()) {
             System.out.println("No hay usuarios registrados.");
@@ -146,7 +161,262 @@ public class MenuUsuarios {
                         " | Nombre: " + usuario.getNombre() +
                         " | Correo: " + usuario.getCorreo() +
                         " | Año: " + usuario.getAnioDeGeneracion() +
-                        " | Rol: " + usuario.getRol()
-        );
+                        " | Rol: " + usuario.getRol());
+    }
+    private static void modificarRol(Scanner sc) {
+
+        System.out.println("\n===== MODIFICAR ROL DE USUARIO =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }
+
+        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
+        String respuesta = sc.nextLine();
+
+        if (respuesta.equalsIgnoreCase("S")) {
+            filtrarUsuarios(sc);
+        } else {
+            for (Usuario usuario : usuarios) {
+                mostrarUsuario(usuario);
+            }
+        }
+
+        System.out.print("\nIngrese el ID del usuario a modificar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Usuario usuarioSeleccionado = null;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario con ese ID.");
+            return;
+        }
+
+        System.out.println("\nUsuario seleccionado: " + usuarioSeleccionado.getNombre() +
+                " | Rol actual: " + usuarioSeleccionado.getRol());
+
+        TipoRol nuevoRol;
+
+        if (usuarioSeleccionado.getRol() == TipoRol.Admin) {
+            System.out.println("1. Revocar rol de Administrador");
+            System.out.print("Seleccione una opción: ");
+
+            int opcion = Consola.leerOpcion(sc);
+
+            if (opcion != 1) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            nuevoRol = TipoRol.Estudiante;
+        } else {
+            System.out.println("1. Asignar rol de Administrador");
+            System.out.print("Seleccione una opción: ");
+
+            int opcion = Consola.leerOpcion(sc);
+
+            if (opcion != 1) {
+                System.out.println("Operación cancelada.");
+                return;
+            }
+
+            nuevoRol = TipoRol.Admin;
+        }
+
+        System.out.print("¿Confirma la acción? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean actualizado = UsuarioDAO.cambiarRol(usuarioSeleccionado.getId(), nuevoRol);
+
+        if (actualizado) {
+            System.out.println("Rol actualizado correctamente.");
+        } else {
+            System.out.println("No se pudo actualizar el rol.");
+        }
+    }
+
+    private static void suspenderUsuario(Scanner sc) {
+
+        System.out.println("\n===== SUSPENDER USUARIO =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }
+
+        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
+        String respuesta = sc.nextLine();
+
+        if (respuesta.equalsIgnoreCase("S")) {
+            filtrarUsuarios(sc);
+        } else {
+            for (Usuario usuario : usuarios) {
+                mostrarUsuario(usuario);
+            }
+        }
+
+        System.out.print("\nIngrese el ID del usuario a suspender: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Usuario usuarioSeleccionado = null;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario con ese ID.");
+            return;
+        }
+
+        System.out.println("\nUsuario seleccionado: " + usuarioSeleccionado.getNombre());
+
+        System.out.print("Registre el motivo de la suspensión: ");
+        String motivo = sc.nextLine();
+
+        System.out.print("Ingrese la duración de la suspensión en días: ");
+        int dias = Integer.parseInt(sc.nextLine());
+
+        System.out.print("¿Confirma la suspensión de la cuenta? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean suspendido = SuspensionDAO.suspender(usuarioSeleccionado.getId(), motivo, dias);
+
+        if (suspendido) {
+            System.out.println("Cuenta suspendida correctamente. Se notificó al usuario.");
+        } else {
+            System.out.println("No se pudo suspender la cuenta.");
+        }
+    }
+
+    private static void reactivarUsuario(Scanner sc) {
+
+        System.out.println("\n===== REACTIVAR USUARIO =====");
+
+        List<Usuario> suspendidos = SuspensionDAO.listarSuspendidos();
+
+        if (suspendidos.isEmpty()) {
+            System.out.println("No hay usuarios suspendidos.");
+            return;
+        }
+
+        System.out.println("\nUsuarios suspendidos:");
+
+        for (Usuario usuario : suspendidos) {
+            mostrarUsuario(usuario);
+        }
+
+        System.out.print("\nIngrese el ID del usuario a reactivar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Usuario usuarioSeleccionado = null;
+
+        for (Usuario usuario : suspendidos) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario suspendido con ese ID.");
+            return;
+        }
+
+        System.out.println("\nUsuario seleccionado: " + usuarioSeleccionado.getNombre());
+
+        System.out.print("¿Confirma la reactivación de la cuenta? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean reactivado = SuspensionDAO.levantar(usuarioSeleccionado.getId());
+
+        if (reactivado) {
+            System.out.println("Cuenta reactivada correctamente. Se notificó al usuario.");
+        } else {
+            System.out.println("No se pudo reactivar la cuenta.");
+        }
+    }
+
+    private static void eliminarUsuario(Scanner sc) {
+
+        System.out.println("\n===== ELIMINAR USUARIO =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }
+
+        System.out.println("\nUsuarios disponibles:");
+
+        for (Usuario usuario : usuarios) {
+            System.out.println(usuario);
+        }
+
+        System.out.print("\nIngrese el ID del usuario a eliminar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Usuario usuarioSeleccionado = null;
+
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario con ese ID.");
+            return;
+        }
+
+        System.out.println("\nUsaurio seleccionado: " + usuarioSeleccionado.getNombre());
+
+        System.out.print("¿Está seguro de que desea eliminar este usuario? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean eliminado = UsuarioDAO.desactivar(id);
+
+        if (eliminado) {
+            System.out.println("Usuario eliminado correctamente.");
+        } else {
+            System.out.println("No se pudo eliminar el usuario.");
+        }
     }
 }

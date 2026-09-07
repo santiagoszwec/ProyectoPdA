@@ -19,7 +19,8 @@ public class Migracion {
                             "  correo VARCHAR(100) NOT NULL," +
                             "  anio_de_generacion INT NOT NULL," +
                             "  rol VARCHAR(20) NOT NULL," +
-                            "  contrasenia VARCHAR(255) NOT NULL" +
+                            "  contrasenia VARCHAR(255) NOT NULL," +
+                            "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS curso (" +
@@ -32,19 +33,14 @@ public class Migracion {
                             "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
-                    "CREATE TABLE IF NOT EXISTS tema (" +
-                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
-                            "  curso_id INT NOT NULL," +
-                            "  nombre VARCHAR(100) NOT NULL," +
-                            "  FOREIGN KEY (curso_id) REFERENCES curso(id)" +
-                            ")",
-
                     "CREATE TABLE IF NOT EXISTS publicacion (" +
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  mensaje TEXT NOT NULL," +
                             "  imagen_url VARCHAR(255)," +
                             "  fecha_publicacion DATE NOT NULL," +
-                            "  activa BOOLEAN NOT NULL DEFAULT TRUE" +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
+                            "  usuario_id INT," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS mensaje (" +
@@ -78,6 +74,7 @@ public class Migracion {
                             "  archivo_url VARCHAR(255) NOT NULL," +
                             "  tipo_material VARCHAR(50) NOT NULL," +
                             "  tipo_archivo VARCHAR(50) NOT NULL," +
+                            "  tema VARCHAR(100) NOT NULL," +
                             "  FOREIGN KEY (id) REFERENCES publicacion(id) ON DELETE CASCADE" +
                             ")",
 
@@ -85,7 +82,9 @@ public class Migracion {
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  fecha DATE NOT NULL," +
                             "  tipo VARCHAR(20) NOT NULL," +
-                            "  mensaje TEXT NOT NULL" +
+                            "  mensaje TEXT NOT NULL," +
+                            "  usuario_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS progreso (" +
@@ -99,13 +98,25 @@ public class Migracion {
                             "  fecha DATE NOT NULL" +
                             ")",
 
+                    "CREATE TABLE IF NOT EXISTS suspension (" +
+                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "  usuario_id INT NOT NULL," +
+                            "  motivo TEXT NOT NULL," +
+                            "  fecha_suspension DATE NOT NULL," +
+                            "  fecha_fin DATE NOT NULL," +
+                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
+                            ")",
+
                     "CREATE TABLE IF NOT EXISTS reporte (" +
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  contenido TEXT NOT NULL," +
                             "  motivo TEXT NOT NULL," +
                             "  resolucion TEXT," +
                             "  fecha_reporte DATE NOT NULL," +
-                            "  fecha_resolucion DATE" +
+                            "  fecha_resolucion DATE," +
+                            "  publicacion_id INT NOT NULL," +
+                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)" +
                             ")",
 
             };

@@ -9,12 +9,21 @@ public class Notificacion {
     private LocalDate fecha;
     private TipoNotificacion tipo;
     private String mensaje;
+    private int usuarioId;
 
     public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje) {
         this.id = id;
         this.fecha = fecha;
         this.tipo = tipo;
         this.mensaje = mensaje;
+    }
+
+    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId) {
+        this.id = id;
+        this.fecha = fecha;
+        this.tipo = tipo;
+        this.mensaje = mensaje;
+        this.usuarioId = usuarioId;
     }
 
     public int getId() {
@@ -47,6 +56,14 @@ public class Notificacion {
 
     public void setMensaje(String mensaje) {
         this.mensaje = mensaje;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
     }
 
     @Override

@@ -10,21 +10,21 @@ public class Material extends Publicacion {
     private String archivoUrl;
     private TipoMaterial tipoMaterial;
     private TipoArchivo tipoArchivo;
+    private String tema;
 
-    public Material(String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
+    public Material(String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema) {
         this.archivoUrl = archivoUrl;
         this.tipoMaterial = tipoMaterial;
         this.tipoArchivo = tipoArchivo;
+        this.tema = tema;
     }
 
-    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion,
-            boolean dadaDeBaja,
-            String archivoUrl,
-            TipoMaterial tipoMaterial, TipoArchivo tipoArchivo) {
-        super (id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
+    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
         this.archivoUrl = archivoUrl;
         this.tipoMaterial = tipoMaterial;
         this.tipoArchivo = tipoArchivo;
+        this.tema = tema;
     }
 
     public String getArchivoUrl() {
@@ -51,12 +51,24 @@ public class Material extends Publicacion {
         this.tipoArchivo = tipoArchivo;
     }
 
+    public String getTema() {
+        return tema;
+    }
+
+    public void setTema(String tema) {
+        this.tema = tema;
+    }
+
     @Override
     public String toString() {
         return "Material{" +
-                "archivoUrl='" + archivoUrl + '\'' +
+                "id=" + getId() +
+                ", mensaje='" + getMensaje() + '\'' +
+                ", fechaPublicacion=" + getFechaPublicacion() +
+                ", archivoUrl='" + archivoUrl + '\'' +
                 ", tipoMaterial=" + tipoMaterial +
                 ", tipoArchivo=" + tipoArchivo +
+                ", tema='" + tema + '\'' +
                 '}';
     }
 }

@@ -10,14 +10,16 @@ public class Usuario {
     private int anioDeGeneracion;
     private TipoRol rol;
     private String contrasenia;
+    private boolean activo;
 
-    public Usuario(int id, String nombre, String correo, int anioDeGeneracion, TipoRol rol, String contrasenia) {
+    public Usuario(int id, String nombre, String correo, int anioDeGeneracion, TipoRol rol, String contrasenia, boolean activo) {
         this.id = id;
         this.nombre = nombre;
         this.correo = correo;
         this.anioDeGeneracion = anioDeGeneracion;
         this.rol = rol;
         this.contrasenia = contrasenia;
+        this.activo = activo;
     }
 
     public String getNombre() {
@@ -68,6 +70,14 @@ public class Usuario {
         this.contrasenia = contrasenia;
     }
 
+    public boolean isActivo() {
+        return activo;
+    }
+
+    public void setActivo(boolean activo) {
+        this.activo = activo;
+    }
+
     @Override
     public String toString() {
         return "Usuario{" +
@@ -77,6 +87,7 @@ public class Usuario {
                 ", anioDeGeneracion=" + anioDeGeneracion +
                 ", rol=" + rol +
                 ", contrasenia=" + contrasenia +
+                ", activo=" + activo +
                 '}';
     }
 }

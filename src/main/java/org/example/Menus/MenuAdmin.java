@@ -1,5 +1,6 @@
 package org.example.Menus;
 
+import org.example.Consola;
 import org.example.DAOS.CursoDAO;
 import org.example.Modelos.Curso;
 import org.example.Modelos.Usuario;
@@ -23,7 +24,7 @@ public class MenuAdmin {
             System.out.println("7. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 
@@ -48,7 +49,7 @@ public class MenuAdmin {
 
                 case 5:
                     System.out.println("Gestión de reportes");
-                    // MenuReportes.mostrar(sc);
+                    MenuReportes.mostrar(sc);
                     break;
 
                 case 6:

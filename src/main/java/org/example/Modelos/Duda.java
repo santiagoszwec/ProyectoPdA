@@ -39,7 +39,10 @@ public class Duda extends Publicacion {
     @Override
     public String toString() {
         return "Duda{" +
-                "estado=" + estado +
+                "id=" + getId() +
+                ", mensaje='" + getMensaje() + '\'' +
+                ", fechaPublicacion=" + getFechaPublicacion() +
+                ", estado=" + estado +
                 ", categoria=" + categoria +
                 '}';
     }

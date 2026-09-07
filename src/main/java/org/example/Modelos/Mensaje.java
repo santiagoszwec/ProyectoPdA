@@ -27,7 +27,10 @@ public class Mensaje extends Publicacion {
     @Override
     public String toString() {
         return "Mensaje{" +
-                "categoria=" + categoria +
+                "id=" + getId() +
+                ", mensaje='" + getMensaje() + '\'' +
+                ", fechaPublicacion=" + getFechaPublicacion() +
+                ", categoria=" + categoria +
                 '}';
     }
 }
