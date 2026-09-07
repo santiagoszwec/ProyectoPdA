@@ -64,7 +64,6 @@ public class Migracion {
                             "  usuario_id INT NOT NULL," +
                             "  publicacion_id INT NOT NULL," +
                             "  comentario_padre_id INT," +
-                            "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
                             "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
                             "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id) ON DELETE CASCADE," +
                             "  FOREIGN KEY (comentario_padre_id) REFERENCES comentario(id)" +

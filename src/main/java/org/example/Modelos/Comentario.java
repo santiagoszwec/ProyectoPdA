@@ -10,7 +10,6 @@ public class Comentario {
     private int usuarioId;
     private int publicacionId;
     private Integer comentarioPadreId;
-    private boolean activa;
 
     // Para crear un comentario nuevo: el id lo genera la base de datos.
     public Comentario(String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId) {
@@ -20,11 +19,10 @@ public class Comentario {
         this.usuarioId = usuarioId;
         this.publicacionId = publicacionId;
         this.comentarioPadreId = comentarioPadreId;
-        this.activa = true;
     }
 
     // Para reconstruir un comentario leído desde la base de datos.
-    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId, boolean activa) {
+    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
@@ -32,7 +30,6 @@ public class Comentario {
         this.usuarioId = usuarioId;
         this.publicacionId = publicacionId;
         this.comentarioPadreId = comentarioPadreId;
-        this.activa = activa;
     }
 
     public int getId() {
@@ -89,14 +86,6 @@ public class Comentario {
 
     public void setComentarioPadreId(Integer comentarioPadreId) {
         this.comentarioPadreId = comentarioPadreId;
-    }
-
-    public boolean isActiva() {
-        return activa;
-    }
-
-    public void setActiva(boolean activa) {
-        this.activa = activa;
     }
 
     @Override
