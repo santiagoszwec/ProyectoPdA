@@ -5,6 +5,7 @@ public enum TipoNotificacion {
     Respuesta,
     Mensaje,
     Duda,
-    Baja
+    Baja,
+    Suspension
 
 }

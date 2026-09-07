@@ -22,7 +22,7 @@ public class UsuarioDAO {
             sentencia.setString(1, usuario.getNombre());
             sentencia.setString(2, usuario.getCorreo());
             sentencia.setInt(3, usuario.getAnioDeGeneracion());
-            sentencia.setObject(4, usuario.getRol());
+            sentencia.setString(4, usuario.getRol().toString());
             sentencia.setString(5, usuario.getContrasenia());
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -103,7 +103,7 @@ public class UsuarioDAO {
             sentencia.setString(1, usuario.getNombre());
             sentencia.setString(2, usuario.getCorreo());
             sentencia.setInt(3, usuario.getAnioDeGeneracion());
-            sentencia.setObject(4, usuario.getRol());
+            sentencia.setString(4, usuario.getRol().toString());
             sentencia.setString(5, usuario.getContrasenia());
             sentencia.setInt(6, usuario.getId());
 
@@ -136,7 +136,7 @@ public class UsuarioDAO {
         try{
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "SELECT * FROM usuario WHERE correo = ? AND contrasenia = ? AND activo = TRUE";
+            String sql = "SELECT * FROM usuario WHERE correo = ? AND contrasenia = ?";
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             sentencia.setString(1, correo);
@@ -173,7 +173,7 @@ public class UsuarioDAO {
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
 
-            sentencia.setObject(1, nuevoRol);
+            sentencia.setString(1, nuevoRol.toString());
 
             sentencia.setInt(2, userId);
 

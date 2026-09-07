@@ -1,5 +1,10 @@
 package org.example.Menus;
+
+import org.example.Consola;
 import org.example.DAOS.PublicacionDAO;
+import org.example.ENUMS.TipoArchivo;
+import org.example.ENUMS.TipoCategoria;
+import org.example.ENUMS.TipoMaterial;
 import org.example.Modelos.Publicacion;
 import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoMaterial;
@@ -33,7 +38,7 @@ public class MenuPublicaciones {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 
@@ -46,7 +51,7 @@ public class MenuPublicaciones {
                     break;
 
                 case 3:
-
+                    editarPublicacion(sc);
                     break;
 
                 case 4:
@@ -77,7 +82,7 @@ public class MenuPublicaciones {
 
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 
@@ -132,7 +137,7 @@ public class MenuPublicaciones {
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 
@@ -164,7 +169,7 @@ public class MenuPublicaciones {
         System.out.println("3. Reunión");
         System.out.print("Seleccione una categoría: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
         String categoria;
 
         switch (opcion) {
@@ -199,7 +204,7 @@ public class MenuPublicaciones {
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
                 case 1:
@@ -232,7 +237,7 @@ public class MenuPublicaciones {
         System.out.println("3. Reunión");
         System.out.print("Seleccione una categoría: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
         String categoria;
 
         switch (opcion) {
@@ -264,7 +269,7 @@ public class MenuPublicaciones {
         System.out.println("2. Resuelta");
         System.out.print("Seleccione un estado: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
         String estado;
 
         switch (opcion) {
@@ -294,7 +299,7 @@ public class MenuPublicaciones {
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
                 case 1:
@@ -326,7 +331,7 @@ public class MenuPublicaciones {
         System.out.println("4. Video");
         System.out.print("Seleccione un tipo: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
         String tipoMaterial;
 
         switch (opcion) {
@@ -363,7 +368,7 @@ public class MenuPublicaciones {
         System.out.println("3. PNG");
         System.out.print("Seleccione un tipo de archivo: ");
 
-        int opcion = Integer.parseInt(sc.nextLine());
+        int opcion = Consola.leerOpcion(sc);
         String tipoArchivo;
 
         switch (opcion) {
@@ -384,6 +389,155 @@ public class MenuPublicaciones {
                 return;
         }
         mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorArchivo(tipoArchivo));
+    }
+
+    private static void editarPublicacion(Scanner sc) {
+
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+
+        if (publicaciones.isEmpty()) {
+            System.out.println("No hay publicaciones activas para editar.");
+            return;
+        }
+
+        System.out.println("\n===== PUBLICACIONES ACTIVAS =====");
+
+        for (Publicacion publicacion : publicaciones) {
+            System.out.println("[" + publicacion.getId() + "] " + publicacion.getMensaje());
+        }
+
+        System.out.print("\nIngrese el ID de la publicación a modificar: ");
+        int id = Integer.parseInt(sc.nextLine());
+
+        Publicacion publicacion = publicaciones.stream()
+                .filter(p -> p.getId() == id)
+                .findFirst()
+                .orElse(null);
+
+        if (publicacion == null) {
+            System.out.println("No se encontró una publicación con ese ID.");
+            return;
+        }
+
+        System.out.println("Publicación seleccionada: " + publicacion.getMensaje());
+
+        System.out.print("Ingrese el nuevo mensaje: ");
+        String nuevoMensaje = sc.nextLine();
+
+        System.out.print("Ingrese la nueva imagen (URL, Enter para omitir): ");
+        String nuevaImagen = sc.nextLine();
+        if (nuevaImagen.isBlank()) {
+            nuevaImagen = publicacion.getImagenUrl();
+        }
+
+        publicacion.setMensaje(nuevoMensaje);
+        publicacion.setImagenUrl(nuevaImagen);
+
+        boolean baseActualizada = PublicacionDAO.actualizar(publicacion);
+
+        boolean hijaActualizada;
+
+        if (PublicacionDAO.esMaterial(id)) {
+            TipoMaterial tipoMaterial = elegirTipoMaterial(sc);
+            if (tipoMaterial == null) {
+                return;
+            }
+
+            TipoArchivo tipoArchivo = elegirTipoArchivo(sc);
+            if (tipoArchivo == null) {
+                return;
+            }
+
+            System.out.print("Ingrese la nueva URL del archivo: ");
+            String archivoUrl = sc.nextLine();
+
+            hijaActualizada = PublicacionDAO.actualizarMaterial(id, archivoUrl, tipoMaterial, tipoArchivo);
+        } else {
+            TipoCategoria categoria = elegirCategoria(sc);
+            if (categoria == null) {
+                return;
+            }
+
+            hijaActualizada = PublicacionDAO.actualizarCategoria(id, categoria);
+        }
+
+        if (baseActualizada && hijaActualizada) {
+            System.out.println("Publicación actualizada correctamente.");
+        } else {
+            System.out.println("No se pudo actualizar la publicación.");
+        }
+    }
+
+    private static TipoMaterial elegirTipoMaterial(Scanner sc) {
+
+        System.out.println("\n===== TIPO DE MATERIAL =====");
+        System.out.println("1. Apuntes");
+        System.out.println("2. Ejercicio");
+        System.out.println("3. Libro");
+        System.out.println("4. Video");
+        System.out.print("Seleccione un tipo: ");
+
+        int opcion = Consola.leerOpcion(sc);
+
+        switch (opcion) {
+            case 1:
+                return TipoMaterial.Apuntes;
+            case 2:
+                return TipoMaterial.Ejercicio;
+            case 3:
+                return TipoMaterial.Libro;
+            case 4:
+                return TipoMaterial.Video;
+            default:
+                System.out.println("Tipo de material inválido.");
+                return null;
+        }
+    }
+
+    private static TipoArchivo elegirTipoArchivo(Scanner sc) {
+
+        System.out.println("\n===== TIPO DE ARCHIVO =====");
+        System.out.println("1. PDF");
+        System.out.println("2. JPG");
+        System.out.println("3. PNG");
+        System.out.print("Seleccione un tipo de archivo: ");
+
+        int opcion = Consola.leerOpcion(sc);
+
+        switch (opcion) {
+            case 1:
+                return TipoArchivo.PDF;
+            case 2:
+                return TipoArchivo.JPG;
+            case 3:
+                return TipoArchivo.PNG;
+            default:
+                System.out.println("Tipo de archivo inválido.");
+                return null;
+        }
+    }
+
+    private static TipoCategoria elegirCategoria(Scanner sc) {
+
+        System.out.println("\n===== CATEGORÍA =====");
+        System.out.println("1. Ejercicio");
+        System.out.println("2. Examen");
+        System.out.println("3. Reunión");
+        System.out.print("Seleccione una categoría: ");
+
+        int opcion = Consola.leerOpcion(sc);
+
+        switch (opcion) {
+            case 1:
+                return TipoCategoria.Ejercicio;
+            case 2:
+                return TipoCategoria.Examen;
+            case 3:
+                return TipoCategoria.Reunion;
+            default:
+                System.out.println("Categoría inválida.");
+                return null;
+        }
     }
 
     private static void darDeBajaPublicacion(Scanner sc) {

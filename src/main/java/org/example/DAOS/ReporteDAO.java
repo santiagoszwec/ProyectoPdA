@@ -46,6 +46,19 @@ public class ReporteDAO {
         }
     }
 
+    public static boolean resolver(int id, String resolucion) {
+        String sql = "UPDATE reporte SET resolucion = ?, fecha_resolucion = ? WHERE id = ? AND fecha_resolucion IS NULL";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setString(1, resolucion);
+            sentencia.setObject(2, LocalDate.now());
+            sentencia.setInt(3, id);
+            return sentencia.executeUpdate() == 1;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static Reporte mapearReporte(ResultSet filas) throws SQLException {
         int id = filas.getInt("id");
         String contenido = filas.getString("contenido");

@@ -1,5 +1,6 @@
 package org.example.Menus;
 
+import org.example.Consola;
 import org.example.Modelos.Usuario;
 
 import java.util.Scanner;
@@ -16,7 +17,7 @@ public class MenuEstudiante {
             System.out.println("0. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 

@@ -1,5 +1,6 @@
 package org.example.Menus;
 
+import org.example.Consola;
 import org.example.DAOS.PublicacionDAO;
 import org.example.DAOS.ReporteDAO;
 import org.example.Modelos.Publicacion;
@@ -21,7 +22,7 @@ public class MenuReportes {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Integer.parseInt(sc.nextLine());
+            opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
 
@@ -102,20 +103,39 @@ public class MenuReportes {
         }
         System.out.println("Fecha: " + publicacion.getFechaPublicacion());
 
-        System.out.print("\n¿Confirma la infracción y desea dar de baja la publicación? (S/N): ");
-        String confirmacion = sc.nextLine();
-        if (!confirmacion.equalsIgnoreCase("S")) {
-            System.out.println("Operación cancelada.");
-            return;
+        System.out.println("\n1. Confirmar infracción (aprobar)");
+        System.out.println("2. Rechazar reporte");
+        System.out.println("3. Cancelar");
+        System.out.print("Seleccione una opción: ");
+
+        int opcion = Consola.leerOpcion(sc);
+
+        switch (opcion) {
+            case 1:
+                System.out.print("Registre el motivo de la eliminación: ");
+                String motivo = sc.nextLine();
+
+                boolean dadoDeBaja = PublicacionDAO.darDeBaja(publicacion.getId(), motivo);
+
+                System.out.println(dadoDeBaja
+                        ? "Reporte aprobado y publicación dada de baja correctamente. Se notificó al autor."
+                        : "No se pudo dar de baja la publicación.");
+                break;
+
+            case 2:
+                System.out.print("Registre la decisión de rechazo: ");
+                String decision = sc.nextLine();
+
+                boolean resuelto = ReporteDAO.resolver(reporte.getId(), decision);
+
+                System.out.println(resuelto
+                        ? "Reporte rechazado y cerrado correctamente."
+                        : "No se pudo procesar el reporte.");
+                break;
+
+            default:
+                System.out.println("Operación cancelada.");
+                break;
         }
-
-        System.out.print("Registre el motivo de la eliminación: ");
-        String motivo = sc.nextLine();
-
-        boolean dadoDeBaja = PublicacionDAO.darDeBaja(publicacion.getId(), motivo);
-
-        System.out.println(dadoDeBaja
-                ? "Publicación dada de baja correctamente. Se notificó al autor."
-                : "No se pudo dar de baja la publicación.");
     }
 }
