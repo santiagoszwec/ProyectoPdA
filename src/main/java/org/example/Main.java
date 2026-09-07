@@ -56,6 +56,15 @@ public class Main {
             } else if (usuario.getRol() == TipoRol.Estudiante) {
                 MenuEstudiante.mostrar(sc, usuario);
             }
+
+        }while(usuario == null);
+
+        System.out.print("Bienvenido!");
+
+        if (usuario.getRol() == TipoRol.Admin) {
+            MenuAdmin.mostrar(sc, usuario);
+        } else if (usuario.getRol() == TipoRol.Estudiante) {
+            MenuEstudiante.mostrar(sc, usuario);
         }
     }
 

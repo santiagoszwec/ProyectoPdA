@@ -1,6 +1,5 @@
 package org.example.Menus;
 
-import org.example.Consola;
 import org.example.DAOS.ComentarioDAO;
 import org.example.DAOS.DudaDAO;
 import org.example.ENUMS.EstadoDuda;
@@ -28,12 +27,12 @@ public class MenuDudas {
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
-            opcion = Consola.leerOpcion(sc);
+            opcion = Integer.parseInt(sc.nextLine());
 
             switch (opcion) {
 
                 case 1:
-                    crearDuda(sc, usuarioActual);
+                    crearDuda(sc);
                     break;
 
                 case 2:
@@ -59,7 +58,7 @@ public class MenuDudas {
         } while (opcion != 0);
     }
 
-    private static void crearDuda(Scanner sc, Usuario usuarioActual) {
+    private static void crearDuda(Scanner sc) {
         System.out.print("Mensaje de la duda: ");
         String mensaje = sc.nextLine();
 
@@ -76,7 +75,6 @@ public class MenuDudas {
         duda.setMensaje(mensaje);
         duda.setImagenUrl(imagenUrl);
         duda.setFechaPublicacion(LocalDate.now());
-        duda.setUsuarioId(usuarioActual.getId());
 
         boolean creada = DudaDAO.crear(duda);
         System.out.println(creada ? "Duda creada con éxito." : "No se pudo crear la duda.");
