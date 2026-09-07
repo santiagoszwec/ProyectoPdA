@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class MenuAdmin {
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
