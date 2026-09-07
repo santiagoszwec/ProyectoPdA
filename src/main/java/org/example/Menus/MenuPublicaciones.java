@@ -30,6 +30,7 @@ public class MenuPublicaciones {
             System.out.println("2. Listar Publicaciones");
             System.out.println("3. Editar Publicacion");
             System.out.println("4. Dar de baja Publicacion");
+            System.out.println("5. Reportar Publicacion");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
@@ -52,6 +53,9 @@ public class MenuPublicaciones {
                 case 4:
                     darDeBajaPublicacion(sc);
                     break;
+
+                case 5:
+
 
                 case 0:
                     break;
