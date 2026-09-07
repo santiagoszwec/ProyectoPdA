@@ -6,13 +6,21 @@ import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoCategoria;
 import org.example.ENUMS.TipoMaterial;
 import org.example.Modelos.Publicacion;
-
 import java.util.List;
 import java.util.Scanner;
+import org.example.DAOS.DudaDAO;
+import org.example.DAOS.MensajeDAO;
+import org.example.DAOS.MaterialDAO;
+import org.example.ENUMS.EstadoDuda;
+import org.example.Modelos.Duda;
+import org.example.Modelos.Mensaje;
+import org.example.Modelos.Material;
+import org.example.Modelos.Usuario;
+import java.time.LocalDate;
 
 public class MenuPublicaciones {
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -30,7 +38,7 @@ public class MenuPublicaciones {
             switch (opcion) {
 
                 case 1:
-
+                    crearPublicacion(sc, usuarioActual);
                     break;
 
                 case 2:
@@ -78,15 +86,15 @@ public class MenuPublicaciones {
                     break;
 
                 case 2:
-                    menuMensajes(sc);
+
                     break;
 
                 case 3:
-                    menuDudas(sc);
+
                     break;
 
                 case 4:
-                    menuMateriales(sc);
+
                     break;
 
                 case 0:
@@ -574,4 +582,203 @@ public class MenuPublicaciones {
                 ? "Publicación dada de baja correctamente."
                 : "No se pudo dar de baja la publicación.");
     }
+
+    private static void crearPublicacion(Scanner sc, Usuario usuarioActual) {
+
+        System.out.println("\n===== CREAR PUBLICACION =====");
+
+        String mensaje;
+        do {
+            System.out.print("Ingrese mensaje: ");
+            mensaje = sc.nextLine();
+
+            if (mensaje.isBlank()) {
+                System.out.print("No se ha ingresado ningún mensaje. Ingrese S para ingresar o N para cancelar: ");
+                String respuesta = sc.nextLine();
+                if (respuesta.equalsIgnoreCase("N")) {
+                    return;
+                }
+            }
+        } while (mensaje.isBlank());
+
+        System.out.print("¿Desea adjuntar una imagen? S/N: ");
+        String respuestaImagen = sc.nextLine();
+        String imagenUrl = null;
+        if (respuestaImagen.equalsIgnoreCase("S")) {
+            do {
+                System.out.print("Ingrese URL de la imagen: ");
+                imagenUrl = sc.nextLine();
+
+                if (!esUrlValida(imagenUrl)) {
+                    System.out.println("URL invalida, intente de nuevo");
+                }
+            } while (!esUrlValida(imagenUrl));
+
+        }
+
+        int tipoPublicacion;
+        do {
+            System.out.println("¿Qué tipo de publicación es?");
+            System.out.println("1. Duda");
+            System.out.println("2. Mensaje");
+            System.out.println("3. Material");
+            System.out.print("Seleccione una opción: ");
+            tipoPublicacion = Integer.parseInt(sc.nextLine());
+
+            if (tipoPublicacion < 1 || tipoPublicacion > 3) {
+                System.out.println("Opción inválida, intente de nuevo.");
+            }
+        } while (tipoPublicacion < 1 || tipoPublicacion > 3);
+
+        boolean creada;
+
+        switch (tipoPublicacion) {
+
+            case 1: {
+                TipoCategoria categoria = pedirCategoria(sc);
+
+                Duda duda = new Duda(EstadoDuda.Abierta, categoria);
+                duda.setMensaje(mensaje);
+                duda.setImagenUrl(imagenUrl);
+                duda.setFechaPublicacion(LocalDate.now());
+                duda.setUsuarioId(usuarioActual.getId());
+
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + duda.getMensaje() +
+                                " | Imagen: " + duda.getImagenUrl() +
+                                " | Fecha: " + duda.getFechaPublicacion() +
+                                " | Categoría: " + categoria +
+                                " | Estado: " + EstadoDuda.Abierta);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
+
+                creada = DudaDAO.crear(duda);
+                break;
+            }
+
+            case 2: {
+                TipoCategoria categoria = pedirCategoria(sc);
+
+                Mensaje publicacionMensaje = new Mensaje(categoria);
+                publicacionMensaje.setMensaje(mensaje);
+                publicacionMensaje.setImagenUrl(imagenUrl);
+                publicacionMensaje.setFechaPublicacion(LocalDate.now());
+                publicacionMensaje.setUsuarioId(usuarioActual.getId());
+
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + publicacionMensaje.getMensaje() +
+                                " | Imagen: " + publicacionMensaje.getImagenUrl() +
+                                " | Fecha: " + publicacionMensaje.getFechaPublicacion() +
+                                " | Categoría: " + categoria);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
+
+
+
+                creada = MensajeDAO.crear(publicacionMensaje);
+                break;
+            }
+
+            case 3: {
+                String archivoUrl;
+                do {
+                    System.out.print("Ingrese URL del archivo: ");
+                    archivoUrl = sc.nextLine();
+
+                    if (!esUrlValida(archivoUrl)) {
+                        System.out.println("URL inválida, intente de nuevo.");
+                    }
+                } while (!esUrlValida(archivoUrl));
+
+
+                TipoMaterial tipoMaterial = null;
+                do {
+                    System.out.print("Ingrese el tipo de material (Apuntes/Ejercicio/Libro/Video): ");
+                    try {
+                        tipoMaterial = TipoMaterial.valueOf(sc.nextLine().trim());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Tipo de material inválido, intente de nuevo.");
+                    }
+                } while (tipoMaterial == null);
+
+                TipoArchivo tipoArchivo = null;
+                do {
+                    System.out.print("Ingrese el tipo de archivo (JPG/PDF/PNG): ");
+                    try {
+                        tipoArchivo = TipoArchivo.valueOf(sc.nextLine().trim());
+                    } catch (IllegalArgumentException e) {
+                        System.out.println("Tipo de archivo inválido, intente de nuevo.");
+                    }
+                } while (tipoArchivo == null);
+
+                System.out.print("Ingrese el tema: ");
+                String tema = sc.nextLine();
+
+                Material material = new Material(archivoUrl, tipoMaterial, tipoArchivo, tema);
+                material.setMensaje(mensaje);
+                material.setImagenUrl(imagenUrl);
+                material.setFechaPublicacion(LocalDate.now());
+                material.setUsuarioId(usuarioActual.getId());
+
+                System.out.println("\nPublicacion a crear:");
+                System.out.println(
+                        "Mensaje: " + material.getMensaje() +
+                                " | Imagen: " + material.getImagenUrl() +
+                                " | Fecha: " + material.getFechaPublicacion() +
+                                " | Archivo: " + archivoUrl +
+                                " | Tipo material: " + tipoMaterial +
+                                " | Tipo archivo: " + tipoArchivo +
+                                " | Tema: " + tema);
+
+                System.out.print("¿Desea confirmar la publicacion? S/N: ");
+                if (!sc.nextLine().equalsIgnoreCase("S")) {
+                    System.out.println("Creación cancelada.");
+                    return;
+                }
+
+                creada = MaterialDAO.crear(material);
+                break;
+            }
+
+            default:
+                creada = false;
+        }
+
+        System.out.println(creada ? "Publicación creada correctamente." : "No se pudo crear la publicación.");
+    }
+
+    public static TipoCategoria pedirCategoria(Scanner sc){
+        TipoCategoria categoria = null;
+        do {
+            System.out.print("Ingrese la categoría (Ejercicio/Examen/Reunion): ");
+            try {
+                categoria = TipoCategoria.valueOf(sc.nextLine().trim());
+            } catch (IllegalArgumentException e) {
+                System.out.println("Categoría inválida, intente de nuevo.");
+            }
+        } while (categoria == null);
+        return categoria;
+
+    }
+
+    private static boolean esUrlValida(String url) {
+        if(url != null && !url.isBlank() && (url.startsWith("http://") || url.startsWith("https://"))){
+            return true;
+        }
+        return false;
+
+    }
+
+
+
 }

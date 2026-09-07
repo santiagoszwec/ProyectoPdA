@@ -44,7 +44,7 @@ public class MenuAdmin {
 
                 case 4:
                     System.out.println("Gestión de publicaciones");
-                    MenuPublicaciones.mostrar(sc);
+                    MenuPublicaciones.mostrar(sc, usuarioActual);
                     break;
 
                 case 5:
