@@ -6,8 +6,11 @@ import org.example.DAOS.ReporteDAO;
 import org.example.Modelos.Publicacion;
 import org.example.Modelos.Reporte;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+
+import static org.example.Menus.MenuPublicaciones.mostrarPublicaciones;
 
 public class MenuReportes {
 
@@ -19,6 +22,7 @@ public class MenuReportes {
             System.out.println("\n===== GESTIÓN DE REPORTES =====");
             System.out.println("1. Revisar publicaciones reportadas");
             System.out.println("2. Listar reportes pendientes");
+            System.out.println("3. Reportar Publicacion");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
@@ -34,6 +38,9 @@ public class MenuReportes {
                     listarReportesPendientes();
                     break;
 
+                case 3:
+                    reportarPublicacion(sc);
+                    break;
                 case 0:
                     break;
 
@@ -136,6 +143,60 @@ public class MenuReportes {
             default:
                 System.out.println("Operación cancelada.");
                 break;
+        }
+    }
+
+    private static void reportarPublicacion(Scanner sc) {
+
+        System.out.println("\n===== REPORTAR PUBLICACIÓN =====");
+
+        System.out.println("\n--- LISTA DE PUBLICACIONES ACTIVAS ---");
+
+        mostrarPublicaciones(PublicacionDAO.listarActivas());
+        Publicacion publicacion = null;
+        do{
+
+            System.out.print("Ingrese el ID de la publicación a reportar: ");
+            int publicacionId = Integer.parseInt(sc.nextLine());
+
+            publicacion = PublicacionDAO.buscarPorId(publicacionId);
+
+            if (publicacion == null) {
+                System.out.println("No se encontró ninguna publicación con ese ID. ¿Desea intentar de nuevo? S/N: ");
+                String respuesta = sc.nextLine();
+                if (respuesta.equalsIgnoreCase("N")) {
+                    return;
+                }
+            }
+
+        }while(publicacion == null);
+
+        String motivo;
+        do {
+            System.out.print("Escriba el motivo del reporte: ");
+            motivo = sc.nextLine();
+            if (motivo.isBlank()) {
+                System.out.println("El motivo no puede estar vacío.");
+            }
+        } while (motivo.isBlank());
+
+        Reporte reporte = new Reporte(0, publicacion.getMensaje(), motivo, null, LocalDate.now(), null, publicacion.getId());
+
+        System.out.println("\nDatos del reporte:");
+        System.out.println("Publicación: " + publicacion.getMensaje() + " | Motivo: " + motivo);
+
+        System.out.print("¿Confirmar envío del reporte? S/N: ");
+        if (!sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.println("Reporte cancelado.");
+            return;
+        }
+
+        boolean creado = ReporteDAO.crear(reporte);
+
+        if (creado) {
+            System.out.println("Reporte enviado correctamente");
+        } else {
+            System.out.println("No se pudo enviar el reporte");
         }
     }
 }

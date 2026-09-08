@@ -12,6 +12,7 @@ public class MenuAdmin {
     public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
+        boolean sesionActiva = true;
 
         do {
             System.out.println("\n===== MENÚ ADMINISTRADOR =====");
@@ -57,10 +58,19 @@ public class MenuAdmin {
                     break;
 
                 case 7:
-                    System.out.println("Sesión cerrada.");
+                    System.out.print("¿Desea cerrar sesión? S/N: ");
+                    String confirmacion = sc.nextLine();
+                    if (confirmacion.equalsIgnoreCase("S")) {
+                        System.out.println("Sesión cerrada.");
+                        sesionActiva = false;
+                    } else {
+                        System.out.println("Operación cancelada.");
+                    }
+                    break;
+                default:
                     break;
             }
 
-        } while (opcion != 7);
+        } while (sesionActiva);
     }
 }

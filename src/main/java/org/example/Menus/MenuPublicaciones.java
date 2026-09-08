@@ -2,20 +2,15 @@ package org.example.Menus;
 
 import org.example.Consola;
 import org.example.DAOS.PublicacionDAO;
-import org.example.ENUMS.TipoArchivo;
-import org.example.ENUMS.TipoCategoria;
-import org.example.ENUMS.TipoMaterial;
-import org.example.Modelos.Publicacion;
+import org.example.ENUMS.*;
+import org.example.Modelos.*;
+
 import java.util.List;
 import java.util.Scanner;
 import org.example.DAOS.DudaDAO;
 import org.example.DAOS.MensajeDAO;
 import org.example.DAOS.MaterialDAO;
-import org.example.ENUMS.EstadoDuda;
-import org.example.Modelos.Duda;
-import org.example.Modelos.Mensaje;
-import org.example.Modelos.Material;
-import org.example.Modelos.Usuario;
+
 import java.time.LocalDate;
 
 public class MenuPublicaciones {
@@ -30,7 +25,6 @@ public class MenuPublicaciones {
             System.out.println("2. Listar Publicaciones");
             System.out.println("3. Editar Publicacion");
             System.out.println("4. Dar de baja Publicacion");
-            System.out.println("5. Reportar Publicacion");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
@@ -53,9 +47,6 @@ public class MenuPublicaciones {
                 case 4:
                     darDeBajaPublicacion(sc);
                     break;
-
-                case 5:
-
 
                 case 0:
                     break;
@@ -111,7 +102,7 @@ public class MenuPublicaciones {
     }
 
 
-    private static void mostrarPublicaciones(List<Publicacion> publicaciones) {
+    public static void mostrarPublicaciones(List<Publicacion> publicaciones) {
 
         if (publicaciones.isEmpty()) {
             System.out.println("\nNo se encontraron publicaciones.");
@@ -686,8 +677,6 @@ public class MenuPublicaciones {
                     System.out.println("Creación cancelada.");
                     return;
                 }
-
-
 
                 creada = MensajeDAO.crear(publicacionMensaje);
                 break;

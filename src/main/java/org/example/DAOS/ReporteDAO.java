@@ -13,6 +13,24 @@ import java.util.List;
 
 public class ReporteDAO {
 
+    public static boolean crear(Reporte reporte) {
+        String sql = "INSERT INTO reporte (contenido, motivo, fecha_reporte, publicacion_id) VALUES (?,?,?,?)";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, reporte.getContenido());
+            sentencia.setString(2, reporte.getMotivo());
+            sentencia.setObject(3, reporte.getFechaReporte());
+            sentencia.setInt(4, reporte.getPublicacionId());
+
+            return sentencia.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static List<Reporte> listarReportesAbiertos() {
         String sql = "SELECT * FROM reporte WHERE fecha_resolucion IS NULL ORDER BY fecha_reporte";
         try (Connection conexion = ConexionDB.obtenerConexion();
