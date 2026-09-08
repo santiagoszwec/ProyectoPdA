@@ -477,6 +477,7 @@ public class PublicacionDAO {
                 fila.getString("imagen_url"),
                 fila.getObject("fecha_publicacion", LocalDate.class),
                 fila.getBoolean("activa"),
+                fila.getInt("usuario_id"),
                 EstadoDuda.valueOf(fila.getString("estado_duda")),
                 TipoCategoria.valueOf(fila.getString("categoria_duda")));
     }
