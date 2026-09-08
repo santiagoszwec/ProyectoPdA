@@ -42,8 +42,8 @@ public class DudaDAO {
 
             PreparedStatement sentenciaDuda = conexion.prepareStatement(sqlDuda);
             sentenciaDuda.setInt(1, id);
-            sentenciaDuda.setObject(2, duda.getEstado());
-            sentenciaDuda.setObject(3, duda.getCategoria());
+            sentenciaDuda.setObject(2, duda.getEstado().name());
+            sentenciaDuda.setObject(3, duda.getCategoria().name());
 
             return sentenciaDuda.executeUpdate() == 1;
 

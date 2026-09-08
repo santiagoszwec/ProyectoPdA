@@ -632,11 +632,10 @@ public class MenuPublicaciones {
             case 1: {
                 TipoCategoria categoria = pedirCategoria(sc);
 
-                Duda duda = new Duda(EstadoDuda.Abierta, categoria);
+                Duda duda = new Duda(EstadoDuda.Abierta, categoria, usuarioActual.getId());
                 duda.setMensaje(mensaje);
                 duda.setImagenUrl(imagenUrl);
                 duda.setFechaPublicacion(LocalDate.now());
-                duda.setUsuarioId(usuarioActual.getId());
 
                 System.out.println("\nPublicacion a crear:");
                 System.out.println(
