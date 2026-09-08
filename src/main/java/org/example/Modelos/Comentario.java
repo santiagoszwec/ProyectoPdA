@@ -11,6 +11,9 @@ public class Comentario {
     private int publicacionId;
     private Integer comentarioPadreId;
 
+    private boolean destacado;
+    private boolean activa;
+
     // Para crear un comentario nuevo: el id lo genera la base de datos.
     public Comentario(String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId) {
         this.mensaje = mensaje;
@@ -19,10 +22,12 @@ public class Comentario {
         this.usuarioId = usuarioId;
         this.publicacionId = publicacionId;
         this.comentarioPadreId = comentarioPadreId;
+        this.destacado = false;
+        this.activa = true;
     }
 
     // Para reconstruir un comentario leído desde la base de datos.
-    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId) {
+    public Comentario(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, int usuarioId, int publicacionId, Integer comentarioPadreId, boolean destacado, boolean activa) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
@@ -30,6 +35,8 @@ public class Comentario {
         this.usuarioId = usuarioId;
         this.publicacionId = publicacionId;
         this.comentarioPadreId = comentarioPadreId;
+        this.destacado = destacado;
+        this.activa = activa;
     }
 
     public int getId() {
@@ -87,6 +94,22 @@ public class Comentario {
     public void setComentarioPadreId(Integer comentarioPadreId) {
         this.comentarioPadreId = comentarioPadreId;
     }
+    
+    public boolean isDestacado() {
+        return destacado;
+    }
+    
+    public void setDestacado(boolean destacado) {
+        this.destacado = destacado;
+    }
+
+    public boolean isActiva() {
+        return activa;
+    }
+
+    public void setActiva(boolean activa) {
+        this.activa = activa;
+    }
 
     @Override
     public String toString() {
@@ -98,6 +121,8 @@ public class Comentario {
                 ", usuarioId=" + usuarioId +
                 ", publicacionId=" + publicacionId +
                 ", comentarioPadreId=" + comentarioPadreId +
+                ", destacado=" + destacado +
+                ", activa=" + activa +
                 '}';
     }
 }
