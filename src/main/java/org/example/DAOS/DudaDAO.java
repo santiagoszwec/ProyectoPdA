@@ -19,7 +19,7 @@ public class DudaDAO {
     // Duda hereda de Publicacion por tabla dividida: primero se inserta en
     // "publicacion" (para obtener el id autogenerado) y luego en "duda" con ese mismo id.
     public static boolean crear(Duda duda) {
-        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion) VALUES (?,?,?)";
+        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id) VALUES (?,?,?,?)";
         String sqlDuda = "INSERT INTO duda (id, estado, categoria) VALUES (?,?,?)";
 
         try {
@@ -29,6 +29,7 @@ public class DudaDAO {
             sentenciaPublicacion.setString(1, duda.getMensaje());
             sentenciaPublicacion.setString(2, duda.getImagenUrl());
             sentenciaPublicacion.setObject(3, duda.getFechaPublicacion());
+            sentenciaPublicacion.setInt(4, duda.getUsuarioId());
             sentenciaPublicacion.executeUpdate();
 
             ResultSet generadas = sentenciaPublicacion.getGeneratedKeys();
@@ -52,7 +53,7 @@ public class DudaDAO {
     }
 
     public static List<Duda> listarTodos() {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, d.estado, d.categoria " +
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, d.estado, d.categoria " +
                 "FROM publicacion p JOIN duda d ON d.id = p.id " +
                 "WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
 
@@ -76,7 +77,7 @@ public class DudaDAO {
     }
 
     public static Duda buscarPorId(int id) {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, d.estado, d.categoria " +
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, d.estado, d.categoria " +
                 "FROM publicacion p JOIN duda d ON d.id = p.id " +
                 "WHERE p.id = ?";
 
@@ -104,9 +105,24 @@ public class DudaDAO {
         String imagenUrl = filas.getString("imagen_url");
         LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
         boolean activa = filas.getBoolean("activa");
+        int usuarioId = filas.getInt("usuario_id");
         EstadoDuda estado = EstadoDuda.valueOf(filas.getString("estado"));
         TipoCategoria categoria = TipoCategoria.valueOf(filas.getString("categoria"));
 
-        return new Duda(id, mensaje, imagenUrl, fechaPublicacion, !activa, estado, categoria);
+        return new Duda(id, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId, estado, categoria);
+    }
+
+    public static boolean marcarComoResuelta(int dudaId) {
+        String sql = "UPDATE duda SET estado = ? WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, EstadoDuda.Resuelta.name());
+            sentencia.setInt(2, dudaId);
+            return sentencia.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

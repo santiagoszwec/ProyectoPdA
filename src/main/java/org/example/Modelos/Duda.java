@@ -9,13 +9,14 @@ public class Duda extends Publicacion {
     private EstadoDuda estado;
     private TipoCategoria categoria;
 
-    public Duda(EstadoDuda estado, TipoCategoria categoria) {
+    public Duda(EstadoDuda estado, TipoCategoria categoria, int usuarioId) {
         this.estado = estado;
         this.categoria = categoria;
+        this.setUsuarioId(usuarioId);
     }
 
-    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, EstadoDuda estado, TipoCategoria categoria) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
+    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId, EstadoDuda estado, TipoCategoria categoria) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja, usuarioId);
         this.estado = estado;
         this.categoria = categoria;
     }
