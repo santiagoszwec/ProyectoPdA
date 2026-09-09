@@ -4,12 +4,13 @@ import org.example.DAOS.ComentarioDAO;
 import org.example.DAOS.DudaDAO;
 import org.example.DAOS.NotificacionDAO;
 import org.example.ENUMS.EstadoDuda;
-import org.example.ENUMS.TipoCategoria;
 import org.example.ENUMS.TipoNotificacion;
 import org.example.Modelos.Comentario;
 import org.example.Modelos.Duda;
 import org.example.Modelos.Notificacion;
 import org.example.Modelos.Usuario;
+import org.example.DAOS.PublicacionDAO;
+import org.example.Modelos.Publicacion;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -23,14 +24,9 @@ public class MenuDudas {
 
         do {
             System.out.println("\n===== DUDAS Y COMENTARIOS =====");
-            System.out.println("1. Crear duda");
-            System.out.println("2. Listar dudas");
-            System.out.println("3. Responder una duda");
-            System.out.println("4. Comentar una respuesta");
-            System.out.println("5. Marcar duda como resuelta (para autores)");
-            if (usuarioActual.getRol().name().equalsIgnoreCase("Admin")) {
-                System.out.println("6. Eliminar comentario inapropiado (Solo Admin)");
-            }
+            System.out.println("1. Responder una duda");
+            System.out.println("2. Responder una publicacion");
+            System.out.println("3. Marcar duda como resuelta (para autores)");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
@@ -39,22 +35,14 @@ public class MenuDudas {
             switch (opcion) {
 
                 case 1:
-                    crearDuda(sc, usuarioActual);
-                    break;
-
-                case 2:
-                    listarDudas();
-                    break;
-
-                case 3:
                     responderDuda(sc, usuarioActual);
                     break;
 
-                case 4:
+                case 2:
                     comentarRespuesta(sc, usuarioActual);
                     break;
 
-                case 5:
+                case 3:
                     resolverDuda(sc, usuarioActual);
                     break;
 
@@ -67,41 +55,6 @@ public class MenuDudas {
             }
 
         } while (opcion != 0);
-    }
-
-    private static void crearDuda(Scanner sc, Usuario usuarioActual) {
-        System.out.print("Mensaje de la duda: ");
-        String mensaje = sc.nextLine();
-
-        System.out.print("URL de imagen (opcional, Enter para omitir): ");
-        String imagenUrl = sc.nextLine();
-        if (imagenUrl.isBlank()) {
-            imagenUrl = null;
-        }
-
-        System.out.print("Categoría (Ejercicio, Examen, Reunion): ");
-        TipoCategoria categoria = TipoCategoria.valueOf(sc.nextLine().trim());
-
-        Duda duda = new Duda(EstadoDuda.Abierta, categoria, usuarioActual.getId());
-        duda.setMensaje(mensaje);
-        duda.setImagenUrl(imagenUrl);
-        duda.setFechaPublicacion(LocalDate.now());
-
-        boolean creada = DudaDAO.crear(duda);
-        System.out.println(creada ? "Duda creada con éxito." : "No se pudo crear la duda.");
-    }
-
-    private static void listarDudas() {
-        List<Duda> dudas = DudaDAO.listarTodos();
-
-        if (dudas.isEmpty()) {
-            System.out.println("No hay dudas cargadas.");
-            return;
-        }
-
-        for (Duda duda : dudas) {
-            System.out.println("[" + duda.getId() + "] " + duda.getMensaje() + " (" + duda.getEstado() + " - " + duda.getCategoria() + ")");
-        }
     }
 
     private static void responderDuda(Scanner sc, Usuario usuarioActual) {
@@ -130,37 +83,59 @@ public class MenuDudas {
     }
 
     private static void comentarRespuesta(Scanner sc, Usuario usuarioActual) {
-        Duda duda = elegirDuda(sc, null);
-        if (duda == null) {
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        if (publicaciones.isEmpty()) {
+            System.out.println("No hay publicaciones cargadas.");
             return;
         }
 
-        List<Comentario> respuestas = ComentarioDAO.listarPorPublicacion(duda.getId());
-        if (respuestas.isEmpty()) {
-            System.out.println("Esta duda todavía no tiene respuestas. No hay nada que comentar.");
-            return;
+        System.out.println("Publicaciones disponibles:");
+        for (Publicacion publicacion : publicaciones) {
+            System.out.println("[" + publicacion.getId() + "] " + publicacion.getMensaje());
         }
 
-        System.out.println("Respuestas disponibles:");
-        for (Comentario respuesta : respuestas) {
-            String destacado = respuesta.isDestacado() ? " [DESTACADA]" : "";
-            System.out.println("[" + respuesta.getId() + "] " + respuesta.getMensaje() + destacado);
-        }
+        System.out.print("Ingrese el ID de la publicación: ");
+        int publicacionId = Integer.parseInt(sc.nextLine());
 
-        System.out.print("Ingrese el ID de la respuesta que quiere comentar: ");
-        int respuestaId = Integer.parseInt(sc.nextLine());
-
-        Comentario respuestaElegida = respuestas.stream()
-                .filter(r -> r.getId() == respuestaId)
+        Publicacion publicacion = publicaciones.stream()
+                .filter(p -> p.getId() == publicacionId)
                 .findFirst()
                 .orElse(null);
 
-        if (respuestaElegida == null) {
-            System.out.println("Esa respuesta no existe.");
+        if (publicacion == null) {
+            System.out.println("Esa publicación no existe.");
             return;
         }
 
-        System.out.print("Escriba su comentario: ");
+        List<Comentario> comentarios = ComentarioDAO.listarPorPublicacionTodos(publicacion.getId());
+        if (comentarios.isEmpty()) {
+            System.out.println("Esta publicación todavía no tiene comentarios. No hay nada que responder.");
+            return;
+        }
+
+        System.out.println("Comentarios disponibles:");
+        for (Comentario comentario : comentarios) {
+            String destacado = comentario.isDestacado() ? " [DESTACADA]" : "";
+            String anidado = comentario.getComentarioPadreId() != null
+                    ? " (respuesta a " + comentario.getComentarioPadreId() + ")"
+                    : "";
+            System.out.println("[" + comentario.getId() + "] " + comentario.getMensaje() + destacado + anidado);
+        }
+
+        System.out.print("Ingrese el ID del comentario que quiere responder: ");
+        int comentarioId = Integer.parseInt(sc.nextLine());
+
+        Comentario comentarioElegido = comentarios.stream()
+                .filter(c -> c.getId() == comentarioId)
+                .findFirst()
+                .orElse(null);
+
+        if (comentarioElegido == null) {
+            System.out.println("Ese comentario no existe.");
+            return;
+        }
+
+        System.out.print("Escriba su respuesta: ");
         String mensaje = sc.nextLine();
 
         System.out.print("URL de imagen (opcional, Enter para omitir): ");
@@ -169,16 +144,16 @@ public class MenuDudas {
             imagenUrl = null;
         }
 
-        Comentario comentario = new Comentario(mensaje, imagenUrl, LocalDate.now(), usuarioActual.getId(), duda.getId(), respuestaElegida.getId());
-        boolean creado = ComentarioDAO.crear(comentario);
+        Comentario nuevo = new Comentario(mensaje, imagenUrl, LocalDate.now(), usuarioActual.getId(), publicacion.getId(), comentarioElegido.getId());
+        boolean creado = ComentarioDAO.crear(nuevo);
 
         if (!creado) {
-            System.out.println("No se pudo publicar el comentario.");
+            System.out.println("No se pudo publicar la respuesta.");
             return;
         }
 
-        System.out.println("Comentario publicado con éxito.");
-        mostrarComentariosAnidados(respuestaElegida.getId());
+        System.out.println("Respuesta publicada con éxito.");
+        mostrarComentariosAnidados(comentarioElegido.getId());
     }
 
     private static void resolverDuda(Scanner sc, Usuario usuarioActual) {

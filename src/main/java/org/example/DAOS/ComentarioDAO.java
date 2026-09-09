@@ -43,11 +43,31 @@ public class ComentarioDAO {
         }
     }
 
+    public static List<Comentario> listarPorPublicacionTodos(int publicacionId) {
+        String sql = "SELECT * FROM comentario WHERE publicacion_id = ? AND activa = TRUE ORDER BY fecha_publicacion ASC";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, publicacionId);
+
+            ResultSet filas = sentencia.executeQuery();
+
+            List<Comentario> comentarios = new ArrayList<>();
+            while (filas.next()) {
+                comentarios.add(mapearComentario(filas));
+            }
+            return comentarios;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static List<Comentario> listarPorPublicacion(int publicacionId) {
 
         String sql = "SELECT * FROM comentario " +
-                     "WHERE publicacion_id = ? AND comentario_padre_id IS NULL AND activa = TRUE " +
-                     "ORDER BY destacado DESC, fecha_publicacion ASC";
+                "WHERE publicacion_id = ? AND comentario_padre_id IS NULL AND activa = TRUE " +
+                "ORDER BY destacado DESC, fecha_publicacion ASC";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
@@ -68,7 +88,6 @@ public class ComentarioDAO {
             throw new RuntimeException(e);
         }
     }
-
     public static List<Comentario> listarRespuestas(int comentarioPadreId) {
 
         String sql = "SELECT * FROM comentario " +
