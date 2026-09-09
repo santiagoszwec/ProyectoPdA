@@ -17,7 +17,9 @@ public class Main {
 
         Scanner sc = new Scanner(System.in);
         Usuario usuario;
-
+        int cont = 0;
+        String contraseniaNueva;
+        String confirmarContrasenia;
         while (true) {
 
             do {
@@ -30,6 +32,42 @@ public class Main {
 
                 if (usuario == null) {
                     System.out.print("Correo o contrasenia incorrectos. Intente de nuevo\n");
+                    if(cont >= 1)
+                    {
+                        cont = 0;
+                        System.out.print("Olvido su contrasenia? S/N\n");
+                        String respuesta = sc.nextLine();
+                        if(respuesta.equalsIgnoreCase("S"))
+                        {
+                            Usuario usuarioAResetear = UsuarioDAO.buscarPorCorreo(correo);
+
+                            if (usuarioAResetear == null) {
+                                System.out.println("No existe ningún usuario con ese correo.");
+                            } else {
+                                boolean contraseniaConfirmada = false;
+                                do {
+                                    System.out.print("\n === REESTABLECER CONTRASENIA ===");
+                                    System.out.print("\n Ingrese nueva contrasenia: ");
+                                    contraseniaNueva = sc.nextLine();
+                                    System.out.print("\n Ingrese de nuevo la contrasenia para confirmar: ");
+                                    confirmarContrasenia = sc.nextLine();
+                                    if (!contraseniaNueva.equals(confirmarContrasenia)) {
+                                        System.out.println("\nLas contraseñas no coinciden. Intente de nuevo.");
+                                    }else{
+                                        usuarioAResetear.setContrasenia(contraseniaNueva);
+                                        boolean actualizado = UsuarioDAO.actualizar(usuarioAResetear);
+
+                                        if (actualizado) {
+                                            System.out.println("\nContrasenia reestablecida.");
+                                        } else {
+                                            System.out.println("\nNo se pudo actualizar la contraseña.");
+                                        }
+                                        contraseniaConfirmada = true;
+                                    }
+                                } while (!contraseniaConfirmada);
+                            }
+                        }
+                    }
                 } else if (!usuario.isActivo()) {
                     Suspension suspension = SuspensionDAO.obtenerSuspensionActiva(usuario.getId());
 
@@ -46,7 +84,7 @@ public class Main {
                         usuario = null;
                     }
                 }
-
+                cont ++;
             } while (usuario == null);
 
             System.out.print("Bienvenido!\n");
