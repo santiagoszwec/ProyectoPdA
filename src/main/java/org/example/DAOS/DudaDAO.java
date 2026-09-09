@@ -125,4 +125,45 @@ public class DudaDAO {
             throw new RuntimeException(e);
         }
     }
+    public static boolean marcarResueltaYDestacarRespuesta(int dudaId, int comentarioId) {
+        String sqlDuda = "UPDATE duda SET estado = ? WHERE id = ?";
+        String sqlComentario = "UPDATE comentario SET destacado = TRUE WHERE id = ?";
+
+        Connection conexion = null;
+        try {
+            conexion = ConexionDB.obtenerConexion();
+            conexion.setAutoCommit(false);
+
+            try (PreparedStatement stmtDuda = conexion.prepareStatement(sqlDuda)) {
+                stmtDuda.setString(1, EstadoDuda.Resuelta.name());
+                stmtDuda.setInt(2, dudaId);
+                int filasDuda = stmtDuda.executeUpdate();
+
+                try (PreparedStatement stmtComentario = conexion.prepareStatement(sqlComentario)) {
+                    stmtComentario.setInt(1, comentarioId);
+                    int filasComentario = stmtComentario.executeUpdate();
+
+                    if (filasDuda == 1 && filasComentario == 1) {
+                        conexion.commit();
+                        return true;
+                    }
+                    conexion.rollback();
+                    return false;
+                }
+            } catch (SQLException e) {
+                conexion.rollback();
+                throw e;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.setAutoCommit(true);
+                    conexion.close();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
 }

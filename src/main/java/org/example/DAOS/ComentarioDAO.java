@@ -7,6 +7,10 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import org.example.Modelos.Notificacion;
+import org.example.ENUMS.TipoNotificacion;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 public class ComentarioDAO {
 
@@ -122,20 +126,111 @@ public class ComentarioDAO {
         }
     }
 
-    public static boolean darDeBaja(int comentarioId) {
-        String sql = "UPDATE comentario SET activa = FALSE WHERE id = ? OR comentario_padre_id = ?";
-        try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+    public static boolean darDeBaja(int comentarioId, String motivo) {
+        Connection conexion = null;
+        try {
+            conexion = ConexionDB.obtenerConexion();
+            conexion.setAutoCommit(false);
 
-            sentencia.setInt(1, comentarioId);
-            sentencia.setInt(2, comentarioId);
-            return sentencia.executeUpdate() > 0;
+            Integer autorId = obtenerAutorId(conexion, comentarioId);
+            List<Integer> idsAApagar = obtenerDescendientesIncluido(conexion, comentarioId);
+
+            for (int id : idsAApagar) {
+                try (PreparedStatement stmt = conexion.prepareStatement(
+                        "UPDATE comentario SET activa = FALSE WHERE id = ?")) {
+                    stmt.setInt(1, id);
+                    stmt.executeUpdate();
+                }
+            }
+
+            try (PreparedStatement stmt = conexion.prepareStatement(
+                    "UPDATE reporte SET resolucion = ?, fecha_resolucion = ? WHERE comentario_id = ? AND fecha_resolucion IS NULL")) {
+                stmt.setString(1, motivo);
+                stmt.setObject(2, LocalDate.now());
+                stmt.setInt(3, comentarioId);
+                stmt.executeUpdate();
+            }
+
+            boolean notificacionOk = true;
+            if (autorId != null) {
+                notificacionOk = NotificacionDAO.crear(conexion, new Notificacion(
+                        0, LocalDate.now(), TipoNotificacion.Baja,
+                        "Tu comentario ha sido eliminado por un administrador. Motivo: " + motivo, autorId));
+            }
+
+            if (!notificacionOk) {
+                conexion.rollback();
+                return false;
+            }
+
+            conexion.commit();
+            return true;
+
+        } catch (SQLException e) {
+            try {
+                if (conexion != null) conexion.rollback();
+            } catch (SQLException ignored) { }
+            throw new RuntimeException(e);
+        } finally {
+            if (conexion != null) {
+                try {
+                    conexion.setAutoCommit(true);
+                    conexion.close();
+                } catch (SQLException ignored) { }
+            }
+        }
+    }
+
+    private static Integer obtenerAutorId(Connection conexion, int comentarioId) throws SQLException {
+        try (PreparedStatement stmt = conexion.prepareStatement(
+                "SELECT usuario_id FROM comentario WHERE id = ?")) {
+            stmt.setInt(1, comentarioId);
+            try (ResultSet fila = stmt.executeQuery()) {
+                return fila.next() ? fila.getInt("usuario_id") : null;
+            }
+        }
+    }
+
+    // Junta el propio comentario + todos sus descendientes (hijos, nietos, etc.), a cualquier profundidad.
+    private static List<Integer> obtenerDescendientesIncluido(Connection conexion, int comentarioId) throws SQLException {
+        List<Integer> resultado = new ArrayList<>();
+        Deque<Integer> pendientes = new ArrayDeque<>();
+        pendientes.add(comentarioId);
+
+        while (!pendientes.isEmpty()) {
+            int actual = pendientes.poll();
+            resultado.add(actual);
+
+            try (PreparedStatement stmt = conexion.prepareStatement(
+                    "SELECT id FROM comentario WHERE comentario_padre_id = ?")) {
+                stmt.setInt(1, actual);
+                try (ResultSet filas = stmt.executeQuery()) {
+                    while (filas.next()) {
+                        pendientes.add(filas.getInt("id"));
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+
+    public static List<Comentario> listarActivos() {
+        String sql = "SELECT * FROM comentario WHERE activa = TRUE ORDER BY fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet filas = sentencia.executeQuery()) {
+
+            List<Comentario> comentarios = new ArrayList<>();
+            while (filas.next()) {
+                comentarios.add(mapearComentario(filas));
+            }
+            return comentarios;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-
     private static Comentario mapearComentario(ResultSet fila) throws SQLException {
 
         int padreId = fila.getInt("comentario_padre_id");

@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ import java.util.List;
 public class ReporteDAO {
 
     public static boolean crear(Reporte reporte) {
-        String sql = "INSERT INTO reporte (contenido, motivo, fecha_reporte, publicacion_id) VALUES (?,?,?,?)";
+        String sql = "INSERT INTO reporte (contenido, motivo, fecha_reporte, publicacion_id, comentario_id) VALUES (?,?,?,?,?)";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
@@ -22,7 +23,8 @@ public class ReporteDAO {
             sentencia.setString(1, reporte.getContenido());
             sentencia.setString(2, reporte.getMotivo());
             sentencia.setObject(3, reporte.getFechaReporte());
-            sentencia.setInt(4, reporte.getPublicacionId());
+            sentencia.setObject(4, reporte.getPublicacionId(), Types.INTEGER);
+            sentencia.setObject(5, reporte.getComentarioId(), Types.INTEGER);
 
             return sentencia.executeUpdate() == 1;
 
@@ -33,6 +35,20 @@ public class ReporteDAO {
 
     public static List<Reporte> listarReportesAbiertos() {
         String sql = "SELECT * FROM reporte WHERE fecha_resolucion IS NULL ORDER BY fecha_reporte";
+        return listarConSql(sql);
+    }
+
+    public static List<Reporte> listarReportesPublicacionesAbiertos() {
+        String sql = "SELECT * FROM reporte WHERE publicacion_id IS NOT NULL AND fecha_resolucion IS NULL ORDER BY fecha_reporte";
+        return listarConSql(sql);
+    }
+
+    public static List<Reporte> listarReportesComentariosAbiertos() {
+        String sql = "SELECT * FROM reporte WHERE comentario_id IS NOT NULL AND fecha_resolucion IS NULL ORDER BY fecha_reporte";
+        return listarConSql(sql);
+    }
+
+    private static List<Reporte> listarConSql(String sql) {
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql);
              ResultSet filas = sentencia.executeQuery()) {
@@ -84,7 +100,13 @@ public class ReporteDAO {
         String resolucion = filas.getString("resolucion");
         LocalDate fechaReporte = filas.getObject("fecha_reporte", LocalDate.class);
         LocalDate fechaResolucion = filas.getObject("fecha_resolucion", LocalDate.class);
-        int publicacionId = filas.getInt("publicacion_id");
-        return new Reporte(id, contenido, motivo, resolucion, fechaReporte, fechaResolucion, publicacionId);
+
+        int pubId = filas.getInt("publicacion_id");
+        Integer publicacionId = filas.wasNull() ? null : pubId;
+
+        int comId = filas.getInt("comentario_id");
+        Integer comentarioId = filas.wasNull() ? null : comId;
+
+        return new Reporte(id, contenido, motivo, resolucion, fechaReporte, fechaResolucion, publicacionId, comentarioId);
     }
 }

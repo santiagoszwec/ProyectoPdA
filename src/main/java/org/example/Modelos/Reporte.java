@@ -10,16 +10,8 @@ public class Reporte {
     private String resolucion;
     private LocalDate fechaReporte;
     private LocalDate fechaResolucion;
-    private int publicacionId;
-
-    public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte, LocalDate fechaResolucion) {
-        this.id = id;
-        this.contenido = contenido;
-        this.motivo = motivo;
-        this.resolucion = resolucion;
-        this.fechaReporte = fechaReporte;
-        this.fechaResolucion = fechaResolucion;
-    }
+    private Integer publicacionId;
+    private Integer comentarioId;
 
     public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte, LocalDate fechaResolucion, int publicacionId) {
         this.id = id;
@@ -29,6 +21,26 @@ public class Reporte {
         this.fechaReporte = fechaReporte;
         this.fechaResolucion = fechaResolucion;
         this.publicacionId = publicacionId;
+    }
+
+    public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte,
+                   LocalDate fechaResolucion, Integer publicacionId, Integer comentarioId) {
+        this.id = id;
+        this.contenido = contenido;
+        this.motivo = motivo;
+        this.resolucion = resolucion;
+        this.fechaReporte = fechaReporte;
+        this.fechaResolucion = fechaResolucion;
+        this.publicacionId = publicacionId;
+        this.comentarioId = comentarioId;
+    }
+
+    public Integer getComentarioId() {
+        return comentarioId;
+    }
+
+    public void setComentarioId(Integer comentarioId) {
+        this.comentarioId = comentarioId;
     }
 
     public int getId() {
@@ -79,11 +91,11 @@ public class Reporte {
         this.fechaResolucion = fechaResolucion;
     }
 
-    public int getPublicacionId() {
+    public Integer getPublicacionId() {
         return publicacionId;
     }
 
-    public void setPublicacionId(int publicacionId) {
+    public void setPublicacionId(Integer publicacionId) {
         this.publicacionId = publicacionId;
     }
 

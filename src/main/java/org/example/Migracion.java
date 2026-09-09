@@ -117,9 +117,12 @@ public class Migracion {
                             "  resolucion TEXT," +
                             "  fecha_reporte DATE NOT NULL," +
                             "  fecha_resolucion DATE," +
-                            "  publicacion_id INT NOT NULL," +
-                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)" +
+                            "  publicacion_id INT," +
+                            "  comentario_id INT," +
+                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)," +
+                            "  FOREIGN KEY (comentario_id) REFERENCES comentario(id) ON DELETE CASCADE" +
                             ")",
+
 
             };
 
