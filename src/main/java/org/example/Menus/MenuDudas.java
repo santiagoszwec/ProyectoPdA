@@ -58,14 +58,6 @@ public class MenuDudas {
                     resolverDuda(sc, usuarioActual);
                     break;
 
-                case 6:
-                    if (usuarioActual.getRol().name().equalsIgnoreCase("Admin")) {
-                        eliminarComentario(sc);
-                    } else {
-                        System.out.println("Opción inválida.");
-                    }
-                    break;
-
                 case 0:
                     break;
 
@@ -190,7 +182,7 @@ public class MenuDudas {
     }
 
     private static void resolverDuda(Scanner sc, Usuario usuarioActual) {
-        // Filtrar para mostrar solo las dudas que creó este usuario (o todas si es Admin)
+
         Duda duda = elegirDuda(sc, usuarioActual);
         if (duda == null) {
             return;
@@ -225,15 +217,13 @@ public class MenuDudas {
             return;
         }
 
-        // Marcar la duda como resuelta
-        boolean dudaResuelta = DudaDAO.marcarComoResuelta(duda.getId());
-        // Destacar el comentario
-        boolean comentarioDestacado = ComentarioDAO.marcarComoDestacado(respuestaElegida.getId());
 
-        if (dudaResuelta && comentarioDestacado) {
+        boolean exito = DudaDAO.marcarResueltaYDestacarRespuesta(duda.getId(), respuestaElegida.getId());
+
+        if (exito) {
             System.out.println("La duda fue marcada como Resuelta y la respuesta fue destacada.");
             
-            // Enviar notificación al autor de la respuesta
+
             Notificacion notificacion = new Notificacion(
                     0, // ID autogenerado
                     LocalDate.now(),
@@ -249,58 +239,6 @@ public class MenuDudas {
         }
     }
 
-    private static void eliminarComentario(Scanner sc) {
-        Duda duda = elegirDuda(sc, null);
-        if (duda == null) {
-            return;
-        }
-
-        List<Comentario> respuestas = ComentarioDAO.listarPorPublicacion(duda.getId());
-        if (respuestas.isEmpty()) {
-            System.out.println("Esta duda no tiene respuestas o comentarios para eliminar.");
-            return;
-        }
-
-        System.out.println("Comentarios disponibles en esta duda:");
-        for (Comentario respuesta : respuestas) {
-            System.out.println("[" + respuesta.getId() + "] (Respuesta de Usuario " + respuesta.getUsuarioId() + ") " + respuesta.getMensaje());
-            List<Comentario> anidados = ComentarioDAO.listarRespuestas(respuesta.getId());
-            for (Comentario anidado : anidados) {
-                System.out.println("  -> [" + anidado.getId() + "] (Anidado de Usuario " + anidado.getUsuarioId() + ") " + anidado.getMensaje());
-            }
-        }
-
-        System.out.print("Ingrese el ID del comentario (o respuesta) que desea eliminar: ");
-        int comentarioId = Integer.parseInt(sc.nextLine());
-        
-        Comentario comentarioAEliminar = ComentarioDAO.buscarPorId(comentarioId);
-        
-        if (comentarioAEliminar == null || comentarioAEliminar.getPublicacionId() != duda.getId()) {
-            System.out.println("No se encontró ese comentario en esta duda.");
-            return;
-        }
-
-        System.out.print("Ingrese el motivo de la eliminación: ");
-        String motivo = sc.nextLine();
-
-        boolean eliminado = ComentarioDAO.darDeBaja(comentarioId);
-        if (eliminado) {
-            System.out.println("Comentario eliminado lógicamente con éxito (junto con sus respuestas si las tuviera).");
-
-            Notificacion notificacion = new Notificacion(
-                    0, 
-                    LocalDate.now(),
-                    TipoNotificacion.Baja,
-                    "Tu comentario ha sido eliminado por un administrador. Motivo: " + motivo
-            );
-            notificacion.setUsuarioId(comentarioAEliminar.getUsuarioId());
-            NotificacionDAO.crear(notificacion);
-            System.out.println("Se ha notificado al autor del comentario.");
-        } else {
-            System.out.println("No se pudo eliminar el comentario.");
-        }
-    }
-
     private static void mostrarComentariosAnidados(int comentarioPadreId) {
         List<Comentario> anidados = ComentarioDAO.listarRespuestas(comentarioPadreId);
 
@@ -310,7 +248,7 @@ public class MenuDudas {
         }
     }
 
-    // Permitir elegir una duda. Si se pasa un usuario (para resolver), solo se muestran sus dudas.
+
     private static Duda elegirDuda(Scanner sc, Usuario filtroUsuario) {
         List<Duda> dudas = DudaDAO.listarTodos();
 
@@ -319,14 +257,14 @@ public class MenuDudas {
             return null;
         }
 
-        // Filtrar si es necesario (el admin puede ver todas si quisieramos, pero aquí filtramos por autor para simplificar)
-        if (filtroUsuario != null && !filtroUsuario.getRol().name().equalsIgnoreCase("Admin")) {
+        if (filtroUsuario != null) {
             dudas.removeIf(d -> d.getUsuarioId() != filtroUsuario.getId());
             if (dudas.isEmpty()) {
                 System.out.println("No tienes dudas creadas para resolver.");
                 return null;
             }
         }
+
 
         System.out.println("Dudas disponibles:");
         for (Duda duda : dudas) {
