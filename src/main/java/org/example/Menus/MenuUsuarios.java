@@ -69,6 +69,11 @@ public class MenuUsuarios {
 
         System.out.print("Correo: ");
         String correo = sc.nextLine();
+        Usuario usuarioExistente = UsuarioDAO.buscarPorCorreo(correo);
+        if (usuarioExistente != null) {
+            System.out.println("Ya existe un usuario con ese correo.");
+            return;
+        }
 
         System.out.print("Año de generación: ");
         int anioDeGeneracion;
@@ -108,6 +113,8 @@ public class MenuUsuarios {
 
         System.out.print("Contraseña: ");
         String contrasenia = sc.nextLine();
+
+
 
         Usuario usuario = new Usuario(nombre, correo, anioDeGeneracion, rol, contrasenia);
         int usuarioId = UsuarioDAO.crear(usuario);

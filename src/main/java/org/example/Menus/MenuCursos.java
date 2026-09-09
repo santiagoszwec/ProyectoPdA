@@ -71,14 +71,10 @@ public class MenuCursos {
 
         Curso curso = new Curso(nombre, semestre, anio, creditos, descripcion);
 
-        int cursoId = CursoDAO.crear(curso);
-
-        if (cursoId > 0) {
+        boolean c = CursoDAO.crear(curso);
+        if (c) {
             System.out.println("\nCurso creado correctamente.");
 
-            /*if (respuesta.equalsIgnoreCase("S")) {
-                agregarTemas(sc, cursoId);
-            }*/
         } else {
             System.out.println("\nNo se pudo crear el curso.");
         }

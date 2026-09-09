@@ -7,19 +7,18 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CursoDAO {
 
-    public static int crear(Curso curso) {
+    public static boolean crear(Curso curso) {
         String sql = "INSERT INTO curso (nombre, semestre, anio, creditos, descripcion) VALUES (?, ?, ?, ?, ?)";
 
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            PreparedStatement sentencia = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
 
             sentencia.setString(1, curso.getNombre());
             sentencia.setInt(2, curso.getSemestre());
@@ -27,15 +26,8 @@ public class CursoDAO {
             sentencia.setInt(4, curso.getCreditos());
             sentencia.setString(5, curso.getDescripcion());
 
-            sentencia.executeUpdate();
-
-            ResultSet claves = sentencia.getGeneratedKeys();
-
-            if (claves.next()) {
-                return claves.getInt(1);
-            }
-
-            throw new RuntimeException("No se pudo obtener el ID del curso.");
+            int filasAfectadas = sentencia.executeUpdate();
+            return filasAfectadas == 1;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
