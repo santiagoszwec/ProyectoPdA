@@ -228,9 +228,14 @@ public class MenuCursos {
                             " | Semestre: " + curso.getSemestre() +
                             " | Año: " + curso.getAnio());
         }
-
+        int id;
         System.out.print("\nIngrese el ID del curso a eliminar: ");
-        int id = Integer.parseInt(sc.nextLine());
+        try {
+            id = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar un número válido.");
+            return;
+        }
 
         Curso cursoSeleccionado = null;
 

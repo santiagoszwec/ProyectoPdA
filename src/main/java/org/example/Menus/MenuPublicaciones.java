@@ -18,7 +18,6 @@ public class MenuPublicaciones {
     public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
-
         do {
             System.out.println("\n===== GESTIÓN DE PUBLICACIONES=====");
             System.out.println("1. Crear Publicacion");
@@ -29,28 +28,21 @@ public class MenuPublicaciones {
             System.out.print("Seleccione una opción: ");
 
             opcion = Consola.leerOpcion(sc);
-
             switch (opcion) {
-
                 case 1:
                     crearPublicacion(sc, usuarioActual);
                     break;
-
                 case 2:
                     menuListarPublicaciones(sc);
                     break;
-
                 case 3:
                     editarPublicacion(sc);
                     break;
-
                 case 4:
                     darDeBajaPublicacion(sc);
                     break;
-
                 case 0:
                     break;
-
                 default:
                     break;
             }
@@ -61,7 +53,6 @@ public class MenuPublicaciones {
     private static void menuListarPublicaciones(Scanner sc) {
 
         int opcion;
-
         do {
             System.out.println("\n===== LISTAR PUBLICACIONES =====");
             System.out.println("1. Todas las publicaciones");
@@ -73,28 +64,21 @@ public class MenuPublicaciones {
             System.out.print("Seleccione una opción: ");
 
             opcion = Consola.leerOpcion(sc);
-
             switch (opcion) {
-
                 case 1:
                     mostrarPublicaciones(PublicacionDAO.listarActivas());
                     break;
-
                 case 2:
-
+                    menuMensajes(sc);
                     break;
-
                 case 3:
-
+                    menuDudas(sc);
                     break;
-
                 case 4:
-
+                    menuMateriales(sc);
                     break;
-
                 case 0:
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
@@ -130,22 +114,17 @@ public class MenuPublicaciones {
             opcion = Consola.leerOpcion(sc);
 
             switch (opcion) {
-
                 case 1:
                     mostrarPublicaciones(PublicacionDAO.listarMensajes());
                     break;
-
                 case 2:
                     filtrarMensajesPorCategoria(sc);
                     break;
-
                 case 0:
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
-
         } while (opcion != 0);
     }
 
@@ -161,20 +140,16 @@ public class MenuPublicaciones {
 
         int opcion = Consola.leerOpcion(sc);
         String categoria;
-
         switch (opcion) {
             case 1:
                 categoria = "Ejercicio";
                 break;
-
             case 2:
                 categoria = "Examen";
                 break;
-
             case 3:
                 categoria = "Reunion";
                 break;
-
             default:
                 System.out.println("Categoría inválida.");
                 return;
@@ -185,7 +160,6 @@ public class MenuPublicaciones {
     private static void menuDudas(Scanner sc) {
 
         int opcion;
-
         do {
             System.out.println("\n===== DUDAS =====");
             System.out.println("1. Mostrar todas las dudas");
@@ -195,23 +169,18 @@ public class MenuPublicaciones {
             System.out.print("Seleccione una opción: ");
 
             opcion = Consola.leerOpcion(sc);
-
             switch (opcion) {
                 case 1:
                     mostrarPublicaciones(PublicacionDAO.listarDudas());
                     break;
-
                 case 2:
                     filtrarDudasPorCategoria(sc);
                     break;
-
                 case 3:
                     filtrarDudasPorEstado(sc);
                     break;
-
                 case 0:
                     break;
-
                 default:
                     System.out.println("Opción inválida.");
             }
@@ -229,25 +198,20 @@ public class MenuPublicaciones {
 
         int opcion = Consola.leerOpcion(sc);
         String categoria;
-
         switch (opcion) {
             case 1:
                 categoria = "Ejercicio";
                 break;
-
             case 2:
                 categoria = "Examen";
                 break;
-
             case 3:
                 categoria = "Reunion";
                 break;
-
             default:
                 System.out.println("Categoría inválida.");
                 return;
         }
-
         mostrarPublicaciones(PublicacionDAO.filtrarDudasPorCategoria(categoria));
     }
 
@@ -261,7 +225,6 @@ public class MenuPublicaciones {
 
         int opcion = Consola.leerOpcion(sc);
         String estado;
-
         switch (opcion) {
             case 1:
                 estado = "Abierta";
@@ -273,14 +236,12 @@ public class MenuPublicaciones {
                 System.out.println("Estado inválido.");
                 return;
         }
-
         mostrarPublicaciones(PublicacionDAO.filtrarDudasPorEstado(estado));
     }
 
     private static void menuMateriales(Scanner sc) {
 
         int opcion;
-
         do {
             System.out.println("\n===== MATERIALES =====");
             System.out.println("1. Mostrar todos los materiales");
@@ -290,24 +251,19 @@ public class MenuPublicaciones {
             System.out.print("Seleccione una opción: ");
 
             opcion = Consola.leerOpcion(sc);
-
             switch (opcion) {
                 case 1:
                     mostrarPublicaciones(PublicacionDAO.listarMateriales());
                     break;
-
                 case 2:
                     filtrarMaterialesPorTipo(sc);
                     break;
-
                 case 3:
                     filtrarMaterialesPorArchivo(sc);
                     break;
-
                 case 0:
                     break;
             }
-
         } while (opcion != 0);
     }
 
@@ -323,29 +279,23 @@ public class MenuPublicaciones {
 
         int opcion = Consola.leerOpcion(sc);
         String tipoMaterial;
-
         switch (opcion) {
             case 1:
                 tipoMaterial = "Apuntes";
                 break;
-
             case 2:
                 tipoMaterial = "Ejercicio";
                 break;
-
             case 3:
                 tipoMaterial = "Libro";
                 break;
-
             case 4:
                 tipoMaterial = "Video";
                 break;
-
             default:
                 System.out.println("Tipo de material inválido.");
                 return;
         }
-
         mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorTipo(tipoMaterial));
     }
 
@@ -360,20 +310,16 @@ public class MenuPublicaciones {
 
         int opcion = Consola.leerOpcion(sc);
         String tipoArchivo;
-
         switch (opcion) {
             case 1:
                 tipoArchivo = "PDF";
                 break;
-
             case 2:
                 tipoArchivo = "JPG";
                 break;
-
             case 3:
                 tipoArchivo = "PNG";
                 break;
-
             default:
                 System.out.println("Tipo de archivo inválido.");
                 return;

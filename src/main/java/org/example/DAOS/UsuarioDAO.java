@@ -4,29 +4,32 @@ import org.example.ConexionDB;
 import org.example.ENUMS.TipoRol;
 import org.example.Modelos.Usuario;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioDAO {
-    public static boolean crear(Usuario usuario) {
+    public static int crear(Usuario usuario) {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
             String sql = "INSERT INTO usuario (nombre, correo, anio_de_generacion, rol, contrasenia) VALUES (?,?,?,?,?)";
 
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+            PreparedStatement sentencia = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             sentencia.setString(1, usuario.getNombre());
             sentencia.setString(2, usuario.getCorreo());
             sentencia.setInt(3, usuario.getAnioDeGeneracion());
             sentencia.setString(4, usuario.getRol().toString());
             sentencia.setString(5, usuario.getContrasenia());
-            int filasAfectadas = sentencia.executeUpdate();
+            sentencia.executeUpdate();
 
-            return filasAfectadas == 1;
+            ResultSet claves = sentencia.getGeneratedKeys();
+
+            if (claves.next()) {
+                return claves.getInt(1);
+            }
+
+            throw new RuntimeException("No se pudo obtener el ID del curso.");
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
