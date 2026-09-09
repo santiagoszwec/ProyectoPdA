@@ -21,6 +21,13 @@ public class Usuario {
         this.contrasenia = contrasenia;
         this.activo = activo;
     }
+    public Usuario(String nombre, String correo, int anioDeGeneracion, TipoRol rol, String contrasenia) {
+        this.nombre = nombre;
+        this.correo = correo;
+        this.anioDeGeneracion = anioDeGeneracion;
+        this.rol = rol;
+        this.contrasenia = contrasenia;
+    }
 
     public String getNombre() {
         return nombre;

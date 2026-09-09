@@ -32,7 +32,7 @@ public class MenuUsuarios {
 
             switch (opcion) {
                 case 1:
-
+                    agregarUsuario(sc);
                     break;
                 case 2:
                     listarUsuarios(sc);
@@ -60,6 +60,63 @@ public class MenuUsuarios {
             }
 
         } while (opcion != 0);
+    }
+    private static void agregarUsuario(Scanner sc) {
+        System.out.println("\n===== CREAR USUARIO =====");
+
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();
+
+        System.out.print("Correo: ");
+        String correo = sc.nextLine();
+
+        System.out.print("Año de generación: ");
+        int anioDeGeneracion;
+
+        try {
+            anioDeGeneracion = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("El año debe ser un número.");
+            return;
+        }
+
+        System.out.println("Rol:");
+        System.out.println("1. Estudiante");
+        System.out.println("2. Administrador");
+        System.out.print("Seleccione un rol: ");
+
+        int opcionRol;
+        try {
+            opcionRol = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Debe ingresar una opción válida.");
+            return;
+        }
+
+        TipoRol rol;
+        switch (opcionRol) {
+            case 1:
+                rol = TipoRol.Estudiante;
+                break;
+            case 2:
+                rol = TipoRol.Admin;
+                break;
+            default:
+                System.out.println("Opción de rol inválida.");
+                return;
+        }
+
+        System.out.print("Contraseña: ");
+        String contrasenia = sc.nextLine();
+
+        Usuario usuario = new Usuario(nombre, correo, anioDeGeneracion, rol, contrasenia);
+        int usuarioId = UsuarioDAO.crear(usuario);
+        if(usuarioId > 0){
+            System.out.println("Usuario creado con éxito.");
+        }
+        else{
+            System.out.println("Error al crear usuario.");
+        }
     }
 
     private static void listarUsuarios(Scanner sc) {
