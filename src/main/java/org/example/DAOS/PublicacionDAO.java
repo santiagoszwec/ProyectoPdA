@@ -456,6 +456,54 @@ public class PublicacionDAO {
         }
     }
 
+    public static List<Publicacion> filtrarMaterialesPorEtiquetas(List<TipoMaterial> tiposMaterial, List<TipoArchivo> tiposArchivo) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder("SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE ");
+
+        List<String> parametros = new ArrayList<>();
+
+        if (tiposMaterial != null && !tiposMaterial.isEmpty()) {
+            sql.append("AND m.tipo_material IN (");
+            for (int i = 0; i < tiposMaterial.size(); i++) {
+                sql.append(i == 0 ? "?" : ",?");
+                parametros.add(tiposMaterial.get(i).name());
+            }
+            sql.append(") ");
+        }
+
+        if (tiposArchivo != null && !tiposArchivo.isEmpty()) {
+            sql.append("AND m.tipo_archivo IN (");
+            for (int i = 0; i < tiposArchivo.size(); i++) {
+                sql.append(i == 0 ? "?" : ",?");
+                parametros.add(tiposArchivo.get(i).name());
+            }
+            sql.append(") ");
+        }
+
+        sql.append("ORDER BY p.fecha_publicacion");
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < parametros.size(); i++) {
+                sentencia.setString(i + 1, parametros.get(i));
+            }
+
+            ResultSet filas = sentencia.executeQuery();
+
+            while (filas.next()) {
+                publicaciones.add(convertirMaterial(filas));
+            }
+            return publicaciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private static Material convertirMaterial(ResultSet fila)
             throws SQLException {
 

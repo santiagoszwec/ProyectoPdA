@@ -18,7 +18,7 @@ public class MenuAdmin {
             System.out.println("\n===== MENÚ ADMINISTRADOR =====");
             System.out.println("1. Gestión de cursos");
             System.out.println("2. Gestión de usuarios");
-            System.out.println("3. Gestión de materiales");
+            System.out.println("3. Material de Estudio");
             System.out.println("4. Gestión de publicaciones");
             System.out.println("5. Gestión de reportes");
             System.out.println("6. Gestión de dudas y comentarios");
@@ -39,8 +39,8 @@ public class MenuAdmin {
                     break;
 
                 case 3:
-                    System.out.println("Gestión de materiales");
-                    // MenuMateriales.mostrar(sc);
+                    System.out.println("Material de Estudio");
+                    MenuMateriales.mostrar(sc);
                     break;
 
                 case 4:
