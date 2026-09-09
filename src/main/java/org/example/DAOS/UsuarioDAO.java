@@ -183,4 +183,32 @@ public class UsuarioDAO {
         }
     }
 
+    public static Usuario buscarPorCorreo(String correo) {
+        try {
+            Connection conexion = ConexionDB.obtenerConexion();
+
+            String sql = "SELECT * FROM usuario WHERE correo = ?";
+            PreparedStatement sentencia = conexion.prepareStatement(sql);
+            sentencia.setString(1, correo);
+
+            ResultSet fila = sentencia.executeQuery();
+
+            if (fila.next()) {
+                return new Usuario(
+                        fila.getInt("id"),
+                        fila.getString("nombre"),
+                        fila.getString("correo"),
+                        fila.getInt("anio_de_generacion"),
+                        TipoRol.valueOf(fila.getString("rol")),
+                        fila.getString("contrasenia"),
+                        fila.getBoolean("activo"));
+            }
+
+            return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

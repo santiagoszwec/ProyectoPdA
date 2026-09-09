@@ -354,7 +354,7 @@ public class MenuCursos {
 
         String creditosTemp;
         do {
-            System.out.print("Ingrese nuevos creditos, enter para mantener: ");
+            System.out.print("Ingrese nuevos creditos (1 a 20), enter para mantener: ");
             creditosTemp= sc.nextLine();
 
             if (creditosTemp.isBlank()) {
