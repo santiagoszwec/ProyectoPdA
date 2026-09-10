@@ -172,7 +172,7 @@ public class ComentarioDAO {
 
             boolean notificacionOk = true;
             if (autorId != null) {
-                notificacionOk = NotificacionDAO.crear(conexion, new Notificacion(
+                notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
                         0, LocalDate.now(), TipoNotificacion.Baja,
                         "Tu comentario ha sido eliminado por un administrador. Motivo: " + motivo, autorId));
             }

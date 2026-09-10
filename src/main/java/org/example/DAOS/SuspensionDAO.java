@@ -33,7 +33,7 @@ public class SuspensionDAO {
                     "INSERT INTO suspension (usuario_id, motivo, fecha_suspension, fecha_fin, activa) VALUES (?,?,?,?,TRUE)",
                     usuarioId, motivo, fechaSuspension, fechaFin);
 
-            boolean notificacionOk = NotificacionDAO.crear(conexion, new Notificacion(
+            boolean notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
                     0, fechaSuspension, TipoNotificacion.Suspension,
                     "Su cuenta ha sido suspendida hasta " + fechaFin + ". Motivo: " + motivo, usuarioId));
 
@@ -78,7 +78,7 @@ public class SuspensionDAO {
             boolean suspensionOk = ejecutarUpdate(conexion,
                     "UPDATE suspension SET activa = FALSE WHERE usuario_id = ? AND activa = TRUE", usuarioId);
 
-            boolean notificacionOk = NotificacionDAO.crear(conexion, new Notificacion(
+            boolean notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
                     0, LocalDate.now(), TipoNotificacion.Suspension,
                     "Su suspensión ha sido levantada. Ya puede iniciar sesión.", usuarioId));
 

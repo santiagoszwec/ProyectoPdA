@@ -164,7 +164,7 @@ public class PublicacionDAO {
 
             boolean notificacionOk = true;
             if (autorId != null) {
-                notificacionOk = NotificacionDAO.crear(conexion, new Notificacion(
+                notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
                         0, LocalDate.now(), TipoNotificacion.Baja,
                         "Su publicación ha sido dada de baja por infracción de las normas.", autorId));
             }

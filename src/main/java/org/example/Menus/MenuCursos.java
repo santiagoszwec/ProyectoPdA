@@ -4,6 +4,7 @@ import org.example.Consola;
 import org.example.DAOS.CursoDAO;
 import org.example.Modelos.Curso;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 
@@ -57,14 +58,45 @@ public class MenuCursos {
         System.out.print("Nombre: ");
         String nombre = sc.nextLine();
 
-        System.out.print("Semestre: ");
-        int semestre = Integer.parseInt(sc.nextLine());
+        System.out.print("Semestre (del 1 al 6): ");
+        int semestre;
+        try {
+            semestre = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("El semestre debe ser un número.");
+            return;
+        }
+        if (semestre < 1 || semestre > 6) {
+            System.out.println("Semestre inválido, debe estar entre 1 y 6.");
+            return;
+        }
 
         System.out.print("Año: ");
-        int anio = Integer.parseInt(sc.nextLine());
+        int anio;
+        try {
+            anio = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("El año debe ser un número.");
+            return;
+        }
+        int anioActual = LocalDate.now().getYear();
+        if (anio < 2008 || anio > anioActual) {
+            System.out.println("Año inválido, debe estar entre 2008 y " + anioActual + ".");
+            return;
+        }
 
         System.out.print("Créditos: ");
-        int creditos = Integer.parseInt(sc.nextLine());
+        int creditos;
+        try {
+            creditos = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Los créditos deben ser un número.");
+            return;
+        }
+        if (creditos < 0 || creditos > 20) {
+            System.out.println("Créditos inválidos, deben estar entre 0 y 20.");
+            return;
+        }
 
         System.out.print("Descripción: ");
         String descripcion = sc.nextLine();
