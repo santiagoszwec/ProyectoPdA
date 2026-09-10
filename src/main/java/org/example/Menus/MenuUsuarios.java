@@ -21,10 +21,11 @@ public class MenuUsuarios {
             System.out.println("\n===== GESTIÓN DE USUARIOS =====");
             System.out.println("1. Agregar usuario");
             System.out.println("2. Listar usuarios");
-            System.out.println("3. Modificar usuario");
+            System.out.println("3. Cambiar rol de usuario");
             System.out.println("4. Eliminar usuario");
             System.out.println("5. Suspender usuario");
             System.out.println("6. Reactivar usuario");
+            System.out.println("7. Modificar usuario");
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
@@ -53,6 +54,11 @@ public class MenuUsuarios {
                 case 6:
                     reactivarUsuario(sc);
                     break;
+
+                case 7:
+                    modificarUsuario(sc);
+                    break;
+
 
                 case 0:
 
@@ -304,6 +310,103 @@ public class MenuUsuarios {
             System.out.println("Rol actualizado correctamente.");
         } else {
             System.out.println("No se pudo actualizar el rol.");
+        }
+    }
+    private static void modificarUsuario(Scanner sc) {
+
+        System.out.println("\n===== MODIFICAR USUARIO =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios registrados.");
+            return;
+        }
+
+        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
+        String respuesta = sc.nextLine();
+
+        if (respuesta.equalsIgnoreCase("S")) {
+            filtrarUsuarios(sc);
+        } else {
+            for (Usuario usuario : usuarios) {
+                mostrarUsuario(usuario);
+            }
+        }
+
+        System.out.print("\nIngrese el ID del usuario a modificar: ");
+        int id;
+        try {
+            id = Integer.parseInt(sc.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("El ID debe ser un número.");
+            return;
+        }
+
+        Usuario usuarioSeleccionado = null;
+        for (Usuario usuario : usuarios) {
+            if (usuario.getId() == id) {
+                usuarioSeleccionado = usuario;
+                break;
+            }
+        }
+
+        if (usuarioSeleccionado == null) {
+            System.out.println("No se encontró ningún usuario con ese ID.");
+            return;
+        }
+
+        System.out.println("\nDatos actuales:");
+        mostrarUsuario(usuarioSeleccionado);
+        System.out.println("Deje el campo vacío (Enter) para mantener el valor actual.");
+
+        System.out.print("Nuevo nombre [" + usuarioSeleccionado.getNombre() + "]: ");
+        String nombre = sc.nextLine();
+        if (!nombre.isBlank()) {
+            usuarioSeleccionado.setNombre(nombre);
+        }
+
+        System.out.print("Nuevo correo [" + usuarioSeleccionado.getCorreo() + "]: ");
+        String correo = sc.nextLine();
+        if (!correo.isBlank()) {
+            if (!correo.contains("@")) {
+                System.out.println("El correo ingresado no es válido. Operación cancelada.");
+                return;
+            }
+            usuarioSeleccionado.setCorreo(correo);
+        }
+
+        System.out.print("Nuevo año de generación [" + usuarioSeleccionado.getAnioDeGeneracion() + "]: ");
+        String anioTexto = sc.nextLine();
+        if (!anioTexto.isBlank()) {
+            try {
+                usuarioSeleccionado.setAnioDeGeneracion(Integer.parseInt(anioTexto));
+            } catch (NumberFormatException e) {
+                System.out.println("El año debe ser un número. Operación cancelada.");
+                return;
+            }
+        }
+
+        System.out.print("Nueva contraseña (Enter para no cambiarla): ");
+        String contrasenia = sc.nextLine();
+        if (!contrasenia.isBlank()) {
+            usuarioSeleccionado.setContrasenia(contrasenia);
+        }
+
+        System.out.print("¿Confirma los cambios? (S/N): ");
+        String confirmacion = sc.nextLine();
+
+        if (!confirmacion.equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        boolean actualizado = UsuarioDAO.actualizar(usuarioSeleccionado);
+
+        if (actualizado) {
+            System.out.println("Datos del usuario modificados correctamente.");
+        } else {
+            System.out.println("No se pudo actualizar el usuario.");
         }
     }
 
