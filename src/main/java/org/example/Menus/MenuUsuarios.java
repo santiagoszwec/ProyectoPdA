@@ -323,15 +323,8 @@ public class MenuUsuarios {
             return;
         }
 
-        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
-        String respuesta = sc.nextLine();
-
-        if (respuesta.equalsIgnoreCase("S")) {
-            filtrarUsuarios(sc);
-        } else {
-            for (Usuario usuario : usuarios) {
-                mostrarUsuario(usuario);
-            }
+        for (Usuario usuario : usuarios) {
+            mostrarUsuario(usuario);
         }
 
         System.out.print("\nIngrese el ID del usuario a modificar: ");
@@ -356,19 +349,18 @@ public class MenuUsuarios {
             return;
         }
 
-        System.out.println("\nDatos actuales:");
-        mostrarUsuario(usuarioSeleccionado);
-        System.out.println("Deje el campo vacío (Enter) para mantener el valor actual.");
+        System.out.println("\nUsuario seleccionado: " + usuarioSeleccionado.getNombre());
 
-        System.out.print("Nuevo nombre [" + usuarioSeleccionado.getNombre() + "]: ");
-        String nombre = sc.nextLine();
-        if (!nombre.isBlank()) {
-            usuarioSeleccionado.setNombre(nombre);
+        System.out.print("¿Desea modificar el nombre? (S/N): ");
+        if (sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.print("Nuevo nombre: ");
+            usuarioSeleccionado.setNombre(sc.nextLine());
         }
 
-        System.out.print("Nuevo correo [" + usuarioSeleccionado.getCorreo() + "]: ");
-        String correo = sc.nextLine();
-        if (!correo.isBlank()) {
+        System.out.print("¿Desea modificar el correo? (S/N): ");
+        if (sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.print("Nuevo correo: ");
+            String correo = sc.nextLine();
             if (!correo.contains("@")) {
                 System.out.println("El correo ingresado no es válido. Operación cancelada.");
                 return;
@@ -376,21 +368,21 @@ public class MenuUsuarios {
             usuarioSeleccionado.setCorreo(correo);
         }
 
-        System.out.print("Nuevo año de generación [" + usuarioSeleccionado.getAnioDeGeneracion() + "]: ");
-        String anioTexto = sc.nextLine();
-        if (!anioTexto.isBlank()) {
+        System.out.print("¿Desea modificar el año de generación? (S/N): ");
+        if (sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.print("Nuevo año de generación: ");
             try {
-                usuarioSeleccionado.setAnioDeGeneracion(Integer.parseInt(anioTexto));
+                usuarioSeleccionado.setAnioDeGeneracion(Integer.parseInt(sc.nextLine()));
             } catch (NumberFormatException e) {
                 System.out.println("El año debe ser un número. Operación cancelada.");
                 return;
             }
         }
 
-        System.out.print("Nueva contraseña (Enter para no cambiarla): ");
-        String contrasenia = sc.nextLine();
-        if (!contrasenia.isBlank()) {
-            usuarioSeleccionado.setContrasenia(contrasenia);
+        System.out.print("¿Desea modificar la contraseña? (S/N): ");
+        if (sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.print("Nueva contraseña: ");
+            usuarioSeleccionado.setContrasenia(sc.nextLine());
         }
 
         System.out.print("¿Confirma los cambios? (S/N): ");
