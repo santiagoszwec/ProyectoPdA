@@ -24,8 +24,8 @@ public class MenuDudas {
 
         do {
             System.out.println("\n===== DUDAS Y COMENTARIOS =====");
-            System.out.println("1. Responder una duda");
-            System.out.println("2. Responder una publicacion");
+            System.out.println("1. Responder publicacion");
+            System.out.println("2. Responder comentario");
             System.out.println("3. Marcar duda como resuelta (para autores)");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
@@ -58,14 +58,36 @@ public class MenuDudas {
     }
 
     private static void responderDuda(Scanner sc, Usuario usuarioActual) {
-        Duda duda = elegirDuda(sc, null);
-        if (duda == null) {
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        if (publicaciones.isEmpty()) {
+            System.out.println("No hay publicaciones cargadas.");
             return;
         }
-        
-        if (duda.getEstado() == EstadoDuda.Resuelta) {
-            System.out.println("Esta duda ya está resuelta. No se aceptan más respuestas principales.");
+
+        System.out.println("Publicaciones disponibles:");
+        for (Publicacion publicacion : publicaciones) {
+            System.out.println("[" + publicacion.getId() + "] " + publicacion.getMensaje());
+        }
+
+        System.out.print("Ingrese el ID de la publicación a responder: ");
+        int publicacionId = Integer.parseInt(sc.nextLine());
+
+        Publicacion publicacion = publicaciones.stream()
+                .filter(p -> p.getId() == publicacionId)
+                .findFirst()
+                .orElse(null);
+
+        if (publicacion == null) {
+            System.out.println("Esa publicación no existe.");
             return;
+        }
+
+        if (PublicacionDAO.esDuda(publicacion.getId())) {
+            Duda duda = DudaDAO.buscarPorId(publicacion.getId());
+            if (duda != null && duda.getEstado() == EstadoDuda.Resuelta) {
+                System.out.println("Esta duda ya está resuelta. No se aceptan más respuestas principales.");
+                return;
+            }
         }
 
         System.out.print("Escriba su respuesta: ");
@@ -77,7 +99,7 @@ public class MenuDudas {
             imagenUrl = null;
         }
 
-        Comentario respuesta = new Comentario(mensaje, imagenUrl, LocalDate.now(), usuarioActual.getId(), duda.getId(), null);
+        Comentario respuesta = new Comentario(mensaje, imagenUrl, LocalDate.now(), usuarioActual.getId(), publicacion.getId(), null);
         boolean creada = ComentarioDAO.crear(respuesta);
         System.out.println(creada ? "Respuesta publicada con éxito." : "No se pudo publicar la respuesta.");
     }
