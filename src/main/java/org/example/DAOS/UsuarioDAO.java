@@ -186,6 +186,38 @@ public class UsuarioDAO {
         }
     }
 
+    public static List<Usuario> buscarPorNombre(String nombre) {
+
+        List<Usuario> usuarios = new ArrayList<>();
+
+        String sql = "SELECT * FROM usuario " +
+                "WHERE activo = TRUE AND nombre LIKE ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, "%" + nombre + "%");
+
+            ResultSet fila = sentencia.executeQuery();
+
+            while (fila.next()) {
+                usuarios.add(new Usuario(
+                        fila.getInt("id"),
+                        fila.getString("nombre"),
+                        fila.getString("correo"),
+                        fila.getInt("anio_de_generacion"),
+                        TipoRol.valueOf(fila.getString("rol")),
+                        fila.getString("contrasenia"),
+                        fila.getBoolean("activo")));
+            }
+
+            return usuarios;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static Usuario buscarPorCorreo(String correo) {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
@@ -208,6 +240,33 @@ public class UsuarioDAO {
             }
 
             return null;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public static List<Usuario> filtrarPorRol(String rol) {
+
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuario WHERE activo = TRUE AND rol = ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, rol);
+            ResultSet fila = sentencia.executeQuery();
+
+            while (fila.next()) {
+                usuarios.add(new Usuario(
+                        fila.getInt("id"),
+                        fila.getString("nombre"),
+                        fila.getString("correo"),
+                        fila.getInt("anio_de_generacion"),
+                        TipoRol.valueOf(fila.getString("rol")),
+                        fila.getString("contrasenia"),
+                        fila.getBoolean("activo")));
+            }
+            return usuarios;
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

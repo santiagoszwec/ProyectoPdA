@@ -146,76 +146,73 @@ public class MenuUsuarios {
         for (Usuario usuario : usuarios) {
             mostrarUsuario(usuario);
         }
+
+        System.out.print("\n¿Desea aplicar filtros? (S/N): ");
+        String respuesta = sc.nextLine();
+
+        if (respuesta.equalsIgnoreCase("S")) {
+            filtrarUsuarios(sc);
+        }
     }
-//    private static void filtrarUsuarios(Scanner sc) {
-//
-//        System.out.println("\n===== BUSCAR / FILTRAR USUARIOS =====");
-//        System.out.println("1. Buscar por nombre");
-//        System.out.println("2. Buscar por correo");
-//        System.out.println("3. Filtrar por rol");
-//        System.out.println("0. Volver");
-//        System.out.print("Seleccione una opción: ");
-//
-//        int opcion = Consola.leerOpcion(sc);
-//
-//        List<Usuario> usuarios = UsuarioDAO.listarActivos();
-//
-//        if (usuarios.isEmpty()) {
-//            System.out.println("No hay usuarios registrados.");
-//            return;
-//        }
-//
-//        boolean encontrado = false;
-//
-//        switch (opcion) {
-//
-//            case 1:
-//                System.out.print("Ingrese el nombre a buscar: ");
-//                String nombre = sc.nextLine().toLowerCase();
-//
-//                for (Usuario usuario : usuarios) {
-//                    if (usuario.getNombre().toLowerCase().contains(nombre)) {
-//                        mostrarUsuario(usuario);
-//                        encontrado = true;
-//                    }
-//                }
-//                break;
-//
-//            case 2:
-//                System.out.print("Ingrese el correo a buscar: ");
-//                String correo = sc.nextLine().toLowerCase();
-//
-//                for (Usuario usuario : usuarios) {
-//                    if (usuario.getCorreo().toLowerCase().contains(correo)) {
-//                        mostrarUsuario(usuario);
-//                        encontrado = true;
-//                    }
-//                }
-//                break;
-//
-//            case 3:
-//                System.out.print("Ingrese el rol (Admin/Estudiante): ");
-//                String rol = sc.nextLine();
-//
-//                for (Usuario usuario : usuarios) {
-//                    if (usuario.getRol().toString().equalsIgnoreCase(rol)) {
-//                        mostrarUsuario(usuario);
-//                        encontrado = true;
-//                    }
-//                }
-//                break;
-//
-//            case 0:
-//                return;
-//
-//            default:
-//                System.out.println("Opción inválida.");
-//                return;
-//        }
-//        if (!encontrado) {
-//            System.out.println("No se encontraron usuarios con ese criterio.");
-//        }
-//    }
+    private static void filtrarUsuarios(Scanner sc) {
+
+        System.out.println("\n===== BUSCAR / FILTRAR USUARIOS =====");
+        System.out.println("1. Buscar por nombre");
+        System.out.println("2. Buscar por correo");
+        System.out.println("3. Filtrar por rol");
+        System.out.println("0. Volver");
+        System.out.print("Seleccione una opción: ");
+
+        int opcion = Consola.leerOpcion(sc);
+
+        List<Usuario> usuarios;
+
+        switch (opcion) {
+
+            case 1:
+                System.out.print("Ingrese el nombre a buscar: ");
+                String nombre = sc.nextLine();
+
+                usuarios = UsuarioDAO.buscarPorNombre(nombre);
+                break;
+
+            case 2:
+                System.out.print("Ingrese el correo a buscar: ");
+                String correo = sc.nextLine();
+
+                Usuario usuario = UsuarioDAO.buscarPorCorreo(correo);
+
+                if (usuario != null) {
+                    mostrarUsuario(usuario);
+                } else {
+                    System.out.println("No se encontró ningún usuario con ese correo.");
+                }
+                return;
+
+            case 3:
+                System.out.print("Ingrese el rol (Admin/Estudiante): ");
+                String rol = sc.nextLine();
+
+                usuarios = UsuarioDAO.filtrarPorRol(rol);
+                break;
+
+            case 0:
+                return;
+
+            default:
+                System.out.println("Opción inválida.");
+                return;
+        }
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No se encontraron usuarios con ese criterio.");
+            return;
+        }
+
+        for (Usuario usuario : usuarios) {
+            mostrarUsuario(usuario);
+        }
+    }
     private static void mostrarUsuario(Usuario usuario) {
         System.out.println(
                 "ID: " + usuario.getId() +

@@ -69,8 +69,7 @@ public class CursoDAO {
                         resultado.getInt("anio"),
                         resultado.getInt("creditos"),
                         resultado.getString("descripcion"),
-                        resultado.getBoolean("activo")
-                );
+                        resultado.getBoolean("activo"));
                 cursos.add(curso);
             }
             return cursos;
