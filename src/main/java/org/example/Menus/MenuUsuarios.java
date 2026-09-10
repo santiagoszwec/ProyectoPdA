@@ -143,19 +143,10 @@ public class MenuUsuarios {
             return;
         }
 
-        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
-        String respuesta = sc.nextLine();
-
-        if (respuesta.equalsIgnoreCase("S")) {
-            filtrarUsuarios(sc);
-            return;
-        }
-
         for (Usuario usuario : usuarios) {
             mostrarUsuario(usuario);
         }
     }
-
     private static void filtrarUsuarios(Scanner sc) {
 
         System.out.println("\n===== BUSCAR / FILTRAR USUARIOS =====");
@@ -244,15 +235,8 @@ public class MenuUsuarios {
             return;
         }
 
-        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
-        String respuesta = sc.nextLine();
-
-        if (respuesta.equalsIgnoreCase("S")) {
-            filtrarUsuarios(sc);
-        } else {
-            for (Usuario usuario : usuarios) {
-                mostrarUsuario(usuario);
-            }
+        for (Usuario usuario : usuarios) {
+            mostrarUsuario(usuario);
         }
 
         System.out.print("\nIngrese el ID del usuario a modificar: ");
@@ -420,16 +404,11 @@ public class MenuUsuarios {
             return;
         }
 
-        System.out.print("¿Desea buscar o filtrar usuarios? (S/N): ");
-        String respuesta = sc.nextLine();
-
-        if (respuesta.equalsIgnoreCase("S")) {
-            filtrarUsuarios(sc);
-        } else {
-            for (Usuario usuario : usuarios) {
-                mostrarUsuario(usuario);
-            }
+        for (Usuario usuario : usuarios) {
+            mostrarUsuario(usuario);
         }
+
+        System.out.print("\nIngrese el ID del usuario a suspender: ");
 
         System.out.print("\nIngrese el ID del usuario a suspender: ");
         int id = Integer.parseInt(sc.nextLine());
