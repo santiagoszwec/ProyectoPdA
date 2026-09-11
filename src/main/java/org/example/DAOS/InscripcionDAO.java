@@ -1,12 +1,15 @@
 package org.example.DAOS;
 
 import org.example.ConexionDB;
+import org.example.ENUMS.TipoEstado;
 import org.example.Modelos.Inscripcion;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class InscripcionDAO {
 
@@ -77,5 +80,122 @@ public class InscripcionDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static List<Inscripcion> listarTodas() {
+        String sql = "SELECT * FROM inscripcion ORDER BY id";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql);
+             ResultSet filas = sentencia.executeQuery()) {
+
+            List<Inscripcion> inscripciones = new ArrayList<>();
+            while (filas.next()) {
+                inscripciones.add(mapearInscripcion(filas));
+            }
+            return inscripciones;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Inscripcion> listarPorUsuario(int usuarioId) {
+        String sql = "SELECT * FROM inscripcion WHERE usuario_id = ? ORDER BY id";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, usuarioId);
+
+            try (ResultSet filas = sentencia.executeQuery()) {
+                return mapearInscripciones(filas);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Inscripcion> listarPorCurso(int cursoId) {
+        String sql = "SELECT * FROM inscripcion WHERE curso_id = ? ORDER BY id";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, cursoId);
+
+            try (ResultSet filas = sentencia.executeQuery()) {
+                return mapearInscripciones(filas);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Inscripcion> listarPorEstado(TipoEstado estado) {
+        String sql = "SELECT * FROM inscripcion WHERE estado = ? ORDER BY id";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, estado.name());
+
+            try (ResultSet filas = sentencia.executeQuery()) {
+                return mapearInscripciones(filas);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean actualizarEstado(int inscripcionId, TipoEstado estado) {
+        String sql = "UPDATE inscripcion SET estado = ? WHERE id = ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setString(1, estado.name());
+            sentencia.setInt(2, inscripcionId);
+
+            return sentencia.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean eliminar(int inscripcionId) {
+        String sql = "DELETE FROM inscripcion WHERE id = ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, inscripcionId);
+
+            return sentencia.executeUpdate() == 1;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static List<Inscripcion> mapearInscripciones(ResultSet filas) throws SQLException {
+        List<Inscripcion> inscripciones = new ArrayList<>();
+        while (filas.next()) {
+            inscripciones.add(mapearInscripcion(filas));
+        }
+        return inscripciones;
+    }
+
+    private static Inscripcion mapearInscripcion(ResultSet fila) throws SQLException {
+        return new Inscripcion(
+                fila.getInt("id"),
+                TipoEstado.valueOf(fila.getString("estado")),
+                fila.getInt("usuario_id"),
+                fila.getInt("curso_id")
+        );
     }
 }

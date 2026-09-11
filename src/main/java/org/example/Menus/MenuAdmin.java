@@ -22,7 +22,8 @@ public class MenuAdmin {
             System.out.println("4. Gestión de publicaciones");
             System.out.println("5. Gestión de reportes");
             System.out.println("6. Gestión de dudas y comentarios");
-            System.out.println("7. Cerrar sesión");
+            System.out.println("7. Gestión de inscripciones");
+            System.out.println("8. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
             opcion = Consola.leerOpcion(sc);
@@ -58,6 +59,10 @@ public class MenuAdmin {
                     break;
 
                 case 7:
+                    MenuInscripciones.mostrar(sc);
+                    break;
+
+                case 8:
                     System.out.print("¿Desea cerrar sesión? S/N: ");
                     String confirmacion = sc.nextLine();
                     if (confirmacion.equalsIgnoreCase("S")) {
