@@ -19,7 +19,7 @@ public class DudaDAO {
     // Duda hereda de Publicacion por tabla dividida: primero se inserta en
     // "publicacion" (para obtener el id autogenerado) y luego en "duda" con ese mismo id.
     public static boolean crear(Duda duda) {
-        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id) VALUES (?,?,?,?)";
+        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id, curso_id) VALUES (?,?,?,?,?)";
         String sqlDuda = "INSERT INTO duda (id, estado, categoria) VALUES (?,?,?)";
 
         try {
@@ -30,6 +30,7 @@ public class DudaDAO {
             sentenciaPublicacion.setString(2, duda.getImagenUrl());
             sentenciaPublicacion.setObject(3, duda.getFechaPublicacion());
             sentenciaPublicacion.setInt(4, duda.getUsuarioId());
+            sentenciaPublicacion.setInt(5, duda.getCursoId());
             sentenciaPublicacion.executeUpdate();
 
             ResultSet generadas = sentenciaPublicacion.getGeneratedKeys();
@@ -53,9 +54,8 @@ public class DudaDAO {
     }
 
     public static List<Duda> listarTodos() {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, d.estado, d.categoria " +
-                "FROM publicacion p JOIN duda d ON d.id = p.id " +
-                "WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
+        String sql = String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, d.estado, d.categoria " +
+                "FROM publicacion p JOIN duda d ON d.id = p.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
 
         try {
             Connection conexion = ConexionDB.obtenerConexion();
@@ -77,9 +77,8 @@ public class DudaDAO {
     }
 
     public static Duda buscarPorId(int id) {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, d.estado, d.categoria " +
-                "FROM publicacion p JOIN duda d ON d.id = p.id " +
-                "WHERE p.id = ?";
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, d.estado, d.categoria " +
+                "FROM publicacion p JOIN duda d ON d.id = p.id WHERE p.id = ?";
 
         try {
             Connection conexion = ConexionDB.obtenerConexion();
@@ -106,10 +105,11 @@ public class DudaDAO {
         LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
         boolean activa = filas.getBoolean("activa");
         int usuarioId = filas.getInt("usuario_id");
+        int cursoId = filas.getInt("curso_id");
         EstadoDuda estado = EstadoDuda.valueOf(filas.getString("estado"));
         TipoCategoria categoria = TipoCategoria.valueOf(filas.getString("categoria"));
 
-        return new Duda(id, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId, estado, categoria);
+        return new Duda(id, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId, cursoId, estado, categoria);
     }
 
     public static boolean marcarComoResuelta(int dudaId) {

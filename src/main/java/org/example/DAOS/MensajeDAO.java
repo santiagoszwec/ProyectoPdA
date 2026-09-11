@@ -16,7 +16,7 @@ import java.util.List;
 public class MensajeDAO {
 
     public static boolean crear(Mensaje mensaje) {
-        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id) VALUES (?,?,?,?)";
+        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id, curso_id) VALUES (?,?,?,?,?)";
         String sqlMensaje = "INSERT INTO mensaje (id, categoria) VALUES (?,?)";
 
         try {
@@ -27,6 +27,7 @@ public class MensajeDAO {
             sentenciaPublicacion.setString(2, mensaje.getImagenUrl());
             sentenciaPublicacion.setObject(3, mensaje.getFechaPublicacion());
             sentenciaPublicacion.setInt(4, mensaje.getUsuarioId());
+            sentenciaPublicacion.setInt(5, mensaje.getCursoId());
             sentenciaPublicacion.executeUpdate();
 
             ResultSet generadas = sentenciaPublicacion.getGeneratedKeys();
@@ -49,9 +50,8 @@ public class MensajeDAO {
     }
 
     public static List<Mensaje> listarTodos() {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, m.categoria " +
-                "FROM publicacion p JOIN mensaje m ON m.id = p.id " +
-                "WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, m.categoria " +
+                "FROM publicacion p JOIN mensaje m ON m.id = p.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
 
         try {
             Connection conexion = ConexionDB.obtenerConexion();
@@ -78,8 +78,11 @@ public class MensajeDAO {
         String imagenUrl = filas.getString("imagen_url");
         LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
         boolean activa = filas.getBoolean("activa");
+        int usuarioId = filas.getInt("usuario_id");
+        int cursoId = filas.getInt("curso_id");
         TipoCategoria categoria = TipoCategoria.valueOf(filas.getString("categoria"));
 
-        return new Mensaje(id, texto, imagenUrl, fechaPublicacion, !activa, categoria);
+
+        return new Mensaje(id, texto, imagenUrl, fechaPublicacion, !activa, usuarioId, cursoId, categoria);
     }
 }
