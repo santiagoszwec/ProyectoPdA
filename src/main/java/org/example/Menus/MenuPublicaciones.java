@@ -10,6 +10,7 @@ import java.util.Scanner;
 import org.example.DAOS.DudaDAO;
 import org.example.DAOS.MensajeDAO;
 import org.example.DAOS.MaterialDAO;
+import org.example.DAOS.CursoDAO;
 
 import java.time.LocalDate;
 
@@ -571,6 +572,12 @@ public class MenuPublicaciones {
             }
         } while (tipoPublicacion < 1 || tipoPublicacion > 3);
 
+        Curso curso = pedirCurso(sc);
+        if (curso == null) {
+            System.out.println("No se pudo crear la publicación.");
+            return;
+        }
+
         boolean creada;
 
         switch (tipoPublicacion) {
@@ -578,7 +585,7 @@ public class MenuPublicaciones {
             case 1: {
                 TipoCategoria categoria = pedirCategoria(sc);
 
-                Duda duda = new Duda(EstadoDuda.Abierta, categoria, usuarioActual.getId());
+                Duda duda = new Duda(EstadoDuda.Abierta, categoria, usuarioActual.getId(), curso.getId());
                 duda.setMensaje(mensaje);
                 duda.setImagenUrl(imagenUrl);
                 duda.setFechaPublicacion(LocalDate.now());
@@ -588,6 +595,7 @@ public class MenuPublicaciones {
                         "Mensaje: " + duda.getMensaje() +
                                 " | Imagen: " + duda.getImagenUrl() +
                                 " | Fecha: " + duda.getFechaPublicacion() +
+                                " | Curso: " + curso.getNombre() +
                                 " | Categoría: " + categoria +
                                 " | Estado: " + EstadoDuda.Abierta);
 
@@ -604,17 +612,17 @@ public class MenuPublicaciones {
             case 2: {
                 TipoCategoria categoria = pedirCategoria(sc);
 
-                Mensaje publicacionMensaje = new Mensaje(categoria);
+                Mensaje publicacionMensaje = new Mensaje(categoria, usuarioActual.getId(), curso.getId());
                 publicacionMensaje.setMensaje(mensaje);
                 publicacionMensaje.setImagenUrl(imagenUrl);
                 publicacionMensaje.setFechaPublicacion(LocalDate.now());
-                publicacionMensaje.setUsuarioId(usuarioActual.getId());
 
                 System.out.println("\nPublicacion a crear:");
                 System.out.println(
                         "Mensaje: " + publicacionMensaje.getMensaje() +
                                 " | Imagen: " + publicacionMensaje.getImagenUrl() +
                                 " | Fecha: " + publicacionMensaje.getFechaPublicacion() +
+                                " | Curso: " + curso.getNombre() +
                                 " | Categoría: " + categoria);
 
                 System.out.print("¿Desea confirmar la publicacion? S/N: ");
@@ -662,17 +670,17 @@ public class MenuPublicaciones {
                 System.out.print("Ingrese el tema: ");
                 String tema = sc.nextLine();
 
-                Material material = new Material(archivoUrl, tipoMaterial, tipoArchivo, tema);
+                Material material = new Material(archivoUrl, tipoMaterial, tipoArchivo, tema, usuarioActual.getId(), curso.getId());
                 material.setMensaje(mensaje);
                 material.setImagenUrl(imagenUrl);
                 material.setFechaPublicacion(LocalDate.now());
-                material.setUsuarioId(usuarioActual.getId());
 
                 System.out.println("\nPublicacion a crear:");
                 System.out.println(
                         "Mensaje: " + material.getMensaje() +
                                 " | Imagen: " + material.getImagenUrl() +
                                 " | Fecha: " + material.getFechaPublicacion() +
+                                " | Curso: " + curso.getNombre() +
                                 " | Archivo: " + archivoUrl +
                                 " | Tipo material: " + tipoMaterial +
                                 " | Tipo archivo: " + tipoArchivo +
@@ -693,6 +701,40 @@ public class MenuPublicaciones {
         }
 
         System.out.println(creada ? "Publicación creada correctamente." : "No se pudo crear la publicación.");
+    }
+
+    private static Curso pedirCurso(Scanner sc) {
+        List<Curso> cursos = CursoDAO.listarTodos();
+
+        if (cursos.isEmpty()) {
+            System.out.println("\nNo hay cursos disponibles. Cree un curso primero.");
+            return null;
+        }
+
+        System.out.println("\nCursos disponibles:");
+        for (Curso curso : cursos) {
+            System.out.println("[" + curso.getId() + "] " + curso.getNombre() +
+                    " - Semestre " + curso.getSemestre() + " (" + curso.getAnio() + ")");
+        }
+
+        Curso cursoElegido = null;
+        do {
+            System.out.print("\nIngrese el ID del curso: ");
+            try {
+                int id = Integer.parseInt(sc.nextLine().trim());
+                cursoElegido = cursos.stream()
+                        .filter(c -> c.getId() == id)
+                        .findFirst()
+                        .orElse(null);
+                if (cursoElegido == null) {
+                    System.out.println("ID de curso inválido, intente de nuevo.");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("ID inválido, intente de nuevo.");
+            }
+        } while (cursoElegido == null);
+
+        return cursoElegido;
     }
 
     public static TipoCategoria pedirCategoria(Scanner sc){

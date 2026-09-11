@@ -50,7 +50,7 @@ public class MenuAdmin {
 
                 case 5:
                     System.out.println("Gestión de reportes");
-                    MenuReportes.mostrar(sc);
+                    MenuReportes.mostrar(sc, usuarioActual);
                     break;
 
                 case 6:

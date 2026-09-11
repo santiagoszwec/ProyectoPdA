@@ -222,12 +222,12 @@ public class MenuDudas {
             
 
             Notificacion notificacion = new Notificacion(
-                    0, // ID autogenerado
                     LocalDate.now(),
                     TipoNotificacion.Respuesta,
-                    "Tu respuesta a la duda '" + duda.getMensaje() + "' ha sido marcada como la más útil."
+                    "Tu respuesta a la duda '" + duda.getMensaje() + "' ha sido marcada como la más útil.",
+                    respuestaElegida.getUsuarioId(),
+                    duda.getId()
             );
-            notificacion.setUsuarioId(respuestaElegida.getUsuarioId());
             NotificacionDAO.crear(notificacion);
             System.out.println("Se ha notificado al autor de la respuesta.");
             

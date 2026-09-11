@@ -152,6 +152,7 @@ public class ComentarioDAO {
             conexion.setAutoCommit(false);
 
             Integer autorId = obtenerAutorId(conexion, comentarioId);
+            Integer publicacionId = obtenerPublicacionId(conexion, comentarioId);
             List<Integer> idsAApagar = obtenerDescendientesIncluido(conexion, comentarioId);
 
             for (int id : idsAApagar) {
@@ -171,10 +172,10 @@ public class ComentarioDAO {
             }
 
             boolean notificacionOk = true;
-            if (autorId != null) {
+            if (autorId != null && publicacionId != null) {
                 notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
-                        0, LocalDate.now(), TipoNotificacion.Baja,
-                        "Tu comentario ha sido eliminado por un administrador. Motivo: " + motivo, autorId));
+                        LocalDate.now(), TipoNotificacion.Baja,
+                        "Tu comentario ha sido eliminado por un administrador. Motivo: " + motivo, autorId, publicacionId));
             }
 
             if (!notificacionOk) {
@@ -206,6 +207,16 @@ public class ComentarioDAO {
             stmt.setInt(1, comentarioId);
             try (ResultSet fila = stmt.executeQuery()) {
                 return fila.next() ? fila.getInt("usuario_id") : null;
+            }
+        }
+    }
+
+    private static Integer obtenerPublicacionId(Connection conexion, int comentarioId) throws SQLException {
+        try (PreparedStatement stmt = conexion.prepareStatement(
+                "SELECT publicacion_id FROM comentario WHERE id = ?")) {
+            stmt.setInt(1, comentarioId);
+            try (ResultSet fila = stmt.executeQuery()) {
+                return fila.next() ? fila.getInt("publicacion_id") : null;
             }
         }
     }

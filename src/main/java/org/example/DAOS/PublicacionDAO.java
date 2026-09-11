@@ -170,8 +170,8 @@ public class PublicacionDAO {
             boolean notificacionOk = true;
             if (autorId != null) {
                 notificacionOk = NotificacionDAO.insertarNotificacion(conexion, new Notificacion(
-                        0, LocalDate.now(), TipoNotificacion.Baja,
-                        "Su publicación ha sido dada de baja por infracción de las normas.", autorId));
+                        LocalDate.now(), TipoNotificacion.Baja,
+                        "Su publicación ha sido dada de baja por infracción de las normas.", autorId, id));
             }
 
             if (!publicacionOk || !notificacionOk) {
@@ -249,7 +249,8 @@ public class PublicacionDAO {
                         LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
                         boolean activa = filas.getBoolean("activa");
                         int usuarioId = filas.getInt("usuario_id");
-                        return new Publicacion(pid, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId);
+                        int cursoId = filas.getInt("curso_id");
+                        return new Publicacion(pid, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId, cursoId);
                     }
                 }
             }
@@ -516,7 +517,9 @@ public class PublicacionDAO {
                 fila.getString("mensaje"),
                 fila.getString("imagen_url"),
                 fila.getObject("fecha_publicacion", LocalDate.class),
-                fila.getBoolean("activa"),
+                !fila.getBoolean("activa"),
+                fila.getInt("usuario_id"),
+                fila.getInt("curso_id"),
                 fila.getString("archivo_url"),
                 TipoMaterial.valueOf(fila.getString("tipo_material")),
                 TipoArchivo.valueOf(fila.getString("tipo_archivo")),
@@ -529,8 +532,9 @@ public class PublicacionDAO {
                 fila.getString("mensaje"),
                 fila.getString("imagen_url"),
                 fila.getObject("fecha_publicacion", LocalDate.class),
-                fila.getBoolean("activa"),
+                !fila.getBoolean("activa"),
                 fila.getInt("usuario_id"),
+                fila.getInt("curso_id"),
                 EstadoDuda.valueOf(fila.getString("estado_duda")),
                 TipoCategoria.valueOf(fila.getString("categoria_duda")));
     }
@@ -541,7 +545,9 @@ public class PublicacionDAO {
                 fila.getString("mensaje"),
                 fila.getString("imagen_url"),
                 fila.getObject("fecha_publicacion", LocalDate.class),
-                fila.getBoolean("activa"),
+                !fila.getBoolean("activa"),
+                fila.getInt("usuario_id"),
+                fila.getInt("curso_id"),
                 TipoCategoria.valueOf(fila.getString("categoria_mensaje")));
     }
 }

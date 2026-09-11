@@ -11,12 +11,13 @@ import java.util.List;
 import java.util.Scanner;
 import org.example.DAOS.ComentarioDAO;
 import org.example.Modelos.Comentario;
+import org.example.Modelos.Usuario;
 
 import static org.example.Menus.MenuPublicaciones.mostrarPublicaciones;
 
 public class MenuReportes {
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -47,11 +48,11 @@ public class MenuReportes {
                     break;
 
                 case 4:
-                    reportarPublicacion(sc);
+                    reportarPublicacion(sc, usuarioActual);
                     break;
 
                 case 5:
-                    reportarComentario(sc);
+                    reportarComentario(sc, usuarioActual);
                     break;
 
                 case 0:
@@ -240,7 +241,7 @@ public class MenuReportes {
                 ? "Reporte aprobado y comentario eliminado correctamente. Se notificó al autor."
                 : "No se pudo eliminar el comentario.");
     }
-    private static void reportarPublicacion(Scanner sc) {
+    private static void reportarPublicacion(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== REPORTAR PUBLICACIÓN =====");
 
@@ -275,7 +276,7 @@ public class MenuReportes {
             }
         } while (motivo.isBlank());
 
-        Reporte reporte = new Reporte(0, publicacion.getMensaje(), motivo, null, LocalDate.now(), null, publicacion.getId());
+        Reporte reporte = new Reporte(0, publicacion.getMensaje(), motivo, null, LocalDate.now(), null, publicacion.getId(), usuarioActual.getId());
 
         System.out.println("\nDatos del reporte:");
         System.out.println("Publicación: " + publicacion.getMensaje() + " | Motivo: " + motivo);
@@ -295,7 +296,7 @@ public class MenuReportes {
         }
     }
 
-    private static void reportarComentario(Scanner sc) {
+    private static void reportarComentario(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== REPORTAR COMENTARIO =====");
         System.out.println("\n--- LISTA DE COMENTARIOS ACTIVOS ---");
@@ -329,7 +330,7 @@ public class MenuReportes {
             }
         } while (motivo.isBlank());
 
-        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, null, comentario.getId());
+        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, comentario.getPublicacionId(), comentario.getId(), usuarioActual.getId());
 
         System.out.println("\nDatos del reporte:");
         System.out.println("Comentario: " + comentario.getMensaje() + " | Motivo: " + motivo);

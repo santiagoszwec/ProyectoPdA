@@ -2,10 +2,13 @@ package org.example.Menus;
 
 import org.example.Consola;
 import org.example.DAOS.CursoDAO;
+import org.example.DAOS.InscripcionDAO;
 import org.example.DAOS.SuspensionDAO;
 import org.example.DAOS.UsuarioDAO;
+import org.example.ENUMS.TipoEstado;
 import org.example.ENUMS.TipoRol;
 import org.example.Modelos.Curso;
+import org.example.Modelos.Inscripcion;
 import org.example.Modelos.Usuario;
 
 import java.util.List;
@@ -26,6 +29,7 @@ public class MenuUsuarios {
             System.out.println("5. Suspender usuario");
             System.out.println("6. Reactivar usuario");
             System.out.println("7. Modificar usuario");
+            System.out.println("8. Inscribir usuario a materia");
             System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
@@ -59,6 +63,9 @@ public class MenuUsuarios {
                     modificarUsuario(sc);
                     break;
 
+                case 8:
+                    inscribirUsuario(sc);
+                    break;
 
                 case 0:
 
@@ -388,6 +395,118 @@ public class MenuUsuarios {
         } else {
             System.out.println("No se pudo actualizar el usuario.");
         }
+    }
+
+    private static void inscribirUsuario(Scanner sc) {
+
+        System.out.println("\n===== INSCRIBIR USUARIO A MATERIA =====");
+
+        List<Usuario> usuarios = UsuarioDAO.listarActivos();
+
+        if (usuarios.isEmpty()) {
+            System.out.println("No hay usuarios activos registrados.");
+            return;
+        }
+
+        System.out.println("\nUsuarios disponibles:");
+
+        for (Usuario usuario : usuarios) {
+            mostrarUsuario(usuario);
+        }
+
+        int usuarioId = -1;
+        do {
+            System.out.print("\nIngrese el ID del usuario a inscribir: ");
+            try {
+                usuarioId = Integer.parseInt(sc.nextLine().trim());
+
+                if (!InscripcionDAO.usuarioExisteYActivo(usuarioId)) {
+                    System.out.println("El usuario no existe o está inactivo. Intente de nuevo.");
+                    usuarioId = -1;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("ID inválido, intente de nuevo.");
+                usuarioId = -1;
+            }
+        } while (usuarioId == -1);
+
+        List<Curso> cursos = CursoDAO.listarTodos();
+
+        if (cursos.isEmpty()) {
+            System.out.println("No hay cursos activos registrados.");
+            return;
+        }
+
+        System.out.println("\nCursos disponibles:");
+
+        for (Curso curso : cursos) {
+            System.out.println(
+                    "ID: " + curso.getId() +
+                            " | Nombre: " + curso.getNombre() +
+                            " | Semestre: " + curso.getSemestre() +
+                            " | Año: " + curso.getAnio());
+        }
+
+        int cursoId = -1;
+        do {
+            System.out.print("\nIngrese el ID del curso: ");
+            try {
+                cursoId = Integer.parseInt(sc.nextLine().trim());
+
+                if (!InscripcionDAO.cursoExisteYActivo(cursoId)) {
+                    System.out.println("El curso no existe o está inactivo. Intente de nuevo.");
+                    cursoId = -1;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("ID inválido, intente de nuevo.");
+                cursoId = -1;
+            }
+        } while (cursoId == -1);
+
+        if (InscripcionDAO.existeInscripcion(usuarioId, cursoId)) {
+            System.out.println("El usuario ya está inscripto a ese curso.");
+            return;
+        }
+
+        int idUsuarioFinal = usuarioId;
+        String nombreUsuario = usuarios.stream()
+                .filter(u -> u.getId() == idUsuarioFinal)
+                .findFirst()
+                .map(Usuario::getNombre)
+                .orElse("ID " + usuarioId);
+
+        int idCursoFinal = cursoId;
+        String nombreCurso = cursos.stream()
+                .filter(c -> c.getId() == idCursoFinal)
+                .findFirst()
+                .map(Curso::getNombre)
+                .orElse("ID " + cursoId);
+
+        System.out.println("\nInscripción a crear:");
+        System.out.println(
+                "Usuario: " + nombreUsuario + " (ID " + usuarioId + ")" +
+                        " | Curso: " + nombreCurso + " (ID " + cursoId + ")" +
+                        " | Estado: " + TipoEstado.Cursando);
+
+        System.out.print("¿Desea confirmar la inscripción? S/N: ");
+        if (!sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.println("Operación cancelada.");
+            return;
+        }
+
+        Inscripcion inscripcion = new Inscripcion(TipoEstado.Cursando, usuarioId, cursoId);
+
+        boolean creada;
+        try {
+            creada = InscripcionDAO.crear(inscripcion);
+        } catch (RuntimeException e) {
+            System.out.println("No se pudo inscribir al usuario.");
+            return;
+        }
+
+        System.out.println(creada
+                ? "Inscripción registrada correctamente."
+                : "No se pudo inscribir al usuario.");
     }
 
     private static void suspenderUsuario(Scanner sc) {
