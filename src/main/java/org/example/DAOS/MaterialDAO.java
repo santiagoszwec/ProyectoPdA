@@ -13,7 +13,7 @@ import java.util.List;
 public class MaterialDAO {
 
     public static boolean crear(Material material) {
-        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id) VALUES (?,?,?,?)";
+        String sqlPublicacion = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id, curso_id) VALUES (?,?,?,?,?)";
         String sqlMaterial = "INSERT INTO material (id, archivo_url, tipo_material, tipo_archivo, tema) VALUES (?,?,?,?,?)";
 
         try {
@@ -24,6 +24,7 @@ public class MaterialDAO {
             sentenciaPublicacion.setString(2, material.getImagenUrl());
             sentenciaPublicacion.setObject(3, material.getFechaPublicacion());
             sentenciaPublicacion.setInt(4, material.getUsuarioId());
+            sentenciaPublicacion.setInt(5, material.getCursoId());
             sentenciaPublicacion.executeUpdate();
 
             ResultSet generadas = sentenciaPublicacion.getGeneratedKeys();
@@ -49,10 +50,8 @@ public class MaterialDAO {
     }
 
     public static List<Material> listarTodos() {
-        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, " +
-                "m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
-                "FROM publicacion p JOIN material m ON m.id = p.id " +
-                "WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p JOIN material m ON m.id = p.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
 
         try {
             Connection conexion = ConexionDB.obtenerConexion();
@@ -79,11 +78,13 @@ public class MaterialDAO {
         String imagenUrl = filas.getString("imagen_url");
         LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
         boolean activa = filas.getBoolean("activa");
+        int usuarioId = filas.getInt("usuario_id");
+        int cursoId = filas.getInt("curso_id");
         String archivoUrl = filas.getString("archivo_url");
         TipoMaterial tipoMaterial = TipoMaterial.valueOf(filas.getString("tipo_material"));
         TipoArchivo tipoArchivo = TipoArchivo.valueOf(filas.getString("tipo_archivo"));
         String tema = filas.getString("tema");
 
-        return new Material(id, mensaje, imagenUrl, fechaPublicacion, !activa, archivoUrl, tipoMaterial, tipoArchivo, tema);
+        return new Material(id, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioId, cursoId, archivoUrl, tipoMaterial, tipoArchivo, tema);
     }
 }
