@@ -12,6 +12,7 @@ public class Publicacion {
     private LocalDate fechaPublicacion;
     private boolean dadaDeBaja;
     private int usuarioId;
+    private int cursoId;
 
     public Publicacion() {
     }
@@ -24,13 +25,14 @@ public class Publicacion {
         this.dadaDeBaja = dadaDeBaja;
     }
 
-    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId) {
+    public Publicacion(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId, int cursoId) {
         this.id = id;
         this.mensaje = mensaje;
         this.imagenUrl = imagenUrl;
         this.fechaPublicacion = fechaPublicacion;
         this.dadaDeBaja = dadaDeBaja;
         this.usuarioId = usuarioId;
+        this.cursoId = cursoId;
     }
 
     public int getId() {
@@ -81,6 +83,14 @@ public class Publicacion {
         this.usuarioId = usuarioId;
     }
 
+    public int getCursoId() {
+        return cursoId;
+    }
+
+    public void setCursoId(int cursoId) {
+        this.cursoId = cursoId;
+    }
+
     @Override
     public String toString() {
         return "Publicacion{" +
@@ -88,6 +98,9 @@ public class Publicacion {
                 ", mensaje='" + mensaje + '\'' +
                 ", imagenUrl='" + imagenUrl + '\'' +
                 ", fechaPublicacion=" + fechaPublicacion +
+                ", dadaDeBaja=" + dadaDeBaja +
+                ", usuarioId=" + usuarioId +
+                ", cursoId=" + cursoId +
                 '}';
     }
 }

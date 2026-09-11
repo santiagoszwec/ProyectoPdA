@@ -10,20 +10,23 @@ public class Notificacion {
     private TipoNotificacion tipo;
     private String mensaje;
     private int usuarioId;
+    private int publicacionId;
 
-    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje) {
-        this.id = id;
+    public Notificacion(LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, int publicacionId) {
         this.fecha = fecha;
         this.tipo = tipo;
         this.mensaje = mensaje;
+        this.usuarioId = usuarioId;
+        this.publicacionId = publicacionId;
     }
 
-    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId) {
+    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, int publicacionId) {
         this.id = id;
         this.fecha = fecha;
         this.tipo = tipo;
         this.mensaje = mensaje;
         this.usuarioId = usuarioId;
+        this.publicacionId = publicacionId;
     }
 
     public int getId() {
@@ -66,6 +69,14 @@ public class Notificacion {
         this.usuarioId = usuarioId;
     }
 
+    public int getPublicacionId() {
+        return publicacionId;
+    }
+
+    public void setPublicacionId(int publicacionId) {
+        this.publicacionId = publicacionId;
+    }
+
     @Override
     public String toString() {
         return "Notificacion{" +
@@ -73,6 +84,8 @@ public class Notificacion {
                 ", fecha=" + fecha +
                 ", tipo=" + tipo +
                 ", mensaje='" + mensaje + '\'' +
+                ", usuarioId=" + usuarioId +
+                ", publicacionId=" + publicacionId +
                 '}';
     }
 }

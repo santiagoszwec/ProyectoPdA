@@ -3,12 +3,30 @@ import java.time.LocalDate;
 
 public class RegistroDeHoras {
 
+    private int id;
     private float cantidadDeHoras;
     private LocalDate fecha;
+    private int inscripcionId;
 
-    public RegistroDeHoras(float cantidadDeHoras, LocalDate fecha) {
+    public RegistroDeHoras(float cantidadDeHoras, LocalDate fecha, int inscripcionId) {
         this.cantidadDeHoras = cantidadDeHoras;
         this.fecha = fecha;
+        this.inscripcionId = inscripcionId;
+    }
+
+    public RegistroDeHoras(int id, float cantidadDeHoras, LocalDate fecha, int inscripcionId) {
+        this.id = id;
+        this.cantidadDeHoras = cantidadDeHoras;
+        this.fecha = fecha;
+        this.inscripcionId = inscripcionId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public float getCantidadDeHoras() {
@@ -27,11 +45,21 @@ public class RegistroDeHoras {
         this.fecha = fecha;
     }
 
+    public int getInscripcionId() {
+        return inscripcionId;
+    }
+
+    public void setInscripcionId(int inscripcionId) {
+        this.inscripcionId = inscripcionId;
+    }
+
     @Override
     public String toString() {
         return "RegistroDeHoras{" +
-                "cantidadDeHoras=" + cantidadDeHoras +
+                "id=" + id +
+                ", cantidadDeHoras=" + cantidadDeHoras +
                 ", fecha=" + fecha +
+                ", inscripcionId=" + inscripcionId +
                 '}';
     }
 }

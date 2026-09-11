@@ -21,12 +21,14 @@ public class PublicacionDAO {
         try {
             Connection conexion = ConexionDB.obtenerConexion();
 
-            String sql = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion) VALUES (?,?,?)";
+            String sql = "INSERT INTO publicacion (mensaje, imagen_url, fecha_publicacion, usuario_id, curso_id) VALUES (?,?,?,?,?)";
 
             PreparedStatement sentencia = conexion.prepareStatement(sql);
             sentencia.setString(1, publicacion.getMensaje());
             sentencia.setString(2, publicacion.getImagenUrl());
             sentencia.setObject(3, publicacion.getFechaPublicacion());
+            sentencia.setInt(4, publicacion.getUsuarioId());
+            sentencia.setInt(5, publicacion.getCursoId());
 
             int filasAfectadas = sentencia.executeUpdate();
 
@@ -54,8 +56,11 @@ public class PublicacionDAO {
                 String imagenUrl = filas.getString("imagen_url");
                 LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
                 boolean activa = filas.getBoolean("activa");
+                int usuarioId = filas.getInt("usuario_id");
+                int cursoId = filas.getInt("curso_id");
 
-                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion, activa);
+                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion, activa, usuarioId, cursoId);
+
                 retorno.add(publicacion);
             }
 

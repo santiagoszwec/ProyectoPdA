@@ -67,4 +67,16 @@ public class Suspension {
     public void setActiva(boolean activa) {
         this.activa = activa;
     }
+
+    @Override
+    public String toString() {
+        return "Suspension{" +
+                "id=" + id +
+                ", usuarioId=" + usuarioId +
+                ", motivo='" + motivo + '\'' +
+                ", fechaSuspension=" + fechaSuspension +
+                ", fechaFin=" + fechaFin +
+                ", activa=" + activa +
+                '}';
+    }
 }

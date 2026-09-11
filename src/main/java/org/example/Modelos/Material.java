@@ -1,6 +1,5 @@
 package org.example.Modelos;
 import org.example.ENUMS.TipoArchivo;
-import org.example.ENUMS.TipoCategoria;
 import org.example.ENUMS.TipoMaterial;
 
 import java.time.LocalDate;
@@ -12,15 +11,17 @@ public class Material extends Publicacion {
     private TipoArchivo tipoArchivo;
     private String tema;
 
-    public Material(String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema) {
+    public Material(String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema, int usuarioId, int cursoId) {
         this.archivoUrl = archivoUrl;
         this.tipoMaterial = tipoMaterial;
         this.tipoArchivo = tipoArchivo;
         this.tema = tema;
+        this.setUsuarioId(usuarioId);
+        this.setCursoId(cursoId);
     }
 
-    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
+    public Material(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId, int cursoId, String archivoUrl, TipoMaterial tipoMaterial, TipoArchivo tipoArchivo, String tema) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja, usuarioId, cursoId);
         this.archivoUrl = archivoUrl;
         this.tipoMaterial = tipoMaterial;
         this.tipoArchivo = tipoArchivo;
@@ -65,6 +66,8 @@ public class Material extends Publicacion {
                 "id=" + getId() +
                 ", mensaje='" + getMensaje() + '\'' +
                 ", fechaPublicacion=" + getFechaPublicacion() +
+                ", usuarioId=" + getUsuarioId() +
+                ", cursoId=" + getCursoId() +
                 ", archivoUrl='" + archivoUrl + '\'' +
                 ", tipoMaterial=" + tipoMaterial +
                 ", tipoArchivo=" + tipoArchivo +

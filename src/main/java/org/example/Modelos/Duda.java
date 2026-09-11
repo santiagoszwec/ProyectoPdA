@@ -9,14 +9,16 @@ public class Duda extends Publicacion {
     private EstadoDuda estado;
     private TipoCategoria categoria;
 
-    public Duda(EstadoDuda estado, TipoCategoria categoria, int usuarioId) {
+    public Duda(EstadoDuda estado, TipoCategoria categoria, int usuarioId, int cursoId) {
         this.estado = estado;
         this.categoria = categoria;
         this.setUsuarioId(usuarioId);
+        this.setCursoId(cursoId);
     }
 
-    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId, EstadoDuda estado, TipoCategoria categoria) {
-        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja, usuarioId);
+    public Duda(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja,
+            int usuarioId, int cursoId, EstadoDuda estado, TipoCategoria categoria) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja, usuarioId, cursoId);
         this.estado = estado;
         this.categoria = categoria;
     }
@@ -43,6 +45,8 @@ public class Duda extends Publicacion {
                 "id=" + getId() +
                 ", mensaje='" + getMensaje() + '\'' +
                 ", fechaPublicacion=" + getFechaPublicacion() +
+                ", usuarioId=" + getUsuarioId() +
+                ", cursoId=" + getCursoId() +
                 ", estado=" + estado +
                 ", categoria=" + categoria +
                 '}';

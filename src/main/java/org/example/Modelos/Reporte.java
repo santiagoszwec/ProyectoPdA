@@ -12,8 +12,9 @@ public class Reporte {
     private LocalDate fechaResolucion;
     private Integer publicacionId;
     private Integer comentarioId;
+    private int usuarioId;
 
-    public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte, LocalDate fechaResolucion, int publicacionId) {
+    public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte, LocalDate fechaResolucion, int publicacionId, int usuarioId) {
         this.id = id;
         this.contenido = contenido;
         this.motivo = motivo;
@@ -21,10 +22,11 @@ public class Reporte {
         this.fechaReporte = fechaReporte;
         this.fechaResolucion = fechaResolucion;
         this.publicacionId = publicacionId;
+        this.usuarioId = usuarioId;
     }
 
     public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte,
-                   LocalDate fechaResolucion, Integer publicacionId, Integer comentarioId) {
+                   LocalDate fechaResolucion, Integer publicacionId, Integer comentarioId, int usuarioId) {
         this.id = id;
         this.contenido = contenido;
         this.motivo = motivo;
@@ -33,14 +35,7 @@ public class Reporte {
         this.fechaResolucion = fechaResolucion;
         this.publicacionId = publicacionId;
         this.comentarioId = comentarioId;
-    }
-
-    public Integer getComentarioId() {
-        return comentarioId;
-    }
-
-    public void setComentarioId(Integer comentarioId) {
-        this.comentarioId = comentarioId;
+        this.usuarioId = usuarioId;
     }
 
     public int getId() {
@@ -91,12 +86,28 @@ public class Reporte {
         this.fechaResolucion = fechaResolucion;
     }
 
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
     public Integer getPublicacionId() {
         return publicacionId;
     }
 
     public void setPublicacionId(Integer publicacionId) {
         this.publicacionId = publicacionId;
+    }
+
+    public Integer getComentarioId() {
+        return comentarioId;
+    }
+
+    public void setComentarioId(Integer comentarioId) {
+        this.comentarioId = comentarioId;
     }
 
     @Override
@@ -108,6 +119,9 @@ public class Reporte {
                 ", resolucion='" + resolucion + '\'' +
                 ", fechaReporte=" + fechaReporte +
                 ", fechaResolucion=" + fechaResolucion +
+                ", usuarioId=" + usuarioId +
+                ", publicacionId=" + publicacionId +
+                ", comentarioId=" + comentarioId +
                 '}';
     }
 }

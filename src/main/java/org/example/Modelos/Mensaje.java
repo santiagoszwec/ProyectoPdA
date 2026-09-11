@@ -8,11 +8,14 @@ public class Mensaje extends Publicacion {
 
     private TipoCategoria categoria;
 
-    public Mensaje(TipoCategoria categoria) {
+    public Mensaje(TipoCategoria categoria, int usuarioId, int cursoId) {
         this.categoria = categoria;
+        this.setUsuarioId(usuarioId);
+        this.setCursoId(cursoId);
     }
 
-    public Mensaje(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, TipoCategoria categoria) {super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja);
+    public Mensaje(int id, String mensaje, String imagenUrl, LocalDate fechaPublicacion, boolean dadaDeBaja, int usuarioId, int cursoId, TipoCategoria categoria) {
+        super(id, mensaje, imagenUrl, fechaPublicacion, dadaDeBaja, usuarioId, cursoId);
         this.categoria = categoria;
     }
 
@@ -30,6 +33,8 @@ public class Mensaje extends Publicacion {
                 "id=" + getId() +
                 ", mensaje='" + getMensaje() + '\'' +
                 ", fechaPublicacion=" + getFechaPublicacion() +
+                ", usuarioId=" + getUsuarioId() +
+                ", cursoId=" + getCursoId() +
                 ", categoria=" + categoria +
                 '}';
     }
