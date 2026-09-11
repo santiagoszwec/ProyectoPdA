@@ -54,7 +54,7 @@ public class DudaDAO {
     }
 
     public static List<Duda> listarTodos() {
-        String sql = String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, d.estado, d.categoria " +
+        String sql = "SELECT p.id, p.mensaje, p.imagen_url, p.fecha_publicacion, p.activa, p.usuario_id, p.curso_id, d.estado, d.categoria " +
                 "FROM publicacion p JOIN duda d ON d.id = p.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
 
         try {
