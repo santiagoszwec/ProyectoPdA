@@ -2,11 +2,11 @@ package org.example.Modelos;
 
 import org.example.ENUMS.TipoEstado;
 
-public class Progreso {
+public class Inscripcion {
 
     private TipoEstado estado;
 
-    public Progreso(TipoEstado estado) {
+    public Inscripcion(TipoEstado estado) {
         this.estado = estado;
     }
 

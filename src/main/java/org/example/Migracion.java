@@ -33,6 +33,24 @@ public class Migracion {
                             "  activo BOOLEAN NOT NULL DEFAULT TRUE" +
                             ")",
 
+                    "CREATE TABLE IF NOT EXISTS inscripcion (" +
+                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "  estado VARCHAR(20) NOT NULL," +
+                            "  usuario_id INT NOT NULL," +
+                            "  curso_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                            "  FOREIGN KEY (curso_id) REFERENCES curso(id)," +
+                            "  UNIQUE (usuario_id, curso_id)" +
+                            ")",
+
+                    "CREATE TABLE IF NOT EXISTS registro_de_horas (" +
+                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
+                            "  cantidad_de_horas FLOAT NOT NULL," +
+                            "  fecha DATE NOT NULL," +
+                            "  inscripcion_id INT NOT NULL," +
+                            "  FOREIGN KEY (inscripcion_id) REFERENCES inscripcion(id)" +
+                            ")",
+
                     "CREATE TABLE IF NOT EXISTS publicacion (" +
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
                             "  mensaje TEXT NOT NULL," +
@@ -40,7 +58,9 @@ public class Migracion {
                             "  fecha_publicacion DATE NOT NULL," +
                             "  activa BOOLEAN NOT NULL DEFAULT TRUE," +
                             "  usuario_id INT," +
-                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
+                            "  curso_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                            "  FOREIGN KEY (curso_id) REFERENCES curso(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS mensaje (" +
@@ -86,18 +106,9 @@ public class Migracion {
                             "  tipo VARCHAR(20) NOT NULL," +
                             "  mensaje TEXT NOT NULL," +
                             "  usuario_id INT NOT NULL," +
-                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
-                            ")",
-
-                    "CREATE TABLE IF NOT EXISTS progreso (" +
-                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
-                            "  estado VARCHAR(20) NOT NULL" +
-                            ")",
-
-                    "CREATE TABLE IF NOT EXISTS registro_de_horas (" +
-                            "  id INT AUTO_INCREMENT PRIMARY KEY," +
-                            "  cantidad_de_horas FLOAT NOT NULL," +
-                            "  fecha DATE NOT NULL" +
+                            "  publicacion_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                            "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS suspension (" +
@@ -117,13 +128,13 @@ public class Migracion {
                             "  resolucion TEXT," +
                             "  fecha_reporte DATE NOT NULL," +
                             "  fecha_resolucion DATE," +
+                            "  usuario_id INT NOT NULL," +
                             "  publicacion_id INT," +
                             "  comentario_id INT," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
                             "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)," +
                             "  FOREIGN KEY (comentario_id) REFERENCES comentario(id) ON DELETE CASCADE" +
-                            ")",
-
-
+                            ")"
             };
 
 
