@@ -1,16 +1,12 @@
 package org.example.Menus;
 
 import org.example.Consola;
-import org.example.DAOS.PublicacionDAO;
+import org.example.DAOS.*;
 import org.example.ENUMS.*;
 import org.example.Modelos.*;
 
 import java.util.List;
 import java.util.Scanner;
-import org.example.DAOS.DudaDAO;
-import org.example.DAOS.MensajeDAO;
-import org.example.DAOS.MaterialDAO;
-import org.example.DAOS.CursoDAO;
 
 import java.time.LocalDate;
 
@@ -529,6 +525,25 @@ public class MenuPublicaciones {
 
         System.out.println("\n===== CREAR PUBLICACION =====");
 
+        System.out.println("--- SELECCIONAR CURSO ---");
+
+        Curso curso = pedirCurso(sc);
+        int anioActual = LocalDate.now().getYear();
+        if(curso == null)
+        {
+            System.out.println("No se pudo crear la publicacion");
+            return;
+        }
+        else if(curso.getAnio() < anioActual ){
+            System.out.println("No es posible crear una publicacion en un curso correspondiente a un año inferior al actual");
+                return;
+        }
+
+        if(!InscripcionDAO.existeInscripcion(usuarioActual.getId(), curso.getId())){
+            System.out.println("No es posible crear la publicacion. No esta inscripto en el curso seleccionado");
+            return;
+        }
+
         String mensaje;
         do {
             System.out.print("Ingrese mensaje: ");
@@ -571,12 +586,6 @@ public class MenuPublicaciones {
                 System.out.println("Opción inválida, intente de nuevo.");
             }
         } while (tipoPublicacion < 1 || tipoPublicacion > 3);
-
-        Curso curso = pedirCurso(sc);
-        if (curso == null) {
-            System.out.println("No se pudo crear la publicación.");
-            return;
-        }
 
         boolean creada;
 
