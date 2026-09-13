@@ -528,15 +528,11 @@ public class MenuPublicaciones {
         System.out.println("--- SELECCIONAR CURSO ---");
 
         Curso curso = pedirCurso(sc);
-        int anioActual = LocalDate.now().getYear();
+
         if(curso == null)
         {
             System.out.println("No se pudo crear la publicacion");
             return;
-        }
-        else if(curso.getAnio() < anioActual ){
-            System.out.println("No es posible crear una publicacion en un curso correspondiente a un año inferior al actual");
-                return;
         }
 
         if(!InscripcionDAO.existeInscripcion(usuarioActual.getId(), curso.getId())){
@@ -713,7 +709,11 @@ public class MenuPublicaciones {
     }
 
     private static Curso pedirCurso(Scanner sc) {
-        List<Curso> cursos = CursoDAO.listarTodos();
+
+        int anioActual = LocalDate.now().getYear();
+        List<Curso> cursos = CursoDAO.listarTodos().stream()
+                .filter(c -> c.getAnio() == anioActual)
+                .toList();
 
         if (cursos.isEmpty()) {
             System.out.println("\nNo hay cursos disponibles. Cree un curso primero.");
