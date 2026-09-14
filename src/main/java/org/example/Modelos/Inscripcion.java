@@ -9,11 +9,8 @@ public class Inscripcion {
     private int usuarioId;
     private int cursoId;
 
-    public Inscripcion(int id, TipoEstado estado, int usuarioId, int cursoId) {
-        this.id = id;
+    public Inscripcion(TipoEstado estado) {
         this.estado = estado;
-        this.usuarioId = usuarioId;
-        this.cursoId = cursoId;
     }
 
     public Inscripcion(TipoEstado estado, int usuarioId, int cursoId) {
@@ -22,8 +19,19 @@ public class Inscripcion {
         this.cursoId = cursoId;
     }
 
+    public Inscripcion(int id, TipoEstado estado, int usuarioId, int cursoId) {
+        this.id = id;
+        this.estado = estado;
+        this.usuarioId = usuarioId;
+        this.cursoId = cursoId;
+    }
+
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public TipoEstado getEstado() {
@@ -38,8 +46,16 @@ public class Inscripcion {
         return usuarioId;
     }
 
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
     public int getCursoId() {
         return cursoId;
+    }
+
+    public void setCursoId(int cursoId) {
+        this.cursoId = cursoId;
     }
 
     @Override

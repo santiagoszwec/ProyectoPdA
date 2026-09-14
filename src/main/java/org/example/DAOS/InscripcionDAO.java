@@ -89,11 +89,7 @@ public class InscripcionDAO {
              PreparedStatement sentencia = conexion.prepareStatement(sql);
              ResultSet filas = sentencia.executeQuery()) {
 
-            List<Inscripcion> inscripciones = new ArrayList<>();
-            while (filas.next()) {
-                inscripciones.add(mapearInscripcion(filas));
-            }
-            return inscripciones;
+            return mapearInscripciones(filas);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);

@@ -97,4 +97,28 @@ public class CursoDAO {
             throw new RuntimeException(e);
         }
     }
+    public static Curso buscarPorId(int id) {
+        String sql = "SELECT * FROM curso WHERE id = ?";
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, id);
+            try (ResultSet resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return new Curso(
+                            resultado.getInt("id"),
+                            resultado.getString("nombre"),
+                            resultado.getInt("semestre"),
+                            resultado.getInt("anio"),
+                            resultado.getInt("creditos"),
+                            resultado.getString("descripcion"),
+                            resultado.getBoolean("activo")
+                    );
+                }
+                return null;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

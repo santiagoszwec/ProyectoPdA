@@ -1,7 +1,12 @@
 package org.example.Menus;
 
+import org.example.DAOS.CursoDAO;
+import org.example.DAOS.InscripcionDAO;
+import org.example.Modelos.Curso;
+import org.example.Modelos.Inscripcion;
 import org.example.Modelos.Usuario;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class MenuEstudiante {
@@ -13,6 +18,7 @@ public class MenuEstudiante {
         do {
             System.out.println("\n===== MENÚ ESTUDIANTE =====");
             System.out.println("1. Dudas y comentarios");
+            System.out.println("2. Mis cursos");
             System.out.println("0. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
@@ -22,6 +28,10 @@ public class MenuEstudiante {
 
                 case 1:
                     MenuDudas.mostrar(sc, usuarioActual);
+                    break;
+
+                case 2:
+                    misCursos(usuarioActual);
                     break;
 
                 case 0:
@@ -34,5 +44,30 @@ public class MenuEstudiante {
             }
 
         } while (opcion != 0);
+    }
+
+    private static void misCursos(Usuario usuarioActual) {
+
+        System.out.println("\n===== MIS CURSOS =====");
+
+        List<Inscripcion> inscripciones = InscripcionDAO.listarPorUsuario(usuarioActual.getId());
+
+        if (inscripciones.isEmpty()) {
+            System.out.println("No tenés cursos cargados todavía.");
+            return;
+        }
+
+        for (Inscripcion inscripcion : inscripciones) {
+            Curso curso = CursoDAO.buscarPorId(inscripcion.getCursoId());
+            if (curso == null) {
+                continue;
+            }
+            System.out.println(
+                    "[" + curso.getId() + "] " + curso.getNombre() +
+                            " | Semestre: " + curso.getSemestre() +
+                            " | Año: " + curso.getAnio() +
+                            " | Créditos: " + curso.getCreditos() +
+                            " | Estado: " + inscripcion.getEstado());
+        }
     }
 }
