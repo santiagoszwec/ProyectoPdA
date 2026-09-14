@@ -48,7 +48,7 @@ public class Migracion {
                             "  cantidad_de_horas FLOAT NOT NULL," +
                             "  fecha DATE NOT NULL," +
                             "  inscripcion_id INT NOT NULL," +
-                            "  FOREIGN KEY (inscripcion_id) REFERENCES inscripcion(id)" +
+                            "  FOREIGN KEY (inscripcion_id) REFERENCES inscripcion(id) ON DELETE CASCADE" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS publicacion (" +

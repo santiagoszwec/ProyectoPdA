@@ -58,7 +58,7 @@ public class MenuDudas {
     }
 
     private static void responderDuda(Scanner sc, Usuario usuarioActual) {
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones cargadas.");
             return;
@@ -105,7 +105,7 @@ public class MenuDudas {
     }
 
     private static void comentarRespuesta(Scanner sc, Usuario usuarioActual) {
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones cargadas.");
             return;

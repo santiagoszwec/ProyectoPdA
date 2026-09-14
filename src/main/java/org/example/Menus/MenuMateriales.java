@@ -5,6 +5,7 @@ import org.example.DAOS.PublicacionDAO;
 import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoMaterial;
 import org.example.Modelos.Publicacion;
+import org.example.Modelos.Usuario;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +26,7 @@ public class MenuMateriales {
             TipoArchivo.PNG
     };
 
-    public static void mostrar(Scanner sc) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -40,10 +41,10 @@ public class MenuMateriales {
 
             switch (opcion) {
                 case 1:
-                    MenuPublicaciones.mostrarPublicaciones(PublicacionDAO.listarMateriales());
+                    MenuPublicaciones.mostrarPublicaciones(PublicacionDAO.listarMateriales(usuarioActual.getId()));
                     break;
                 case 2:
-                    filtrarPorEtiquetas(sc);
+                    filtrarPorEtiquetas(sc,  usuarioActual);
                     break;
                 case 0:
                     break;
@@ -55,7 +56,7 @@ public class MenuMateriales {
         } while (opcion != 0);
     }
 
-    private static void filtrarPorEtiquetas(Scanner sc) {
+    private static void filtrarPorEtiquetas(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR MATERIAL POR ETIQUETAS =====");
 
@@ -77,7 +78,7 @@ public class MenuMateriales {
         System.out.print("Su selección: ");
         List<TipoArchivo> tiposArchivo = leerTipoArchivo(sc);
 
-        List<Publicacion> materiales = PublicacionDAO.filtrarMaterialesPorEtiquetas(tiposMaterial, tiposArchivo);
+        List<Publicacion> materiales = PublicacionDAO.filtrarMaterialesPorEtiquetas(tiposMaterial, tiposArchivo, usuarioActual.getId());
 
         if (materiales.isEmpty()) {
             System.out.println("\nNo se encontraron materiales con las etiquetas seleccionadas.");

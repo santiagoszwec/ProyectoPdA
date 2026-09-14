@@ -30,13 +30,13 @@ public class MenuPublicaciones {
                     crearPublicacion(sc, usuarioActual);
                     break;
                 case 2:
-                    menuListarPublicaciones(sc);
+                    menuListarPublicaciones(sc, usuarioActual);
                     break;
                 case 3:
-                    editarPublicacion(sc);
+                    editarPublicacion(sc, usuarioActual);
                     break;
                 case 4:
-                    darDeBajaPublicacion(sc);
+                    darDeBajaPublicacion(sc, usuarioActual);
                     break;
                 case 0:
                     break;
@@ -47,7 +47,7 @@ public class MenuPublicaciones {
         } while (opcion != 0);
     }
 
-    private static void menuListarPublicaciones(Scanner sc) {
+    private static void menuListarPublicaciones(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
         do {
@@ -63,16 +63,16 @@ public class MenuPublicaciones {
             opcion = Consola.leerOpcion(sc);
             switch (opcion) {
                 case 1:
-                    mostrarPublicaciones(PublicacionDAO.listarActivas());
+                    mostrarPublicaciones(PublicacionDAO.listarActivas(usuarioActual.getId()));
                     break;
                 case 2:
-                    menuMensajes(sc);
+                    menuMensajes(sc, usuarioActual);
                     break;
                 case 3:
-                    menuDudas(sc);
+                    menuDudas(sc,usuarioActual);
                     break;
                 case 4:
-                    menuMateriales(sc);
+                    menuMateriales(sc, usuarioActual);
                     break;
                 case 0:
                     break;
@@ -83,7 +83,7 @@ public class MenuPublicaciones {
     }
 
 
-    public static void mostrarPublicaciones(List<Publicacion> publicaciones) {
+    public static void mostrarPublicaciones(List<? extends Publicacion> publicaciones) {
 
         if (publicaciones.isEmpty()) {
             System.out.println("\nNo se encontraron publicaciones.");
@@ -97,7 +97,7 @@ public class MenuPublicaciones {
         }
     }
 
-    private static void menuMensajes(Scanner sc) {
+    private static void menuMensajes(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
 
@@ -112,10 +112,10 @@ public class MenuPublicaciones {
 
             switch (opcion) {
                 case 1:
-                    mostrarPublicaciones(PublicacionDAO.listarMensajes());
+                    mostrarPublicaciones(PublicacionDAO.listarMensajes(usuarioActual.getId()));
                     break;
                 case 2:
-                    filtrarMensajesPorCategoria(sc);
+                    filtrarMensajesPorCategoria(sc, usuarioActual);
                     break;
                 case 0:
                     break;
@@ -126,7 +126,7 @@ public class MenuPublicaciones {
     }
 
 
-    private static void filtrarMensajesPorCategoria(Scanner sc) {
+    private static void filtrarMensajesPorCategoria(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR MENSAJES =====");
 
@@ -151,10 +151,10 @@ public class MenuPublicaciones {
                 System.out.println("Categoría inválida.");
                 return;
         }
-        mostrarPublicaciones(PublicacionDAO.filtrarMensajesPorCategoria(categoria));
+        mostrarPublicaciones(PublicacionDAO.filtrarMensajesPorCategoria(categoria, usuarioActual.getId()));
     }
 
-    private static void menuDudas(Scanner sc) {
+    private static void menuDudas(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
         do {
@@ -168,13 +168,13 @@ public class MenuPublicaciones {
             opcion = Consola.leerOpcion(sc);
             switch (opcion) {
                 case 1:
-                    mostrarPublicaciones(PublicacionDAO.listarDudas());
+                    mostrarPublicaciones(PublicacionDAO.listarDudas(usuarioActual.getId()));
                     break;
                 case 2:
-                    filtrarDudasPorCategoria(sc);
+                    filtrarDudasPorCategoria(sc, usuarioActual);
                     break;
                 case 3:
-                    filtrarDudasPorEstado(sc);
+                    filtrarDudasPorEstado(sc, usuarioActual);
                     break;
                 case 0:
                     break;
@@ -185,7 +185,7 @@ public class MenuPublicaciones {
         } while (opcion != 0);
     }
 
-    private static void filtrarDudasPorCategoria(Scanner sc) {
+    private static void filtrarDudasPorCategoria(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR DUDAS POR CATEGORÍA =====");
         System.out.println("1. Ejercicio");
@@ -209,11 +209,11 @@ public class MenuPublicaciones {
                 System.out.println("Categoría inválida.");
                 return;
         }
-        mostrarPublicaciones(PublicacionDAO.filtrarDudasPorCategoria(categoria));
+        mostrarPublicaciones(PublicacionDAO.filtrarDudasPorCategoria(categoria, usuarioActual.getId()));
     }
 
 
-    private static void filtrarDudasPorEstado(Scanner sc) {
+    private static void filtrarDudasPorEstado(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR DUDAS POR ESTADO =====");
         System.out.println("1. Abierta");
@@ -233,10 +233,10 @@ public class MenuPublicaciones {
                 System.out.println("Estado inválido.");
                 return;
         }
-        mostrarPublicaciones(PublicacionDAO.filtrarDudasPorEstado(estado));
+        mostrarPublicaciones(PublicacionDAO.filtrarDudasPorEstado(estado, usuarioActual.getId()));
     }
 
-    private static void menuMateriales(Scanner sc) {
+    private static void menuMateriales(Scanner sc, Usuario usuarioActual) {
 
         int opcion;
         do {
@@ -250,13 +250,13 @@ public class MenuPublicaciones {
             opcion = Consola.leerOpcion(sc);
             switch (opcion) {
                 case 1:
-                    mostrarPublicaciones(PublicacionDAO.listarMateriales());
+                    mostrarPublicaciones(PublicacionDAO.listarMateriales(usuarioActual.getId()));
                     break;
                 case 2:
-                    filtrarMaterialesPorTipo(sc);
+                    filtrarMaterialesPorTipo(sc, usuarioActual);
                     break;
                 case 3:
-                    filtrarMaterialesPorArchivo(sc);
+                    filtrarMaterialesPorArchivo(sc, usuarioActual);
                     break;
                 case 0:
                     break;
@@ -265,7 +265,7 @@ public class MenuPublicaciones {
     }
 
 
-    private static void filtrarMaterialesPorTipo(Scanner sc) {
+    private static void filtrarMaterialesPorTipo(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR POR TIPO DE MATERIAL =====");
         System.out.println("1. Apuntes");
@@ -293,11 +293,11 @@ public class MenuPublicaciones {
                 System.out.println("Tipo de material inválido.");
                 return;
         }
-        mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorTipo(tipoMaterial));
+        mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorTipo(tipoMaterial, usuarioActual.getId()));
     }
 
 
-    private static void filtrarMaterialesPorArchivo(Scanner sc) {
+    private static void filtrarMaterialesPorArchivo(Scanner sc, Usuario usuarioActual) {
 
         System.out.println("\n===== FILTRAR POR TIPO DE ARCHIVO =====");
         System.out.println("1. PDF");
@@ -321,12 +321,12 @@ public class MenuPublicaciones {
                 System.out.println("Tipo de archivo inválido.");
                 return;
         }
-        mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorArchivo(tipoArchivo));
+        mostrarPublicaciones(PublicacionDAO.filtrarMaterialesPorArchivo(tipoArchivo, usuarioActual.getId()));
     }
 
-    private static void editarPublicacion(Scanner sc) {
+    private static void editarPublicacion(Scanner sc, Usuario usuarioActual) {
 
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
 
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones activas para editar.");
@@ -473,9 +473,9 @@ public class MenuPublicaciones {
         }
     }
 
-    private static void darDeBajaPublicacion(Scanner sc) {
+    private static void darDeBajaPublicacion(Scanner sc, Usuario usuarioActual) {
 
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas();
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
 
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones activas para dar de baja.");

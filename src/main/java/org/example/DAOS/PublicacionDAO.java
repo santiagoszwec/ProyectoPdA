@@ -39,16 +39,18 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarActivas() {
-        try {
-            Connection conexion = ConexionDB.obtenerConexion();
+    public static List<Publicacion> listarActivas(int usuarioId) {
+        List<Publicacion> retorno = new ArrayList<>();
 
-            String sql = "SELECT * FROM publicacion WHERE activa = TRUE ORDER BY fecha_publicacion";
-            PreparedStatement sentencia = conexion.prepareStatement(sql);
+        String sql = "SELECT p.* FROM publicacion p INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, usuarioId);
 
             ResultSet filas = sentencia.executeQuery();
-
-            List<Publicacion> retorno = new ArrayList<>();
 
             while (filas.next()) {
                 int id = filas.getInt("id");
@@ -56,16 +58,13 @@ public class PublicacionDAO {
                 String imagenUrl = filas.getString("imagen_url");
                 LocalDate fechaPublicacion = filas.getObject("fecha_publicacion", LocalDate.class);
                 boolean activa = filas.getBoolean("activa");
-                int usuarioId = filas.getInt("usuario_id");
+                int usuarioPublicacion = filas.getInt("usuario_id");
                 int cursoId = filas.getInt("curso_id");
 
-                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion, activa, usuarioId, cursoId);
-
+                Publicacion publicacion = new Publicacion(id, mensaje, imagenUrl, fechaPublicacion, !activa, usuarioPublicacion, cursoId);
                 retorno.add(publicacion);
             }
-
             return retorno;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -277,38 +276,43 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarMensajes() {
-
-        List<Publicacion> publicaciones = new ArrayList<>();
-
-        String sql = "SELECT p.*, msg.categoria AS categoria_mensaje FROM publicacion p " +
-                "INNER JOIN mensaje msg ON p.id = msg.id WHERE p.activa = TRUE ORDER BY p.fecha_publicacion";
-
-        try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql);
-             ResultSet filas = sentencia.executeQuery()) {
-
-            while (filas.next()) {
-                publicaciones.add(convertirMensaje(filas));
-            }
-            return publicaciones;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static List<Publicacion> filtrarMensajesPorCategoria(String categoria) {
-
-        List<Publicacion> publicaciones = new ArrayList<>();
+    public static List<Mensaje> listarMensajes(int usuarioId) {
+        List<Mensaje> mensajes = new ArrayList<>();
 
         String sql = "SELECT p.*, msg.categoria AS categoria_mensaje FROM publicacion p " +
-                "INNER JOIN mensaje msg ON p.id = msg.id WHERE p.activa = TRUE " +
-                "AND msg.categoria = ? ORDER BY p.fecha_publicacion";
+                "INNER JOIN mensaje msg ON p.id = msg.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? ORDER BY p.fecha_publicacion";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
-            sentencia.setString(1, categoria);
+            sentencia.setInt(1, usuarioId);
+
+            ResultSet rs = sentencia.executeQuery();
+
+            while (rs.next()) {
+                mensajes.add(convertirMensaje(rs));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return mensajes;
+    }
+
+    public static List<Publicacion> filtrarMensajesPorCategoria(String categoria, int usuarioId) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, msg.categoria AS categoria_mensaje FROM publicacion p " +
+                "INNER JOIN mensaje msg ON p.id = msg.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? AND msg.categoria = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, usuarioId);
+            sentencia.setString(2, categoria);
 
             ResultSet filas = sentencia.executeQuery();
 
@@ -322,63 +326,44 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarDudas() {
+    public static List<Publicacion> listarDudas(int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
         String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda " +
-                "FROM publicacion p INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE " +
-                "ORDER BY p.fecha_publicacion";
+                "FROM publicacion p INNER JOIN duda d ON p.id = d.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? ORDER BY p.fecha_publicacion";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql);
-             ResultSet filas = sentencia.executeQuery()) {
-
-            while (filas.next()) {
-                publicaciones.add(convertirDuda(filas));
-            }
-            return publicaciones;
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static List<Publicacion> filtrarDudasPorCategoria(String categoria) {
-
-        List<Publicacion> publicaciones = new ArrayList<>();
-
-        String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda " +
-                "FROM publicacion p INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE " +
-                "AND d.categoria = ? ORDER BY p.fecha_publicacion";
-
-        try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-
-            sentencia.setString(1, categoria);
-
+            PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, usuarioId);
             ResultSet filas = sentencia.executeQuery();
 
             while (filas.next()) {
                 publicaciones.add(convertirDuda(filas));
             }
+
             return publicaciones;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static List<Publicacion> filtrarDudasPorEstado(String estado) {
+    public static List<Publicacion> filtrarDudasPorCategoria(String categoria, int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
         String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda FROM publicacion p " +
-                "INNER JOIN duda d ON p.id = d.id WHERE p.activa = TRUE AND d.estado = ? ORDER BY p.fecha_publicacion";
+                "INNER JOIN duda d ON p.id = d.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? AND d.categoria = ? ORDER BY p.fecha_publicacion";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
-            sentencia.setString(1, estado);
+            sentencia.setInt(1, usuarioId);
+            sentencia.setString(2, categoria);
+
             ResultSet filas = sentencia.executeQuery();
 
             while (filas.next()) {
@@ -390,41 +375,64 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> listarMateriales() {
+    public static List<Publicacion> filtrarDudasPorEstado(String estado, int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
-        String sql = "SELECT p.*,m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
-                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
-                "ORDER BY p.fecha_publicacion";
+        String sql = "SELECT p.*, d.estado AS estado_duda, d.categoria AS categoria_duda " +
+                "FROM publicacion p INNER JOIN duda d ON p.id = d.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? AND d.estado = ?";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql);
-             ResultSet filas = sentencia.executeQuery()) {
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, usuarioId);
+            sentencia.setString(2, estado);
+            ResultSet filas = sentencia.executeQuery();
 
             while (filas.next()) {
-                publicaciones.add(convertirMaterial(filas));
+                publicaciones.add(convertirDuda(filas));
             }
-
             return publicaciones;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static List<Publicacion> filtrarMaterialesPorTipo(String tipoMaterial) {
+    public static List<Publicacion> listarMateriales(int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
         String sql = "SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
-                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
-                "AND m.tipo_material = ? ORDER BY p.fecha_publicacion";
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? ORDER BY p.fecha_publicacion";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+            PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, usuarioId);
+            ResultSet filas = sentencia.executeQuery();
+            while (filas.next()) {
+                publicaciones.add(convertirMaterial(filas));
+            }
+            return publicaciones;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Publicacion> filtrarMaterialesPorTipo(String tipoMaterial, int usuarioId) {
+
+        List<Publicacion> publicaciones = new ArrayList<>();
+
+        String sql = "SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? AND m.tipo_material = ? ORDER BY p.fecha_publicacion";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
-            sentencia.setString(1, tipoMaterial);
+            sentencia.setInt(1, usuarioId);
+            sentencia.setString(2, tipoMaterial);
 
             ResultSet filas = sentencia.executeQuery();
 
@@ -438,18 +446,18 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> filtrarMaterialesPorArchivo(String tipoArchivo) {
+    public static List<Publicacion> filtrarMaterialesPorArchivo(String tipoArchivo, int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
         String sql = "SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
-                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE " +
-                "AND m.tipo_archivo = ? ORDER BY p.fecha_publicacion";
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "WHERE p.activa = TRUE AND i.usuario_id = ? AND m.tipo_archivo = ? ORDER BY p.fecha_publicacion";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
-             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
-
-            sentencia.setString(1, tipoArchivo);
+            PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+            sentencia.setInt(1, usuarioId);
+            sentencia.setString(2, tipoArchivo);
 
             ResultSet filas = sentencia.executeQuery();
 
@@ -462,17 +470,19 @@ public class PublicacionDAO {
         }
     }
 
-    public static List<Publicacion> filtrarMaterialesPorEtiquetas(List<TipoMaterial> tiposMaterial, List<TipoArchivo> tiposArchivo) {
+    public static List<Publicacion> filtrarMaterialesPorEtiquetas(List<TipoMaterial> tiposMaterial, List<TipoArchivo> tiposArchivo, int usuarioId) {
 
         List<Publicacion> publicaciones = new ArrayList<>();
 
         StringBuilder sql = new StringBuilder("SELECT p.*, m.archivo_url, m.tipo_material, m.tipo_archivo, m.tema " +
-                "FROM publicacion p INNER JOIN material m ON p.id = m.id WHERE p.activa = TRUE ");
+                "FROM publicacion p INNER JOIN material m ON p.id = m.id INNER JOIN inscripcion i ON p.curso_id = i.curso_id " +
+                "AND i.usuario_id = ? WHERE p.activa = TRUE ");
 
         List<String> parametros = new ArrayList<>();
 
         if (tiposMaterial != null && !tiposMaterial.isEmpty()) {
             sql.append("AND m.tipo_material IN (");
+
             for (int i = 0; i < tiposMaterial.size(); i++) {
                 sql.append(i == 0 ? "?" : ",?");
                 parametros.add(tiposMaterial.get(i).name());
@@ -482,20 +492,22 @@ public class PublicacionDAO {
 
         if (tiposArchivo != null && !tiposArchivo.isEmpty()) {
             sql.append("AND m.tipo_archivo IN (");
+
             for (int i = 0; i < tiposArchivo.size(); i++) {
                 sql.append(i == 0 ? "?" : ",?");
                 parametros.add(tiposArchivo.get(i).name());
             }
             sql.append(") ");
         }
-
         sql.append("ORDER BY p.fecha_publicacion");
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql.toString())) {
 
+            sentencia.setInt(1, usuarioId);
+
             for (int i = 0; i < parametros.size(); i++) {
-                sentencia.setString(i + 1, parametros.get(i));
+                sentencia.setString(i + 2, parametros.get(i));
             }
 
             ResultSet filas = sentencia.executeQuery();

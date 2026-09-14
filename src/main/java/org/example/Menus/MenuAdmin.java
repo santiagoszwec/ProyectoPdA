@@ -41,7 +41,7 @@ public class MenuAdmin {
 
                 case 3:
                     System.out.println("Material de Estudio");
-                    MenuMateriales.mostrar(sc);
+                    MenuMateriales.mostrar(sc, usuarioActual);
                     break;
 
                 case 4:

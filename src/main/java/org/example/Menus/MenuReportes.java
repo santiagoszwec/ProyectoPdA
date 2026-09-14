@@ -248,7 +248,7 @@ public class MenuReportes {
         System.out.println("\n--- LISTA DE PUBLICACIONES ACTIVAS ---");
 
 
-        mostrarPublicaciones(PublicacionDAO.listarActivas());
+        mostrarPublicaciones(PublicacionDAO.listarActivas(usuarioActual.getId()));
         Publicacion publicacion = null;
         do{
 
