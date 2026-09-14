@@ -89,9 +89,14 @@ public class Migracion {
                             "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)" +
                             ")",
 
-                    "CREATE TABLE IF NOT EXISTS progreso (" +
+                    "CREATE TABLE IF NOT EXISTS inscripcion (" +
                             "  id INT AUTO_INCREMENT PRIMARY KEY," +
-                            "  estado VARCHAR(20) NOT NULL" +
+                            "  estado VARCHAR(20) NOT NULL," +
+                            "  usuario_id INT NOT NULL," +
+                            "  curso_id INT NOT NULL," +
+                            "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
+                            "  FOREIGN KEY (curso_id) REFERENCES curso(id)," +
+                            "  UNIQUE (usuario_id, curso_id)" +
                             ")",
 
                     "CREATE TABLE IF NOT EXISTS registro_de_horas (" +
