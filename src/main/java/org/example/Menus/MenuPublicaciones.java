@@ -529,6 +529,12 @@ public class MenuPublicaciones {
 
         System.out.println("\n===== CREAR PUBLICACION =====");
 
+        int anioActual = LocalDate.now().getYear();
+        if (cursoSeleccionado.getAnio() < anioActual) {
+            System.out.println("No es posible crear una publicación en un curso correspondiente a un año inferior al actual");
+            return;
+        }
+
         String mensaje;
         do {
             System.out.print("Ingrese mensaje: ");
@@ -600,7 +606,10 @@ public class MenuPublicaciones {
                 }
 
                 creada = DudaDAO.crear(duda);
-                break;
+                if (creada) {
+                    notificarInscriptosCursando(cursoSeleccionado, usuarioActual.getId(), duda.getId(), TipoNotificacion.Duda);
+                }
+                    break;
             }
 
             case 2: {
@@ -626,6 +635,9 @@ public class MenuPublicaciones {
                 }
 
                 creada = MensajeDAO.crear(publicacionMensaje);
+                if (creada) {
+                    notificarInscriptosCursando(cursoSeleccionado, usuarioActual.getId(), publicacionMensaje.getId(), TipoNotificacion.Mensaje);
+                }
                 break;
             }
 
@@ -790,6 +802,16 @@ public class MenuPublicaciones {
                         : "No se pudo enviar el reporte.");
     }
 
+
+    private static void notificarInscriptosCursando(Curso curso, int autorId, int publicacionId, TipoNotificacion tipo) {
+        List<Integer> usuariosCursando = InscripcionDAO.listarUsuariosCursando(curso.getId());
+        String mensajeNotificacion = "Nueva publicación de tipo " + tipo.name() + " en " + curso.getNombre() + ".";
+
+        for (Integer usuarioId : usuariosCursando) {
+            if (usuarioId == autorId) continue;   // no se notifica a sí mismo
+            NotificacionDAO.crear(new Notificacion(LocalDate.now(), tipo, mensajeNotificacion, usuarioId, publicacionId));
+        }
+    }
 
 
 }

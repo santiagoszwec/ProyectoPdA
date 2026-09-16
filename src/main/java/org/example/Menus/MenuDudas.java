@@ -346,7 +346,7 @@ public class MenuDudas {
 
         } while (motivo.isBlank());
 
-        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, comentario.getPublicacionId(), comentario.getId(), usuarioActual.getId());
+        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, null, comentario.getId(), usuarioActual.getId());
 
         System.out.println("\nDatos del reporte:");
         System.out.println("Comentario: " + comentario.getMensaje()

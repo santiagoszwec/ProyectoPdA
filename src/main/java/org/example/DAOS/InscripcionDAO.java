@@ -194,4 +194,29 @@ public class InscripcionDAO {
                 fila.getInt("curso_id")
         );
     }
+
+    public static List<Integer> listarUsuariosCursando(int cursoId) {
+        String sql = "SELECT usuario_id FROM inscripcion WHERE curso_id = ? AND estado = ?";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, cursoId);
+            sentencia.setString(2, TipoEstado.Cursando.name());
+
+            try (ResultSet filas = sentencia.executeQuery()) {
+                List<Integer> usuariosIds = new ArrayList<>();
+                while (filas.next()) {
+                    usuariosIds.add(filas.getInt("usuario_id"));
+                }
+                return usuariosIds;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }
