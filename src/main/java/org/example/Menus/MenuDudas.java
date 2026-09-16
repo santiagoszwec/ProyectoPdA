@@ -1,16 +1,9 @@
 package org.example.Menus;
 
-import org.example.DAOS.ComentarioDAO;
-import org.example.DAOS.DudaDAO;
-import org.example.DAOS.NotificacionDAO;
+import org.example.DAOS.*;
 import org.example.ENUMS.EstadoDuda;
 import org.example.ENUMS.TipoNotificacion;
-import org.example.Modelos.Comentario;
-import org.example.Modelos.Duda;
-import org.example.Modelos.Notificacion;
-import org.example.Modelos.Usuario;
-import org.example.DAOS.PublicacionDAO;
-import org.example.Modelos.Publicacion;
+import org.example.Modelos.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -18,7 +11,7 @@ import java.util.Scanner;
 
 public class MenuDudas {
 
-    public static void mostrar(Scanner sc, Usuario usuarioActual) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
 
         int opcion;
 
@@ -26,8 +19,9 @@ public class MenuDudas {
             System.out.println("\n===== DUDAS Y COMENTARIOS =====");
             System.out.println("1. Responder publicacion");
             System.out.println("2. Responder comentario");
-            System.out.println("3. Marcar duda como resuelta (para autores)");
-            System.out.println("0. Volver al menú principal");
+            System.out.println("3. Reportar comentario");
+            System.out.println("4. Marcar duda como resuelta (para autores)");
+            System.out.println("0. Volver");
             System.out.print("Seleccione una opción: ");
 
             opcion = Integer.parseInt(sc.nextLine());
@@ -35,15 +29,19 @@ public class MenuDudas {
             switch (opcion) {
 
                 case 1:
-                    responderDuda(sc, usuarioActual);
+                    responderDuda(sc, usuarioActual, cursoSeleccionado);
                     break;
 
                 case 2:
-                    comentarRespuesta(sc, usuarioActual);
+                    comentarRespuesta(sc, usuarioActual, cursoSeleccionado);
                     break;
 
                 case 3:
-                    resolverDuda(sc, usuarioActual);
+                    reportarComentario(sc, usuarioActual, cursoSeleccionado);
+                    break;
+
+                case 4:
+                    resolverDuda(sc, usuarioActual, cursoSeleccionado);
                     break;
 
                 case 0:
@@ -57,8 +55,8 @@ public class MenuDudas {
         } while (opcion != 0);
     }
 
-    private static void responderDuda(Scanner sc, Usuario usuarioActual) {
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
+    private static void responderDuda(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId(), cursoSeleccionado.getId());
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones cargadas.");
             return;
@@ -104,8 +102,8 @@ public class MenuDudas {
         System.out.println(creada ? "Respuesta publicada con éxito." : "No se pudo publicar la respuesta.");
     }
 
-    private static void comentarRespuesta(Scanner sc, Usuario usuarioActual) {
-        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId());
+    private static void comentarRespuesta(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId(), cursoSeleccionado.getId());
         if (publicaciones.isEmpty()) {
             System.out.println("No hay publicaciones cargadas.");
             return;
@@ -178,9 +176,9 @@ public class MenuDudas {
         mostrarComentariosAnidados(comentarioElegido.getId());
     }
 
-    private static void resolverDuda(Scanner sc, Usuario usuarioActual) {
+    private static void resolverDuda(Scanner sc, Usuario usuarioActual, Curso cusroSeleccionado) {
 
-        Duda duda = elegirDuda(sc, usuarioActual);
+        Duda duda = elegirDuda(sc, usuarioActual, cusroSeleccionado);
         if (duda == null) {
             return;
         }
@@ -219,7 +217,7 @@ public class MenuDudas {
 
         if (exito) {
             System.out.println("La duda fue marcada como Resuelta y la respuesta fue destacada.");
-            
+
 
             Notificacion notificacion = new Notificacion(
                     LocalDate.now(),
@@ -230,7 +228,7 @@ public class MenuDudas {
             );
             NotificacionDAO.crear(notificacion);
             System.out.println("Se ha notificado al autor de la respuesta.");
-            
+
         } else {
             System.out.println("Ocurrió un error al intentar resolver la duda.");
         }
@@ -245,8 +243,7 @@ public class MenuDudas {
         }
     }
 
-
-    private static Duda elegirDuda(Scanner sc, Usuario filtroUsuario) {
+    private static Duda elegirDuda(Scanner sc, Usuario filtroUsuario, Curso cursoSeleccionado) {
         List<Duda> dudas = DudaDAO.listarTodos();
 
         if (dudas.isEmpty()) {
@@ -255,17 +252,24 @@ public class MenuDudas {
         }
 
         if (filtroUsuario != null) {
-            dudas.removeIf(d -> d.getUsuarioId() != filtroUsuario.getId());
+            dudas.removeIf(d ->
+                    d.getUsuarioId() != filtroUsuario.getId()
+                            || d.getCursoId() != cursoSeleccionado.getId()
+            );
+
             if (dudas.isEmpty()) {
-                System.out.println("No tienes dudas creadas para resolver.");
+                System.out.println("No tienes dudas creadas para resolver en este curso.");
                 return null;
             }
         }
-
-
         System.out.println("Dudas disponibles:");
+
         for (Duda duda : dudas) {
-            System.out.println("[" + duda.getId() + "] " + duda.getMensaje() + " (" + duda.getEstado() + ")");
+            System.out.println(
+                    "[" + duda.getId() + "] "
+                            + duda.getMensaje()
+                            + " (" + duda.getEstado() + ")"
+            );
         }
 
         System.out.print("Ingrese el ID de la duda: ");
@@ -275,5 +279,90 @@ public class MenuDudas {
                 .filter(d -> d.getId() == dudaId)
                 .findFirst()
                 .orElse(null);
+    }
+    private static void reportarComentario(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
+
+        System.out.println("\n===== REPORTAR COMENTARIO =====");
+
+        List<Publicacion> publicaciones = PublicacionDAO.listarActivas(usuarioActual.getId(), cursoSeleccionado.getId());
+
+        if (publicaciones.isEmpty()) {
+            System.out.println("No hay publicaciones activas en este curso.");
+            return;
+        }
+
+        List<Comentario> comentarios = ComentarioDAO.listarActivos();
+
+        comentarios.removeIf(comentario ->
+                publicaciones.stream().noneMatch(publicacion ->
+                        publicacion.getId() == comentario.getPublicacionId()));
+        if (comentarios.isEmpty()) {
+            System.out.println("No hay comentarios activos para reportar.");
+            return;
+        }
+
+        System.out.println("\nComentarios disponibles:");
+
+        for (Comentario comentario : comentarios) {
+            String destacado = comentario.isDestacado()
+                    ? " [DESTACADO]"
+                    : "";
+
+            System.out.println("[" + comentario.getId() + "] "
+                            + comentario.getMensaje()
+                            + " (Publicación "
+                            + comentario.getPublicacionId()
+                            + ")"
+                            + destacado);
+        }
+        Comentario comentario = null;
+
+        do {
+            System.out.print("\nIngrese el ID del comentario a reportar: ");
+            int comentarioId = Integer.parseInt(sc.nextLine());
+
+            comentario = comentarios.stream().filter(c -> c.getId() == comentarioId).findFirst().orElse(null);
+
+            if (comentario == null) {
+                System.out.print("No se encontró ese comentario en el curso seleccionado. "
+                                + "¿Desea intentar nuevamente? S/N: ");
+
+                if (sc.nextLine().equalsIgnoreCase("N")) {
+                    return;
+                }
+            }
+
+        } while (comentario == null);
+
+        String motivo;
+
+        do {
+            System.out.print("Escriba el motivo del reporte: ");
+            motivo = sc.nextLine();
+
+            if (motivo.isBlank()) {
+                System.out.println("El motivo no puede estar vacío.");
+            }
+
+        } while (motivo.isBlank());
+
+        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, comentario.getPublicacionId(), comentario.getId(), usuarioActual.getId());
+
+        System.out.println("\nDatos del reporte:");
+        System.out.println("Comentario: " + comentario.getMensaje()
+                        + " | Motivo: " + motivo);
+
+        System.out.print("¿Confirmar envío del reporte? S/N: ");
+
+        if (!sc.nextLine().equalsIgnoreCase("S")) {
+            System.out.println("Reporte cancelado.");
+            return;
+        }
+
+        boolean creado = ReporteDAO.crear(reporte);
+
+        System.out.println(creado
+                        ? "Reporte enviado correctamente."
+                        : "No se pudo enviar el reporte.");
     }
 }

@@ -15,19 +15,35 @@ import java.util.List;
 public class ReporteDAO {
 
     public static boolean crear(Reporte reporte) {
-        String sql = "INSERT INTO reporte (contenido, motivo, fecha_reporte, publicacion_id, comentario_id) VALUES (?,?,?,?,?)";
+        String sql = "INSERT INTO reporte (contenido, motivo, resolucion, fecha_reporte, fecha_resolucion, " +
+                "publicacion_id, comentario_id, usuario_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conexion = ConexionDB.obtenerConexion();
              PreparedStatement sentencia = conexion.prepareStatement(sql)) {
 
             sentencia.setString(1, reporte.getContenido());
             sentencia.setString(2, reporte.getMotivo());
-            sentencia.setObject(3, reporte.getFechaReporte());
-            sentencia.setObject(4, reporte.getPublicacionId(), Types.INTEGER);
-            sentencia.setObject(5, reporte.getComentarioId(), Types.INTEGER);
+            sentencia.setString(3, reporte.getResolucion());
+            sentencia.setObject(4, reporte.getFechaReporte());
+
+            if (reporte.getFechaResolucion() != null) {
+                sentencia.setObject(5, reporte.getFechaResolucion());
+            } else {
+                sentencia.setNull(5, Types.DATE);
+            }
+            if (reporte.getPublicacionId() != null) {
+                sentencia.setInt(6, reporte.getPublicacionId());
+            } else {
+                sentencia.setNull(6, Types.INTEGER);
+            }
+            if (reporte.getComentarioId() != null) {
+                sentencia.setInt(7, reporte.getComentarioId());
+            } else {
+                sentencia.setNull(7, Types.INTEGER);
+            }
+            sentencia.setInt(8, reporte.getUsuarioId());
 
             return sentencia.executeUpdate() == 1;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -107,6 +123,7 @@ public class ReporteDAO {
         int comId = filas.getInt("comentario_id");
         Integer comentarioId = filas.wasNull() ? null : comId;
 
-        return new Reporte(id, contenido, motivo, resolucion, fechaReporte, fechaResolucion, publicacionId, comentarioId);
+        int usuarioId = filas.getInt("usuario_id");
+        return new Reporte(id, contenido, motivo, resolucion, fechaReporte, fechaResolucion, publicacionId, comentarioId, usuarioId);
     }
 }

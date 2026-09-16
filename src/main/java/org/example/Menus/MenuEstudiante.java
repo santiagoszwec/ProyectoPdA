@@ -27,7 +27,7 @@ public class MenuEstudiante {
             switch (opcion) {
 
                 case 1:
-                    MenuDudas.mostrar(sc, usuarioActual);
+                    //MenuDudas.mostrar(sc, usuarioActual, cursoSeleccionado);
                     break;
 
                 case 2:

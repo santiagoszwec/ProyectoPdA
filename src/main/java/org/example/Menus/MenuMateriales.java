@@ -4,6 +4,7 @@ import org.example.Consola;
 import org.example.DAOS.PublicacionDAO;
 import org.example.ENUMS.TipoArchivo;
 import org.example.ENUMS.TipoMaterial;
+import org.example.Modelos.Curso;
 import org.example.Modelos.Publicacion;
 import org.example.Modelos.Usuario;
 
@@ -26,7 +27,7 @@ public class MenuMateriales {
             TipoArchivo.PNG
     };
 
-    public static void mostrar(Scanner sc, Usuario usuarioActual) {
+    public static void mostrar(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
 
         int opcion;
 
@@ -41,10 +42,10 @@ public class MenuMateriales {
 
             switch (opcion) {
                 case 1:
-                    MenuPublicaciones.mostrarPublicaciones(PublicacionDAO.listarMateriales(usuarioActual.getId()));
+                    MenuPublicaciones.mostrarPublicaciones(PublicacionDAO.listarMateriales(usuarioActual.getId(), cursoSeleccionado.getId()));
                     break;
                 case 2:
-                    filtrarPorEtiquetas(sc,  usuarioActual);
+                    filtrarPorEtiquetas(sc, usuarioActual, cursoSeleccionado);
                     break;
                 case 0:
                     break;
@@ -56,7 +57,7 @@ public class MenuMateriales {
         } while (opcion != 0);
     }
 
-    private static void filtrarPorEtiquetas(Scanner sc, Usuario usuarioActual) {
+    private static void filtrarPorEtiquetas(Scanner sc, Usuario usuarioActual, Curso cursoSeleccionado) {
 
         System.out.println("\n===== FILTRAR MATERIAL POR ETIQUETAS =====");
 
@@ -78,7 +79,7 @@ public class MenuMateriales {
         System.out.print("Su selección: ");
         List<TipoArchivo> tiposArchivo = leerTipoArchivo(sc);
 
-        List<Publicacion> materiales = PublicacionDAO.filtrarMaterialesPorEtiquetas(tiposMaterial, tiposArchivo, usuarioActual.getId());
+        List<Publicacion> materiales = PublicacionDAO.filtrarMaterialesPorEtiquetas(tiposMaterial, tiposArchivo, usuarioActual.getId(), cursoSeleccionado.getId());
 
         if (materiales.isEmpty()) {
             System.out.println("\nNo se encontraron materiales con las etiquetas seleccionadas.");

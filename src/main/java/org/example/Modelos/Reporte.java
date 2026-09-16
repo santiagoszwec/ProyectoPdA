@@ -14,17 +14,6 @@ public class Reporte {
     private Integer comentarioId;
     private int usuarioId;
 
-    public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte, LocalDate fechaResolucion, int publicacionId, int usuarioId) {
-        this.id = id;
-        this.contenido = contenido;
-        this.motivo = motivo;
-        this.resolucion = resolucion;
-        this.fechaReporte = fechaReporte;
-        this.fechaResolucion = fechaResolucion;
-        this.publicacionId = publicacionId;
-        this.usuarioId = usuarioId;
-    }
-
     public Reporte(int id, String contenido, String motivo, String resolucion, LocalDate fechaReporte,
                    LocalDate fechaResolucion, Integer publicacionId, Integer comentarioId, int usuarioId) {
         this.id = id;

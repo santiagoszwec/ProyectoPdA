@@ -3,15 +3,12 @@ package org.example.Menus;
 import org.example.Consola;
 import org.example.DAOS.PublicacionDAO;
 import org.example.DAOS.ReporteDAO;
-import org.example.Modelos.Publicacion;
-import org.example.Modelos.Reporte;
+import org.example.Modelos.*;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
 import org.example.DAOS.ComentarioDAO;
-import org.example.Modelos.Comentario;
-import org.example.Modelos.Usuario;
 
 import static org.example.Menus.MenuPublicaciones.mostrarPublicaciones;
 
@@ -26,8 +23,6 @@ public class MenuReportes {
             System.out.println("1. Revisar publicaciones reportadas");
             System.out.println("2. Revisar comentarios reportados");
             System.out.println("3. Listar reportes pendientes");
-            System.out.println("4. Reportar Publicacion");
-            System.out.println("5. Reportar comentario");
             System.out.println("0. Volver al menú principal");
             System.out.print("Seleccione una opción: ");
 
@@ -45,14 +40,6 @@ public class MenuReportes {
 
                 case 3:
                     listarReportesPendientes();
-                    break;
-
-                case 4:
-                    reportarPublicacion(sc, usuarioActual);
-                    break;
-
-                case 5:
-                    reportarComentario(sc, usuarioActual);
                     break;
 
                 case 0:
@@ -240,108 +227,5 @@ public class MenuReportes {
         System.out.println(eliminado
                 ? "Reporte aprobado y comentario eliminado correctamente. Se notificó al autor."
                 : "No se pudo eliminar el comentario.");
-    }
-    private static void reportarPublicacion(Scanner sc, Usuario usuarioActual) {
-
-        System.out.println("\n===== REPORTAR PUBLICACIÓN =====");
-
-        System.out.println("\n--- LISTA DE PUBLICACIONES ACTIVAS ---");
-
-
-        mostrarPublicaciones(PublicacionDAO.listarActivas(usuarioActual.getId()));
-        Publicacion publicacion = null;
-        do{
-
-            System.out.print("Ingrese el ID de la publicación a reportar: ");
-            int publicacionId = Integer.parseInt(sc.nextLine());
-
-            publicacion = PublicacionDAO.buscarPorId(publicacionId);
-
-            if (publicacion == null) {
-                System.out.println("No se encontró ninguna publicación con ese ID. ¿Desea intentar de nuevo? S/N: ");
-                String respuesta = sc.nextLine();
-                if (respuesta.equalsIgnoreCase("N")) {
-                    return;
-                }
-            }
-
-        }while(publicacion == null);
-
-        String motivo;
-        do {
-            System.out.print("Escriba el motivo del reporte: ");
-            motivo = sc.nextLine();
-            if (motivo.isBlank()) {
-                System.out.println("El motivo no puede estar vacío.");
-            }
-        } while (motivo.isBlank());
-
-        Reporte reporte = new Reporte(0, publicacion.getMensaje(), motivo, null, LocalDate.now(), null, publicacion.getId(), usuarioActual.getId());
-
-        System.out.println("\nDatos del reporte:");
-        System.out.println("Publicación: " + publicacion.getMensaje() + " | Motivo: " + motivo);
-
-        System.out.print("¿Confirmar envío del reporte? S/N: ");
-        if (!sc.nextLine().equalsIgnoreCase("S")) {
-            System.out.println("Reporte cancelado.");
-            return;
-        }
-
-        boolean creado = ReporteDAO.crear(reporte);
-
-        if (creado) {
-            System.out.println("Reporte enviado correctamente");
-        } else {
-            System.out.println("No se pudo enviar el reporte");
-        }
-    }
-
-    private static void reportarComentario(Scanner sc, Usuario usuarioActual) {
-
-        System.out.println("\n===== REPORTAR COMENTARIO =====");
-        System.out.println("\n--- LISTA DE COMENTARIOS ACTIVOS ---");
-
-        List<Comentario> comentarios = ComentarioDAO.listarActivos();
-        for (Comentario c : comentarios) {
-            System.out.println("[" + c.getId() + "] (Publicación " + c.getPublicacionId() + ") " + c.getMensaje());
-        }
-
-        Comentario comentario = null;
-        do {
-            System.out.print("Ingrese el ID del comentario a reportar: ");
-            int comentarioId = Integer.parseInt(sc.nextLine());
-
-            comentario = ComentarioDAO.buscarPorId(comentarioId);
-
-            if (comentario == null) {
-                System.out.print("No se encontró ningún comentario con ese ID. ¿Desea intentar de nuevo? S/N: ");
-                if (sc.nextLine().equalsIgnoreCase("N")) {
-                    return;
-                }
-            }
-        } while (comentario == null);
-
-        String motivo;
-        do {
-            System.out.print("Escriba el motivo del reporte: ");
-            motivo = sc.nextLine();
-            if (motivo.isBlank()) {
-                System.out.println("El motivo no puede estar vacío.");
-            }
-        } while (motivo.isBlank());
-
-        Reporte reporte = new Reporte(0, comentario.getMensaje(), motivo, null, LocalDate.now(), null, comentario.getPublicacionId(), comentario.getId(), usuarioActual.getId());
-
-        System.out.println("\nDatos del reporte:");
-        System.out.println("Comentario: " + comentario.getMensaje() + " | Motivo: " + motivo);
-
-        System.out.print("¿Confirmar envío del reporte? S/N: ");
-        if (!sc.nextLine().equalsIgnoreCase("S")) {
-            System.out.println("Reporte cancelado.");
-            return;
-        }
-
-        boolean creado = ReporteDAO.crear(reporte);
-        System.out.println(creado ? "Reporte enviado correctamente" : "No se pudo enviar el reporte");
     }
 }
