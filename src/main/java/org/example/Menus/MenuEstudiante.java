@@ -5,6 +5,8 @@ import org.example.DAOS.InscripcionDAO;
 import org.example.Modelos.Curso;
 import org.example.Modelos.Inscripcion;
 import org.example.Modelos.Usuario;
+import org.example.DAOS.NotificacionDAO;
+import org.example.Modelos.Notificacion;
 
 import java.util.List;
 import java.util.Scanner;
@@ -19,6 +21,7 @@ public class MenuEstudiante {
             System.out.println("\n===== MENÚ ESTUDIANTE =====");
             System.out.println("1. Dudas y comentarios");
             System.out.println("2. Mis cursos");
+            System.out.println("3. Mis notificaciones");
             System.out.println("0. Cerrar sesión");
             System.out.print("Seleccione una opción: ");
 
@@ -33,6 +36,11 @@ public class MenuEstudiante {
                 case 2:
                     misCursos(usuarioActual);
                     break;
+
+                case 3:
+                    misNotificaciones(usuarioActual);
+                    break;
+
 
                 case 0:
                     System.out.println("Sesión cerrada.");
@@ -68,6 +76,23 @@ public class MenuEstudiante {
                             " | Año: " + curso.getAnio() +
                             " | Créditos: " + curso.getCreditos() +
                             " | Estado: " + inscripcion.getEstado());
+        }
+    }
+    private static void misNotificaciones(Usuario usuarioActual) {
+
+        System.out.println("\n===== MIS NOTIFICACIONES =====");
+
+        List<Notificacion> notificaciones = NotificacionDAO.listarPorUsuario(usuarioActual.getId());
+
+        if (notificaciones.isEmpty()) {
+            System.out.println("No tenés notificaciones.");
+            return;
+        }
+
+        for (Notificacion notificacion : notificaciones) {
+            System.out.println(
+                    "[" + notificacion.getFecha() + "] (" + notificacion.getTipo() + ") " +
+                            notificacion.getMensaje());
         }
     }
 }
