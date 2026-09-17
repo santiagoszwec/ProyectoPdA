@@ -53,13 +53,15 @@ public class NotificacionDAO {
             try (ResultSet filas = sentencia.executeQuery()) {
                 List<Notificacion> retorno = new ArrayList<>();
                 while (filas.next()) {
+                    int publicacionIdRaw = filas.getInt("publicacion_id");
+                    Integer publicacionId = filas.wasNull() ? null : publicacionIdRaw;
                     retorno.add(new Notificacion(
                             filas.getInt("id"),
                             filas.getObject("fecha", java.time.LocalDate.class),
                             org.example.ENUMS.TipoNotificacion.valueOf(filas.getString("tipo")),
                             filas.getString("mensaje"),
                             filas.getInt("usuario_id"),
-                            filas.getInt("publicacion_id")
+                            publicacionId
                     ));
                 }
                 return retorno;
