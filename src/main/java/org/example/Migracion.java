@@ -106,7 +106,7 @@ public class Migracion {
                             "  tipo VARCHAR(20) NOT NULL," +
                             "  mensaje TEXT NOT NULL," +
                             "  usuario_id INT NOT NULL," +
-                            "  publicacion_id INT NOT NULL," +
+                            "  publicacion_id INT," +
                             "  FOREIGN KEY (usuario_id) REFERENCES usuario(id)," +
                             "  FOREIGN KEY (publicacion_id) REFERENCES publicacion(id)" +
                             ")",

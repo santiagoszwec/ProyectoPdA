@@ -6,6 +6,7 @@ import org.example.Modelos.Notificacion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Types;
 
 public class NotificacionDAO {
 
@@ -27,7 +28,13 @@ public class NotificacionDAO {
             sentencia.setString(2, notificacion.getTipo().toString());
             sentencia.setString(3, notificacion.getMensaje());
             sentencia.setInt(4, notificacion.getUsuarioId());
-            sentencia.setInt(5, notificacion.getPublicacionId());
+
+            if (notificacion.getPublicacionId() != null) {
+                sentencia.setInt(5, notificacion.getPublicacionId());
+            } else {
+                sentencia.setNull(5, Types.INTEGER);
+            }
+
 
             return sentencia.executeUpdate() == 1;
         }

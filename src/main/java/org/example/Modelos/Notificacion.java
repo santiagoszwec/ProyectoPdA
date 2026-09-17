@@ -10,9 +10,9 @@ public class Notificacion {
     private TipoNotificacion tipo;
     private String mensaje;
     private int usuarioId;
-    private int publicacionId;
+    private Integer publicacionId;
 
-    public Notificacion(LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, int publicacionId) {
+    public Notificacion(LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, Integer publicacionId) {
         this.fecha = fecha;
         this.tipo = tipo;
         this.mensaje = mensaje;
@@ -20,7 +20,7 @@ public class Notificacion {
         this.publicacionId = publicacionId;
     }
 
-    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, int publicacionId) {
+    public Notificacion(int id, LocalDate fecha, TipoNotificacion tipo, String mensaje, int usuarioId, Integer publicacionId) {
         this.id = id;
         this.fecha = fecha;
         this.tipo = tipo;
@@ -69,11 +69,11 @@ public class Notificacion {
         this.usuarioId = usuarioId;
     }
 
-    public int getPublicacionId() {
+    public Integer getPublicacionId() {
         return publicacionId;
     }
 
-    public void setPublicacionId(int publicacionId) {
+    public void setPublicacionId(Integer publicacionId) {
         this.publicacionId = publicacionId;
     }
 
