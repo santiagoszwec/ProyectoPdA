@@ -6,6 +6,9 @@ import org.example.Modelos.Notificacion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Types;
 
 public class NotificacionDAO {
@@ -37,6 +40,33 @@ public class NotificacionDAO {
 
 
             return sentencia.executeUpdate() == 1;
+        }
+    }
+    public static List<Notificacion> listarPorUsuario(int usuarioId) {
+        String sql = "SELECT * FROM notificacion WHERE usuario_id = ? ORDER BY id DESC";
+
+        try (Connection conexion = ConexionDB.obtenerConexion();
+             PreparedStatement sentencia = conexion.prepareStatement(sql)) {
+
+            sentencia.setInt(1, usuarioId);
+
+            try (ResultSet filas = sentencia.executeQuery()) {
+                List<Notificacion> retorno = new ArrayList<>();
+                while (filas.next()) {
+                    retorno.add(new Notificacion(
+                            filas.getInt("id"),
+                            filas.getObject("fecha", java.time.LocalDate.class),
+                            org.example.ENUMS.TipoNotificacion.valueOf(filas.getString("tipo")),
+                            filas.getString("mensaje"),
+                            filas.getInt("usuario_id"),
+                            filas.getInt("publicacion_id")
+                    ));
+                }
+                return retorno;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
